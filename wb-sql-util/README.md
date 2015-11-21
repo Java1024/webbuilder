@@ -98,22 +98,21 @@
     delete.delete(param);
 ```
 
-###SQL条件支持说明
-    如例子QUERY中的条件所示：条件支持类似 name$LIKE写法，用$进行分割，后面对应数据库中相应的条件
-    条件支持:LIKE,IN,GT,LT,NOT,NOTNULL等等
-    
+###SQL条件支持
+如例子QUERY中的条件所示：条件支持类似 name$LIKE写法，用$进行分割，后面对应数据库中相应的条件
+条件支持:LIKE,IN,GT,LT,NOT,NOTNULL等等
 ##触发器
-    每个表都支持触发器，如在html中可以通过以下方式定义:
-    ```html
-        <script trigger="select.before" language="groovy">
-            def user = param.get("user");
-            //添加条件
-            if(user!=null)
-                param.where([area_id:user.get('area_id')]);
-            // else
-            //   param.where([area_id:-1]);
-            return true;
-        </script>
-   ```
-    触发器使用脚本引擎进行执行，语法目前支持js,groovy,spel,ognl。
-    触发器列表见:[Constant.java](https://github.com/wb-goup/webbuilder/blob/master/wb-sql-util/src/main/java/org/webbuilder/sql/Constant.java)
+每个表都支持触发器，如在html中可以通过以下方式定义:
+```html
+    <script trigger="select.before" language="groovy">
+        def user = param.get("user");
+        //添加条件
+        if(user!=null)
+            param.where([area_id:user.get('area_id')]);
+        // else
+        //   param.where([area_id:-1]);
+        return true;
+    </script>
+```
+触发器使用脚本引擎进行执行，语法目前支持js,groovy,spel,ognl。
+触发器列表见:[Constant.java](https://github.com/wb-goup/webbuilder/blob/master/wb-sql-util/src/main/java/org/webbuilder/sql/Constant.java)
