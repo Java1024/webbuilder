@@ -37,9 +37,13 @@ public class UserController extends GenericController<User, String> {
 
     @Override
     @AccessLogger("获取列表")
-    public ResponseData list(@JsonParam PageUtil pageUtil) {
+    public Object list(@JsonParam PageUtil pageUtil) {
         pageUtil.excludes("password");
-        return super.list(pageUtil).excludes(User.class, "modules");
+        Object data = super.list(pageUtil);
+        if (data instanceof ResponseData) {
+            ((ResponseData) data).excludes(User.class, "modules", "userRoles");
+        }
+        return data;
     }
 
     @Override

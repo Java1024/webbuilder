@@ -15,9 +15,7 @@
         <result property="auto_alter" column="auto_alter" javaType="boolean" jdbcType="INTEGER"/>
         <result property="create_date" column="create_date" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
         <result property="update_date" column="update_date" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
-        <result property="db_type" column="db_type" javaType="String" jdbcType="VARCHAR"/>
         <result property="db_name" column="db_name" javaType="String" jdbcType="VARCHAR"/>
-        <result property="session_name" column="session_name" javaType="String" jdbcType="VARCHAR"/>
     </resultMap>
 
     <!--字段信息绑定-->
@@ -25,7 +23,7 @@
         <bind name="$fieldsType"
               value="#{'u_id':'string','name':'string','content':'string','table_name':'string'
                         ,'foreigns':'string','remark':'string','auto_alter':'string','create_date':'string'
-                       ,'update_date':'string','db_type':'string','db_name':'string','session_name':'string'}"/>
+                       ,'update_date':'string','db_name':'string'}"/>
         <bind name="$fields" value="$fieldsType.keySet()"/>
     </sql>
     <!--表名-->
@@ -35,9 +33,9 @@
 
     <insert id="insert" parameterType="Form" useGeneratedKeys="true" keyProperty="u_id" keyColumn="U_ID">
         INSERT INTO S_FORM
-        (u_id,name,content,table_name,foreigns,remark,auto_alter,create_date,update_date,db_type,db_name,session_name)
+        (u_id,name,content,table_name,foreigns,remark,auto_alter,create_date,update_date,db_name)
         VALUES
-        (#{u_id,jdbcType=VARCHAR},#{name,jdbcType=VARCHAR},#{content,jdbcType=VARCHAR},#{table_name,jdbcType=VARCHAR},#{foreigns,jdbcType=VARCHAR},#{remark,jdbcType=VARCHAR},#{auto_alter,jdbcType=INTEGER},#{create_date,jdbcType=TIMESTAMP},#{update_date,jdbcType=TIMESTAMP},#{db_type,jdbcType=VARCHAR},#{db_name,jdbcType=VARCHAR},#{session_name,jdbcType=VARCHAR})
+        (#{u_id,jdbcType=VARCHAR},#{name,jdbcType=VARCHAR},#{content,jdbcType=VARCHAR},#{table_name,jdbcType=VARCHAR},#{foreigns,jdbcType=VARCHAR},#{remark,jdbcType=VARCHAR},#{auto_alter,jdbcType=INTEGER},#{create_date,jdbcType=TIMESTAMP},#{update_date,jdbcType=TIMESTAMP},#{db_name,jdbcType=VARCHAR})
     </insert>
 
     <delete id="delete" parameterType="Form">
@@ -68,14 +66,8 @@
             <if test="update_date != null">
                 update_date=#{update_date,jdbcType=TIMESTAMP},
             </if>
-            <if test="db_type != null">
-                db_type=#{db_type,jdbcType=VARCHAR},
-            </if>
             <if test="db_name != null">
                 db_name=#{db_name,jdbcType=VARCHAR},
-            </if>
-            <if test="session_name != null">
-                session_name=#{session_name,jdbcType=VARCHAR},
             </if>
         </set>
         WHERE u_id=#{u_id}

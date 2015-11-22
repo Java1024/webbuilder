@@ -9,6 +9,16 @@ import org.webbuilder.web.core.dao.interceptor.SqlWrapper;
 public class OracleSqlWrapper extends AbstractSqlWrapper {
     @Override
     public String wrapper(SqlWrapper.WrapperConf conf) {
+        if (!conf.isDoPaging()) {
+            StringBuilder builder = new StringBuilder(conf.getSql());
+            if (!StringUtil.isNullOrEmpty(conf.getSortField())) {
+                builder.append(" ORDER BY ").append(conf.getSortField());
+                if (!StringUtil.isNullOrEmpty(conf.getSortOrder())) {
+                    builder.append(" ").append(conf.getSortOrder().toUpperCase().equals("DESC") ? "DESC" : "ASC");
+                }
+            }
+            return builder.toString();
+        }
         StringBuilder builder = new StringBuilder("SELECT * FROM ( SELECT row_.*, rownum rownum_ FROM (");
         builder.append(this.formatSql(conf.getSql())); //sql格式化
         if (!StringUtil.isNullOrEmpty(conf.getSortField())) {

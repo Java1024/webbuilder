@@ -1,5 +1,10 @@
 package org.webbuilder.web.controller.login;
 
+import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.webbuilder.utils.base.MD5;
 import org.webbuilder.utils.base.StringUtil;
 import org.webbuilder.utils.http.HttpUtils;
@@ -8,17 +13,12 @@ import org.webbuilder.web.core.aop.logger.AccessLogger;
 import org.webbuilder.web.core.authorize.AuthorizeInterceptor;
 import org.webbuilder.web.core.bean.ResponseMessage;
 import org.webbuilder.web.core.exception.BusinessException;
-import org.webbuilder.web.core.utils.http.session.HttpSessionManager;
-import org.webbuilder.web.core.utils.http.session.HttpSessionManagerContainer;
-import org.webbuilder.web.core.utils.http.session.impl.StorageHttpSessionManager;
 import org.webbuilder.web.core.utils.WebUtil;
+import org.webbuilder.web.core.utils.http.session.HttpSessionManager;
 import org.webbuilder.web.po.user.User;
 import org.webbuilder.web.service.config.ConfigService;
 import org.webbuilder.web.service.storage.StorageService;
 import org.webbuilder.web.service.user.UserService;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -141,12 +141,16 @@ public class LoginController {
                 throw new BusinessException(msg);
             } else {
                 db.initRoleInfo();
+                if (db.getUsername().equals("admin")) {
+                    userService.initAdminUser(db);
+                }
                 HttpSession session = request.getSession();
                 exit(session);//退出登录
                 //踢出已经登陆的用户
                 String sessionId = httpSessionManager.getSessionIdByUserId(db.getU_id());
                 if (sessionId != null && !sessionId.equals(session.getId()))
                     httpSessionManager.removeSession(sessionId);
+
                 session.setAttribute("user", db);//设置登录用户
                 //添加新的用户
                 httpSessionManager.addUser(db.getU_id(), session);

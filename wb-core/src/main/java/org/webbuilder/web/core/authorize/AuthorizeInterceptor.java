@@ -1,6 +1,13 @@
 package org.webbuilder.web.core.authorize;
 
 import com.alibaba.fastjson.JSON;
+import org.springframework.core.MethodParameter;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.method.support.InvocableHandlerMethod;
+import org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod;
+import org.webbuilder.utils.base.StringUtil;
+import org.webbuilder.utils.script.engine.DynamicScriptEngine;
+import org.webbuilder.utils.script.engine.DynamicScriptEngineFactory;
 import org.webbuilder.web.core.authorize.annotation.Authorize;
 import org.webbuilder.web.core.bean.ResponseMessage;
 import org.webbuilder.web.core.utils.WebUtil;
@@ -64,19 +71,35 @@ public class AuthorizeInterceptor implements HandlerInterceptor {
         Authorize authorize = handlerMethod.getMethodAnnotation(Authorize.class);
         Authorize classAuth = handlerMethod.getBeanType().getAnnotation(Authorize.class);
         AuthorizeInfo authorizeInfo = new AuthorizeInfo();
+        authorizeInfo.setHandlerMethod(handlerMethod);
+
         if (classAuth != null) {
             authorizeInfo.getRoles().addAll(Arrays.asList(classAuth.role()));
             authorizeInfo.getLevel().addAll(Arrays.asList(classAuth.level()));
-            authorizeInfo.getExpression().addAll(Arrays.asList(classAuth.expression()));
             authorizeInfo.getModules().addAll(Arrays.asList(classAuth.module()));
+            if (!StringUtil.isNullOrEmpty(classAuth.expression())) {
+                String scriptId = StringUtil.concat("author_script_", classAuth.expression().hashCode());
+                DynamicScriptEngine engine = DynamicScriptEngineFactory.getEngine(classAuth.expressionLanguage());
+                if (!engine.compiled(scriptId)) {
+                    engine.compile(scriptId, classAuth.expression());
+                }
+                authorizeInfo.getExpression().add(new AuthorizeInfo.Expression(scriptId, classAuth.expressionLanguage()));
+            }
             authorizeInfo.setMod(classAuth.mod());
             authorizeInfo.setApi(classAuth.api());
         }
         if (authorize != null) {
             authorizeInfo.getRoles().addAll(Arrays.asList(authorize.role()));
             authorizeInfo.getLevel().addAll(Arrays.asList(authorize.level()));
-            authorizeInfo.getExpression().addAll(Arrays.asList(authorize.expression()));
             authorizeInfo.getModules().addAll(Arrays.asList(authorize.module()));
+            if (!StringUtil.isNullOrEmpty(classAuth.expression())) {
+                String scriptId = StringUtil.concat("author_script_", authorize.expression().hashCode());
+                DynamicScriptEngine engine = DynamicScriptEngineFactory.getEngine(authorize.expressionLanguage());
+                if (!engine.compiled(scriptId)) {
+                    engine.compile(scriptId, classAuth.expression());
+                }
+                authorizeInfo.getExpression().add(new AuthorizeInfo.Expression(scriptId, authorize.expressionLanguage()));
+            }
             if (authorize.api() != authorizeInfo.isApi())
                 authorizeInfo.setApi(authorize.api());
             if (authorize.mod() != authorizeInfo.getMod())
@@ -203,13 +226,42 @@ public class AuthorizeInterceptor implements HandlerInterceptor {
         this.ajaxLoginMsg = ajaxLoginMsg;
     }
 
-    private class AuthorizeInfo {
+    private static class AuthorizeInfo {
+
+        static class Expression {
+            private String id;
+            private String type;
+
+            public Expression(String id, String type) {
+                this.id = id;
+                this.type = type;
+            }
+
+            public String getId() {
+                return id;
+            }
+
+            public void setId(String id) {
+                this.id = id;
+            }
+
+            public String getType() {
+                return type;
+            }
+
+            public void setType(String type) {
+                this.type = type;
+            }
+        }
+
         Set<String> roles = new HashSet<>();
         Set<String> modules = new HashSet<>();
         Set<String> level = new HashSet<>();
-        Set<String> expression = new HashSet<>();
+        Set<Expression> expression = new HashSet<>();
+        HandlerMethod handlerMethod = null;
         Authorize.MOD mod = Authorize.MOD.INTERSECTION;
         boolean api;
+
         public boolean doAuth(User user) {
             boolean success = false;
             if (user == null) return false;
@@ -257,7 +309,24 @@ public class AuthorizeInterceptor implements HandlerInterceptor {
                 //} else if (excludes.size() > 0) {
                 //表达式验证 尚未提供支持
                 //
-            } else {
+            } else if (expression.size() > 0) {
+                //验证表达式
+                for (Expression expre : expression) {
+                    try {
+                        //执行表达式
+                        Map<String, Object> root = new LinkedHashMap<>();
+                        root.put("user", user);
+                        for (MethodParameter parameter : handlerMethod.getMethodParameters()) {
+                            System.out.println(parameter.getParameterName());
+                        }
+                        MethodParameter[] parameter = handlerMethod.getMethodParameters();
+                        System.out.println(parameter);
+                        DynamicScriptEngineFactory.getEngine(expre.getType()).execute(expre.getId(), root);
+                    } catch (Exception e) {
+
+                    }
+                }
+            }else{
                 //只需要登陆即可
                 return true;
             }
@@ -288,12 +357,12 @@ public class AuthorizeInterceptor implements HandlerInterceptor {
             this.level = level;
         }
 
-        public Set<String> getExpression() {
-            return expression;
+        public void setExpression(Set<Expression> expression) {
+            this.expression = expression;
         }
 
-        public void setExpression(Set<String> expression) {
-            this.expression = expression;
+        public Set<Expression> getExpression() {
+            return expression;
         }
 
         public boolean isApi() {
@@ -310,6 +379,14 @@ public class AuthorizeInterceptor implements HandlerInterceptor {
 
         public void setMod(Authorize.MOD mod) {
             this.mod = mod;
+        }
+
+        public HandlerMethod getHandlerMethod() {
+            return handlerMethod;
+        }
+
+        public void setHandlerMethod(HandlerMethod handlerMethod) {
+            this.handlerMethod = handlerMethod;
         }
     }
 }

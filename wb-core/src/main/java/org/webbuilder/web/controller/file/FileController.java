@@ -5,6 +5,7 @@ import org.webbuilder.utils.base.MD5;
 import org.webbuilder.utils.base.StringUtil;
 import org.webbuilder.utils.base.file.FileUtil;
 import org.webbuilder.web.core.aop.logger.AccessLogger;
+import org.webbuilder.web.core.authorize.annotation.Authorize;
 import org.webbuilder.web.core.bean.ResponseData;
 import org.webbuilder.web.core.bean.ResponseMessage;
 import org.webbuilder.web.core.utils.RandomUtil;
@@ -36,6 +37,7 @@ import java.util.regex.Pattern;
 @RestController
 @RequestMapping(value = "/file")
 @AccessLogger("文件管理")
+@Authorize
 public class FileController {
 
     private org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());

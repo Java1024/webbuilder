@@ -61,7 +61,8 @@ public abstract class GenericController<PO extends GenericPo<PK>, PK> implements
     @RequestMapping(method = RequestMethod.GET, produces = ResponseMessage.CONTENT_TYPE_JSON)
     @ResponseBody
     @AccessLogger("查询列表")
-    public ResponseData list(@JsonParam PageUtil pageUtil) {
+    @Authorize(level = "R")
+    public Object list(@JsonParam PageUtil pageUtil) {
         // 获取条件查询
         try {
             Object data;
@@ -85,6 +86,7 @@ public abstract class GenericController<PO extends GenericPo<PK>, PK> implements
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = ResponseMessage.CONTENT_TYPE_JSON)
     @ResponseBody
     @AccessLogger("查询明细")
+    @Authorize(level = "R")
     public Object info(@PathVariable("id") PK id) {
         try {
             PO po = getService().selectByPk(id);
@@ -106,6 +108,7 @@ public abstract class GenericController<PO extends GenericPo<PK>, PK> implements
     @RequestMapping(value = "/total", method = RequestMethod.GET, produces = ResponseMessage.CONTENT_TYPE_JSON)
     @ResponseBody
     @AccessLogger("查询总数")
+    @Authorize(level = "R")
     public Object total(@JsonParam PageUtil pageUtil) {
         try {
             // 获取条件查询
@@ -125,6 +128,7 @@ public abstract class GenericController<PO extends GenericPo<PK>, PK> implements
     @RequestMapping(method = RequestMethod.POST, produces = ResponseMessage.CONTENT_TYPE_JSON)
     @ResponseBody
     @AccessLogger("新增")
+    @Authorize(level = "C")
     public Object add(@RequestBody PO object) {
         try {
             object.valid();
@@ -144,6 +148,7 @@ public abstract class GenericController<PO extends GenericPo<PK>, PK> implements
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = ResponseMessage.CONTENT_TYPE_JSON)
     @ResponseBody
     @AccessLogger("删除")
+    @Authorize(level = "R")
     public Object delete(@PathVariable("id") PK id) {
         try {
             int i = getService().delete(id);
@@ -162,6 +167,7 @@ public abstract class GenericController<PO extends GenericPo<PK>, PK> implements
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, produces = ResponseMessage.CONTENT_TYPE_JSON)
     @ResponseBody
     @AccessLogger("修改")
+    @Authorize(level = "U")
     public Object update(@PathVariable("id") PK id, @RequestBody(required = true) PO object) {
         try {
             object.setU_id(id);

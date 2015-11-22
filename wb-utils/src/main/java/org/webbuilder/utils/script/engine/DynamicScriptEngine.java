@@ -53,4 +53,6 @@ public interface DynamicScriptEngine {
      * @throws Exception 异常信息
      */
     void removeListener(String name) throws Exception;
+
+    boolean compiled(String id) throws Exception;
 }

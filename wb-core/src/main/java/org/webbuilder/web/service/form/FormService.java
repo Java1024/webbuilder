@@ -2,6 +2,7 @@ package org.webbuilder.web.service.form;
 
 import org.webbuilder.sql.DataBase;
 import org.webbuilder.sql.FieldMetaData;
+import org.webbuilder.utils.base.ClassUtil;
 import org.webbuilder.utils.base.StringUtil;
 import org.webbuilder.web.core.exception.BusinessException;
 import org.webbuilder.web.core.service.GenericService;

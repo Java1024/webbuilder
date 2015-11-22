@@ -4,9 +4,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.webbuilder.sql.DataBase;
+import org.webbuilder.sql.Insert;
+import org.webbuilder.sql.Table;
 import org.webbuilder.sql.TableMetaData;
+import org.webbuilder.sql.exception.CreateException;
+import org.webbuilder.sql.exception.TriggerException;
+import org.webbuilder.sql.param.insert.InsertParam;
 import org.webbuilder.sql.parser.CommonTableMetaDataParser;
 import org.webbuilder.sql.parser.TableMetaDataParser;
+import org.webbuilder.sql.trigger.TriggerResult;
 import org.webbuilder.utils.base.file.CallBack;
 import org.webbuilder.utils.base.file.FileUtil;
 import org.webbuilder.web.core.aop.transactional.TransactionDisabled;
@@ -14,6 +20,7 @@ import org.webbuilder.web.po.form.Form;
 
 import javax.annotation.Resource;
 import java.io.File;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +42,7 @@ public class DefaultTableFactory {
 
     private String bakPath = "/webbuilder/table_bak";
 
+    private boolean autoAlter = true;
     @Resource
     private FormService formService;
 
@@ -62,14 +70,43 @@ public class DefaultTableFactory {
                     //获取旧版本
                     if (old_ver != null) {
                         old_ver.setName(oldName);
-                        dataBase.getMetaData().addTable(old_ver);
-                        //提交修改
-                        dataBase.alterTable(newTable);
+                        if (!autoAlter) {
+                            dataBase.getMetaData().addTable(newTable);
+                        } else {
+                            dataBase.getMetaData().addTable(old_ver);
+                            dataBase.alterTable(newTable);
+                        }
                     } else {//无备份说明是新表
-                        dataBase.createTable(newTable);
+                        if (!autoAlter) {
+                            dataBase.getMetaData().addTable(newTable);
+                        } else {
+                            try {
+                                Table table = dataBase.createTable(newTable);
+                                try {
+                                    //加载初始化数据
+                                    TriggerResult result = table.getMetaData().on("init.data");
+                                    if (result != null && result.isSuccess()) {
+                                        Object data = result.getData();
+                                        Insert insert = table.createInsert();
+                                        if (data instanceof Collection) {
+                                            for (Object d : ((Collection) data)) {
+                                                insert.insert(new InsertParam().values(((Map) d)));
+                                            }
+                                        }
+                                        if (data instanceof Map) {
+                                            insert.insert(new InsertParam().values(((Map) data)));
+                                        }
+                                    }
+                                } catch (TriggerException e) {
+                                }
+                            } catch (CreateException e) {
+                                logger.debug("表{}已存在，忽略创建!", oldName);
+                            }
+                        }
                     }
                     //备份
-                    bakTable(oldName, content);
+                    if (autoAlter)
+                        bakTable(oldName, content);
                     logger.debug("init table success {}", file);
                 }
             } catch (Exception e) {
@@ -194,5 +231,15 @@ public class DefaultTableFactory {
     @TransactionDisabled
     public void setBakPath(String bakPath) {
         this.bakPath = bakPath;
+    }
+
+    @TransactionDisabled
+    public void setAutoAlter(boolean autoAlter) {
+        this.autoAlter = autoAlter;
+    }
+
+    @TransactionDisabled
+    public boolean isAutoAlter() {
+        return autoAlter;
     }
 }

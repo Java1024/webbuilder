@@ -303,9 +303,4 @@ public class User extends GenericPo<String> {
     public void setRoleInfo(Map<Module, Set<String>> roleInfo) {
         this.roleInfo = roleInfo;
     }
-
-    public static void main(String[] args) {
-        System.out.println(DateTimeUtils.formatUnknownString2Date("2015-11-02").getTime());
-        System.out.println(DateTimeUtils.formatUnknownString2Date("2015-11-03").getTime());
-    }
 }

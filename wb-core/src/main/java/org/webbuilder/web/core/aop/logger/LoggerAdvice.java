@@ -1,6 +1,7 @@
 package org.webbuilder.web.core.aop.logger;
 
 import com.alibaba.fastjson.JSON;
+import org.aspectj.lang.annotation.After;
 import org.webbuilder.utils.base.MD5;
 import org.webbuilder.utils.base.StringUtil;
 import org.webbuilder.web.core.FastJsonHttpMessageConverter;
@@ -42,11 +43,12 @@ public class LoggerAdvice {
 
     private String getMethodName(ProceedingJoinPoint pjp) {
         StringBuilder methodName = new StringBuilder(pjp.getSignature().getName()).append("(");
-        Method method = getMethod(pjp);
-        Class[] args = method.getParameterTypes();
+        MethodSignature signature = (MethodSignature) pjp.getSignature();
+        String[] names = signature.getParameterNames();
+        Class[] args = signature.getParameterTypes();
         for (int i = 0, len = args.length; i < len; i++) {
             if (i != 0) methodName.append(",");
-            methodName.append(args[i].getSimpleName());
+            methodName.append(args[i].getSimpleName()).append(" ").append(names[i]);
         }
         return methodName.append(")").toString();
     }
@@ -72,7 +74,7 @@ public class LoggerAdvice {
     public Object logInfo(ProceedingJoinPoint pjp, AccessLogger log) {
         LogInfo logInfo = new LogInfo();
         try {
-            HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+            HttpServletRequest request = WebUtil.getHttpServletRequest();
             Class<?> clazz = pjp.getTarget().getClass();
             logInfo.setU_id(MD5.encode(String.valueOf(System.nanoTime()).concat(String.valueOf(random.nextInt()))));
             logInfo.setDesc(getDesc(pjp, log));//方法描述
@@ -100,7 +102,7 @@ public class LoggerAdvice {
                 if (obj instanceof ResponseMessage) {
                     ResponseMessage res = (ResponseMessage) obj;
                     if (res.getSourceData() instanceof Throwable) {
-                        logInfo.setException(StringUtil.throwable2String((Throwable) res.getData()));
+                        logInfo.setException(StringUtil.throwable2String((Throwable) res.getSourceData()));
                     }
                     logInfo.setCode(res.getCode());
                 } else {

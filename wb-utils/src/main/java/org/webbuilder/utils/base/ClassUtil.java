@@ -9,6 +9,7 @@ import javassist.bytecode.LocalVariableAttribute;
 import javassist.bytecode.MethodInfo;
 
 import java.io.File;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.nio.charset.Charset;
 import java.util.*;
@@ -173,10 +174,10 @@ public class ClassUtil {
                 @Override
                 public void isFile(File file) {
                     String abs = file.getAbsolutePath();
-                    String repath = abs.substring(path.length(), abs.length()).replace("\\","/");
+                    String repath = abs.substring(path.length(), abs.length()).replace("\\", "/");
                     if (abs.endsWith(".class")) {
-                        if(abs.contains("/"))
-                             repath = repath.substring(repath.indexOf("/"), repath.length() - 6);
+                        if (abs.contains("/"))
+                            repath = repath.substring(repath.indexOf("/"), repath.length() - 6);
                         String className = repath.replace(File.separator, ".");
                         loadClass(className);
                     } else if (abs.endsWith(".jar")) {
@@ -512,4 +513,35 @@ public class ClassUtil {
         return getGenericType(clazz, 0);
     }
 
+
+    public static <T extends Annotation> T getAnnotation(Class<?> clazz, Class<T> annotation) {
+        T ann = clazz.getAnnotation(annotation);
+        if (ann != null) {
+            return ann;
+        } else {
+            if (clazz.getSuperclass() != Object.class) {
+                return getAnnotation(clazz.getSuperclass(), annotation);
+            }
+        }
+        return ann;
+    }
+
+    public static <T extends Annotation> T getAnnotation(Method method, Class<T> annotation) {
+        T ann = method.getAnnotation(annotation);
+        if (ann != null) {
+            return ann;
+        } else {
+            Class clazz = method.getDeclaringClass();
+            Class superClass = clazz.getSuperclass();
+            if (superClass != Object.class) {
+                try {
+                    Method suMethod = superClass.getMethod(method.getName(), method.getParameterTypes());
+                    return getAnnotation(suMethod, annotation);
+                } catch (NoSuchMethodException e) {
+                    return null;
+                }
+            }
+        }
+        return ann;
+    }
 }

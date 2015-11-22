@@ -78,7 +78,7 @@ public class CustomFormService extends GenericService<CustomFormData, String> {
     }
 
     public int update(String form_id, String u_id, Map<String, Object> data) throws Exception {
-        Table table =  getTable(form_id);
+        Table table = getTable(form_id);
         Update update = table.createUpdate();
         UpdateParam param = new UpdateParam();
         param.where("u_id", u_id);
@@ -111,7 +111,7 @@ public class CustomFormService extends GenericService<CustomFormData, String> {
     }
 
     public List<Map> select(String form_id, Map<String, Object> params) throws Exception {
-        Table table =  getTable(form_id);
+        Table table = getTable(form_id);
         return table.createQuery().list(new QueryParam().where(params));
     }
 
@@ -129,6 +129,9 @@ public class CustomFormService extends GenericService<CustomFormData, String> {
         }
         if (table == null)
             throw new BusinessException("未找到此表单！");
+        if ("true".equals(table.getMetaData().attr("system"))) {
+            throw new BusinessException("无法对此表单进行操作！");
+        }
         return table;
     }
 

@@ -125,7 +125,7 @@
 
     <!--生成查询数量sql-->
     <sql id="totalSql">
-        SELECT count(0) AS total FROM ${$tableName} u
+        SELECT count(0) AS total FROM ${$tableName}
         <where>
             <include refid="BasicMapper.selectCondition"/>
         </where>

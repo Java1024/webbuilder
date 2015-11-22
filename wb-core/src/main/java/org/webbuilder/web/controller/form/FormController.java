@@ -1,9 +1,12 @@
 package org.webbuilder.web.controller.form;
 
 import org.webbuilder.web.core.aop.logger.AccessLogger;
+import org.webbuilder.web.core.authorize.annotation.Authorize;
 import org.webbuilder.web.core.bean.ResponseMessage;
 import org.webbuilder.web.core.controller.GenericController;
 import org.webbuilder.web.po.form.Form;
+import org.webbuilder.web.po.role.Role;
+import org.webbuilder.web.po.role.UserRole;
 import org.webbuilder.web.service.form.FormService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +21,7 @@ import javax.annotation.Resource;
 @RestController
 @RequestMapping(value = "/form", produces = ResponseMessage.CONTENT_TYPE_JSON)
 @AccessLogger("表单管理")
+@Authorize(role = Role.SYS_ROLE_ADMIN)
 public class FormController extends GenericController<Form, String> {
 
     //默认服务类

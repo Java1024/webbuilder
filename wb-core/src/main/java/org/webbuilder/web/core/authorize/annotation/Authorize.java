@@ -38,7 +38,7 @@ public @interface Authorize {
      *
      * @return
      */
-    String[] expression() default {};
+    String expression() default "";
 
     /**
      * 表达式语言，默认spring表达式

@@ -1,28 +1,19 @@
 package org.webbuilder.generator.service.imp;
 
-import org.webbuilder.generator.bean.Field;
-import org.webbuilder.generator.bean.GeneratorConfig;
-import org.webbuilder.generator.service.GeneratorService;
-import org.webbuilder.generator.service.database.ConnectionBuilder;
-import org.webbuilder.utils.base.ClassUtil;
-import org.webbuilder.utils.base.Resources;
-import org.webbuilder.utils.base.StringTemplateUtils;
-import org.webbuilder.utils.base.file.CallBack;
-import org.webbuilder.utils.base.file.FileUtil;
-import org.webbuilder.utils.db.def.*;
-import org.webbuilder.utils.db.imp.mysql.MySqlDataBase;
-import org.webbuilder.utils.db.imp.oracle.OracleDataBase;
-import org.webbuilder.utils.db.render.SqlRenderType;
-import org.webbuilder.utils.db.render.conf.SqlRenderConfig;
-import org.webbuilder.utils.office.excel.io.ExcelIO;
-import org.webbuilder.utils.office.excel.io.Header;
-import org.webbuilder.utils.office.excel.io.WriteExcelConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.webbuilder.generator.bean.GeneratorConfig;
+import org.webbuilder.generator.service.GeneratorService;
+import org.webbuilder.utils.base.Resources;
+import org.webbuilder.utils.base.StringTemplateUtils;
+import org.webbuilder.utils.base.file.FileUtil;
+import org.webbuilder.utils.office.excel.io.ExcelIO;
+import org.webbuilder.utils.office.excel.io.WriteExcelConfig;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.nio.charset.Charset;
-import java.sql.Connection;
 import java.util.*;
 
 /**
@@ -44,8 +35,8 @@ public class CommonGeneratorServiceImp implements GeneratorService {
     }};
 
     public CommonGeneratorServiceImp() {
-        DataBaseStorage.register(new MySqlDataBase("mysql"));
-        DataBaseStorage.register(new OracleDataBase("oracle"));
+//        DataBaseStorage.register(new MySqlDataBase("mysql"));
+//        DataBaseStorage.register(new OracleDataBase("oracle"));
     }
 
     public void initTemplate() throws Exception {
@@ -130,53 +121,53 @@ public class CommonGeneratorServiceImp implements GeneratorService {
     }
 
     public void createTable(GeneratorConfig config) {
-        Map<String, String> dbConf = config.getDbConfig();
-        logger.info("使用数据库配置:" + dbConf);
-        Set<Field> fields = config.getFields();
-        DataBase dataBase = DataBaseStorage.getDataBase(config.getDatabaseType());
-        if (dataBase == null) {
-            logger.error("获取数据库失败!");
-            return;
-        }
-        TableMetaData metaData = new TableMetaData(config.getTableName());
-        for (Field field : fields) {
-            Class javaType = mapper.get(field.getJavaTypeName());
-            if (javaType == null) {
-                logger.error("不支持的类型:" + field.getJavaTypeName());
-                return;
-            }
-            FieldMetaData fieldMetaData = new FieldMetaData(field.getName(), javaType);
-            fieldMetaData.setDataType(field.getDataType());
-            fieldMetaData.setRemark(field.getRemark());
-            fieldMetaData.setNotNull(field.isNotNull());
-            fieldMetaData.setPrimaryKey(field.isPrimaryKey());
-            try {
-                metaData.addField(fieldMetaData);
-            } catch (Exception e) {
-                logger.error("", e);
-                return;
-            }
-        }
-        try {
-            dataBase.putTable(metaData);
-            metaData = dataBase.getTable(metaData.getName());
-            SqlInfo info = metaData.render(SqlRenderType.CREATE).render(new SqlRenderConfig());
-
-            String outPath = config.getOutput().getAbsolutePath();
-            String outPath_bean = (outPath + "/doc/sql/" + config.getPackageName() + "/" + config.getModule()).replace(".", "/");
-            new File(outPath_bean).mkdirs();
-            outPath_bean = (outPath_bean + "/" + config.getClassName() + ".sql");
-            FileUtil.writeString2File(info.toString(), outPath_bean, CHARSET);
-            Connection connection = ConnectionBuilder.getConnection(dbConf);
-            try {
-                dataBase.createTable(metaData, connection);
-            } finally {
-                connection.close();
-            }
-        } catch (Exception e) {
-            logger.error("", e);
-            return;
-        }
+//        Map<String, String> dbConf = config.getDbConfig();
+//        logger.info("使用数据库配置:" + dbConf);
+//        Set<Field> fields = config.getFields();
+//        DataBase dataBase = DataBaseStorage.getDataBase(config.getDatabaseType());
+//        if (dataBase == null) {
+//            logger.error("获取数据库失败!");
+//            return;
+//        }
+//        TableMetaData metaData = new TableMetaData(config.getTableName());
+//        for (Field field : fields) {
+//            Class javaType = mapper.get(field.getJavaTypeName());
+//            if (javaType == null) {
+//                logger.error("不支持的类型:" + field.getJavaTypeName());
+//                return;
+//            }
+//            FieldMetaData fieldMetaData = new FieldMetaData(field.getName(), javaType);
+//            fieldMetaData.setDataType(field.getDataType());
+//            fieldMetaData.setRemark(field.getRemark());
+//            fieldMetaData.setNotNull(field.isNotNull());
+//            fieldMetaData.setPrimaryKey(field.isPrimaryKey());
+//            try {
+//                metaData.addField(fieldMetaData);
+//            } catch (Exception e) {
+//                logger.error("", e);
+//                return;
+//            }
+//        }
+//        try {
+//            dataBase.putTable(metaData);
+//            metaData = dataBase.getTable(metaData.getName());
+//            SqlInfo info = metaData.render(SqlRenderType.CREATE).render(new SqlRenderConfig());
+//
+//            String outPath = config.getOutput().getAbsolutePath();
+//            String outPath_bean = (outPath + "/doc/sql/" + config.getPackageName() + "/" + config.getModule()).replace(".", "/");
+//            new File(outPath_bean).mkdirs();
+//            outPath_bean = (outPath_bean + "/" + config.getClassName() + ".sql");
+//            FileUtil.writeString2File(info.toString(), outPath_bean, CHARSET);
+//            Connection connection = ConnectionBuilder.getConnection(dbConf);
+//            try {
+//                dataBase.createTable(metaData, connection);
+//            } finally {
+//                connection.close();
+//            }
+//        } catch (Exception e) {
+//            logger.error("", e);
+//            return;
+//        }
     }
 
 

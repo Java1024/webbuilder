@@ -8,41 +8,95 @@ import org.webbuilder.web.core.bean.GenericPo;
  */
 public class LogInfo extends GenericPo<String> {
 
+    /**
+     * 请求者ip
+     */
     private String ip;
 
+    /**
+     * 请求路径
+     */
     private String uri;
 
+    /**
+     * 完整路径
+     */
     private String url;
 
+    /**
+     * 对应的方法,格式为 HTTP方法+java方法 如:GET.list()
+     */
     private String method;
 
+    /**
+     * 响应结果
+     */
     private String response;
 
+    /**
+     * 用户主键
+     */
     private String user_id;
 
+    /**
+     * 请求时间
+     */
     private long request_time;
 
+    /**
+     * 响应时间
+     */
     private long response_time;
 
+    /**
+     * 请求耗时
+     */
     private long use_time = -1;
 
+    /**
+     * referer信息
+     */
     private String referer;
 
+    /**
+     * 客户端标识
+     */
     private String user_agent;
 
+    /**
+     * 响应码
+     */
     private String code;
 
+    /**
+     * 请求头信息
+     */
     private String headers;
 
-    private String status;
-
+    /**
+     * 对应类名
+     */
     private String class_name;
 
+    /**
+     * 功能摘要
+     */
     private String desc;
 
+    /**
+     * 请求参数
+     */
     private String params;
 
+    /**
+     * 响应异常
+     */
     private String exception;
+
+    /**
+     * 命中缓存
+     */
+    private String cache;
 
     public String getParams() {
         return params;
@@ -150,14 +204,6 @@ public class LogInfo extends GenericPo<String> {
         this.headers = headers;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
     public String getClass_name() {
         return class_name;
     }
@@ -188,6 +234,14 @@ public class LogInfo extends GenericPo<String> {
 
     public void setException(String exception) {
         this.exception = exception;
+    }
+
+    public String getCache() {
+        return cache;
+    }
+
+    public void setCache(String cache) {
+        this.cache = cache;
     }
 
     @Override

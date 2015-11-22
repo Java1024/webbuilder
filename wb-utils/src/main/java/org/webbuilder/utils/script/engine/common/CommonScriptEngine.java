@@ -30,6 +30,11 @@ public abstract class CommonScriptEngine implements DynamicScriptEngine {
 
     public abstract String getScriptName();
 
+    @Override
+    public boolean compiled(String id) throws Exception {
+        return scriptBase.containsKey(id);
+    }
+
     public CommonScriptEngine() {
         try {
             init();

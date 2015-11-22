@@ -1,7 +1,13 @@
 package org.webbuilder.web.po.module;
 
+import com.alibaba.fastjson.JSON;
 import org.webbuilder.web.core.bean.GenericPo;
 import org.hibernate.validator.constraints.NotEmpty;
+
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -181,8 +187,17 @@ public class Module extends GenericPo<String> implements Comparable<Module> {
      */
     public String getM_option() {
         if (this.m_option == null)
-            return "\"[{\"C\":\"新增\"},{\"R\":\"查询\"},{\"U\":\"修改\"},{\"D\":\"删除\"}]\"";
+            return "[{\"id\":\"C\", \"text\":\"新增\", \"uri\":\"\"},{\"id\":\"R\", \"text\":\"查询\", \"uri\":\"\"},{\"id\":\"U\", \"text\":\"修改\", \"uri\":\"\"},{\"id\":\"D\", \"text\":\"删除\", \"uri\":\"\"}]";
         return this.m_option;
+    }
+
+    public Map<String, Object> getM_optionMap() {
+        List<Map<String, Object>> opt = JSON.parseObject(getM_option(), LinkedList.class);
+        Map<String, Object> all = new LinkedHashMap<>();
+        for (Map<String, Object> map : opt) {
+            all.put(String.valueOf(map.get("id")), map);
+        }
+        return all;
     }
 
     /**

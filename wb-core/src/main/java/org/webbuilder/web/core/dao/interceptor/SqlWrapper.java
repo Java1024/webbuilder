@@ -19,6 +19,8 @@ public interface SqlWrapper {
         public String sortField;
         public String sortOrder;
 
+        public boolean doPaging=true;
+
         public String getSql() {
             return sql;
         }
@@ -69,13 +71,21 @@ public interface SqlWrapper {
             this.pageIndex = pageIndex;
         }
 
+        public boolean isDoPaging() {
+            return doPaging;
+        }
+
+        public void setDoPaging(boolean doPaging) {
+            this.doPaging = doPaging;
+        }
+
         public static WrapperConf fromMap(Map<String, Object> param) {
             WrapperConf wrapperConf = new WrapperConf();
             int maxResults = StringUtil.toInt(param.get("maxResults"));
             int firstResult = StringUtil.toInt(param.get("firstResult"));
             int pageIndex = StringUtil.toInt(param.get("pageIndex"));
             if (maxResults == 0 && firstResult == 0 && pageIndex == 0)
-                return null;
+                wrapperConf.setDoPaging(false);
             try {
                 String sortField = (String) param.get("sortField");
                 String sortOrder = (String) param.get("sortOrder");

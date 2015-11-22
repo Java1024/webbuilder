@@ -25,6 +25,7 @@ import java.util.Map;
 @RestController
 @RequestMapping(value = "/config")
 @AccessLogger("配置管理")
+@Authorize
 public class ConfigController extends GenericController<Config, String> {
     private static final String CACHE_KEY = "config";
 
@@ -157,13 +158,13 @@ public class ConfigController extends GenericController<Config, String> {
     }
 
     @Override
-    @Authorize(role = Role.SYS_ROLE_ADMIN)
+    @Authorize(module = "config", level = "C")
     public Object add(@RequestBody Config object) {
         return super.add(object);
     }
 
     @Override
-    @Authorize(role = Role.SYS_ROLE_ADMIN)
+    @Authorize(module = "config", level = "U")
     public Object update(@PathVariable("id") String id, @RequestBody Config object) {
         return super.update(id, object);
     }

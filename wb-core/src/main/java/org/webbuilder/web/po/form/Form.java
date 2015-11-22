@@ -34,14 +34,9 @@ public class Form extends GenericPo<String> {
     //最后一次修改时间
     private java.util.Date update_date;
 
-    //数据库类型
-    private String db_type;
-
     //数据库名称
     private String db_name;
 
-    //会话名称
-    private String session_name;
 
     /**
     * 获取 主键
@@ -191,23 +186,6 @@ public class Form extends GenericPo<String> {
     }
 
     /**
-    * 获取 数据库类型
-    * @return String 数据库类型
-    */
-    public String getDb_type(){
-           if(this.db_type==null)
-              return "oracle";
-        return this.db_type;
-    }
-
-    /**
-    * 设置 数据库类型
-    */
-    public void setDb_type(String db_type){
-        this.db_type=db_type;
-    }
-
-    /**
     * 获取 数据库名称
     * @return String 数据库名称
     */
@@ -224,20 +202,4 @@ public class Form extends GenericPo<String> {
         this.db_name=db_name;
     }
 
-    /**
-    * 获取 会话名称
-    * @return String 会话名称
-    */
-    public String getSession_name(){
-           if(this.session_name==null)
-              return "sqlSession";
-        return this.session_name;
-    }
-
-    /**
-    * 设置 会话名称
-    */
-    public void setSession_name(String session_name){
-        this.session_name=session_name;
-    }
 }

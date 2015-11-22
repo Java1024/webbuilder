@@ -1,5 +1,6 @@
 package org.webbuilder.web.core.cache;
 
+import org.webbuilder.utils.base.ThreadLocalUtil;
 import org.webbuilder.utils.storage.Storage;
 import org.webbuilder.utils.storage.driver.StorageDriver;
 import org.webbuilder.utils.storage.driver.redis.RedisStorageDriver;
@@ -7,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.Cache;
 import org.springframework.cache.support.SimpleValueWrapper;
+import org.webbuilder.web.core.utils.WebUtil;
 
 /**
  * spring cache支持，具体cache策略由StorageDriver实现
@@ -66,9 +68,12 @@ public class SpringCacheImpl implements Cache {
         try {
             Storage storage = driver.getStorage(getCacheName());
             Object value = storage.get(String.valueOf(key));
-            if (logger.isDebugEnabled()) {
-                if (value != null)//命中缓存
+            if (value != null)//命中缓存
+            {
+                if (logger.isDebugEnabled()) {
                     logger.debug(getCacheName().concat("-->").concat(String.valueOf(key)).concat(" hit!"));
+                }
+                WebUtil.getHttpServletRequest().setAttribute("data_from_cache", getCacheName().concat(".").concat(String.valueOf(key)));
             }
             return (value != null ? new SimpleValueWrapper(value) : null);
         } catch (Exception e) {
