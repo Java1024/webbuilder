@@ -5,10 +5,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.webbuilder.utils.base.DateTimeUtils;
 import org.webbuilder.utils.base.MD5;
 import org.webbuilder.utils.base.StringUtil;
 import org.webbuilder.utils.http.HttpUtils;
 import org.webbuilder.utils.storage.Storage;
+import org.webbuilder.utils.storage.counter.Counter;
 import org.webbuilder.web.core.aop.logger.AccessLogger;
 import org.webbuilder.web.core.authorize.AuthorizeInterceptor;
 import org.webbuilder.web.core.bean.ResponseMessage;
@@ -23,6 +25,7 @@ import org.webbuilder.web.service.user.UserService;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -48,6 +51,10 @@ public class LoginController {
 
     @Resource
     private HttpSessionManager httpSessionManager;
+
+    private Counter counter;
+
+    private String counterKey = "login_";
 
     @RequestMapping(value = "/exit", method = RequestMethod.POST)
     @AccessLogger("退出")
@@ -86,11 +93,18 @@ public class LoginController {
             } else {
                 db.initRoleInfo();
                 request.getSession().setAttribute("user", db);//设置登录用户
+                if(getCounter()!=null){
+                    getCounter().next(getRealCounterKey(getCounterKey()));
+                }
             }
         } catch (Exception e) {
             return new ResponseMessage(false, e);
         }
         return new ResponseMessage(true, "登陆成功");
+    }
+
+    public String getRealCounterKey(String baseKey){
+        return baseKey.concat(DateTimeUtils.format(new Date(),DateTimeUtils.YEAR_MONTH_DAY));
     }
 
     /**
@@ -155,6 +169,9 @@ public class LoginController {
                 //添加新的用户
                 httpSessionManager.addUser(db.getU_id(), session);
                 storage.remove(cacheKey);//删除错误记录
+                if(getCounter()!=null){
+                    getCounter().next(getRealCounterKey(getCounterKey()));
+                }
             }
         } catch (Exception e) {
             return new ResponseMessage(false, e);
@@ -201,4 +218,23 @@ public class LoginController {
         return "redirect:".concat(url);
     }
 
+    public Counter getCounter() {
+        return counter;
+    }
+
+    public void setCounter(Counter counter) {
+        this.counter = counter;
+    }
+
+    public ConfigService getConfigService() {
+        return configService;
+    }
+
+    public String getCounterKey() {
+        return counterKey;
+    }
+
+    public void setCounterKey(String counterKey) {
+        this.counterKey = counterKey;
+    }
 }

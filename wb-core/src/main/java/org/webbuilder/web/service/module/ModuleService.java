@@ -7,7 +7,9 @@ import org.webbuilder.web.dao.module.ModuleMapper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 系统模块服务类
@@ -46,5 +48,9 @@ public class ModuleService extends GenericService<Module, String> {
             }
         }
         return size;
+    }
+
+    public List<Module> selectByPid(String pid) throws Exception {
+        return this.select(new QueryCondition().put("p_id", pid));
     }
 }

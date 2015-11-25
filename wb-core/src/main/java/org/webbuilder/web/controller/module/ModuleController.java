@@ -30,12 +30,5 @@ public class ModuleController extends GenericController<Module, String> {
         return this.moduleService;
     }
 
-    @Override
-    @AccessLogger("新增")
-    @Authorize(level = "C")
-    public Object add(@RequestBody Module object) {
-        return super.add(object);
-    }
-
 
 }

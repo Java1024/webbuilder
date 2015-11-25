@@ -18,4 +18,6 @@ public interface UserRoleMapper extends GenericMapper<UserRole, String> {
      * @throws Exception 异常信息
      */
     List<UserRole> selectByUserId(String userId) throws Exception;
+
+    int deleteByUserId(String userId) throws Exception;
 }

@@ -29,7 +29,7 @@ public class Role extends GenericPo<String> {
     private String type;
 
     //角色持有的模块
-    private transient List<RoleModule> modules;
+    private List<RoleModule> modules;
 
     public List<RoleModule> getModules() {
         return modules;

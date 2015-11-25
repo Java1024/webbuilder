@@ -9,4 +9,6 @@ import org.webbuilder.web.po.user.User;
  */
 public interface UserMapper extends GenericMapper<User, String> {
     User selectByUserName(String userName) throws Exception;
+
+    void updatePassword(User user);
 }

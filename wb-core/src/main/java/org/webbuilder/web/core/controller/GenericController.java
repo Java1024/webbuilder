@@ -20,7 +20,7 @@ import java.util.Map;
  * 如果要进行权限控制，可以在方法上注解{@link Authorize}
  * <br/>所有Controller应继承改类，并手动注解@Controller 以及@RequestMapping
  * <br/>json解析使用fastJson
- * Created by 周浩 on 2015-07-28 0028.
+ * Created by 浩 on 2015-07-28 0028.
  */
 public abstract class GenericController<PO extends GenericPo<PK>, PK> implements Serializable {
 
@@ -187,6 +187,7 @@ public abstract class GenericController<PO extends GenericPo<PK>, PK> implements
     @RequestMapping(method = RequestMethod.PUT, produces = ResponseMessage.CONTENT_TYPE_JSON)
     @ResponseBody
     @AccessLogger("修改")
+    @Authorize(level = "U")
     public Object update(@RequestBody(required = true) String json) {
         try {
             if (json.startsWith("[")) {

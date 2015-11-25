@@ -2,24 +2,18 @@ package org.webbuilder.web.core.aop.authorize;
 
 import com.alibaba.fastjson.JSON;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.Around;
-import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.MethodParameter;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.method.HandlerMethod;
 import org.webbuilder.utils.base.ClassUtil;
+import org.webbuilder.utils.base.DateTimeUtils;
 import org.webbuilder.utils.base.MD5;
 import org.webbuilder.utils.base.StringUtil;
-import org.webbuilder.utils.base.ThreadLocalUtil;
 import org.webbuilder.utils.script.engine.DynamicScriptEngine;
 import org.webbuilder.utils.script.engine.DynamicScriptEngineFactory;
 import org.webbuilder.utils.script.engine.ExecuteResult;
+import org.webbuilder.utils.storage.counter.Counter;
 import org.webbuilder.web.core.FastJsonHttpMessageConverter;
 import org.webbuilder.web.core.aop.logger.AccessLogger;
-import org.webbuilder.web.core.aop.logger.LoggerAdvice;
 import org.webbuilder.web.core.authorize.annotation.Authorize;
 import org.webbuilder.web.core.bean.ResponseMessage;
 import org.webbuilder.web.core.exception.BusinessException;
@@ -29,9 +23,7 @@ import org.webbuilder.web.po.logger.LogInfo;
 import org.webbuilder.web.po.user.User;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
 import java.lang.reflect.Method;
-import java.net.URLEncoder;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -41,6 +33,10 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class AuthorizeAndLoggerAdvice {
 
+    private String AuthorizeSuccessCounterKey = "success";
+    private String AuthorizeFailedCounterKey = "fail";
+    private String AuthorizeExceptionCounterKey = "exception";
+    private Counter counter;
     private final Map<String, AuthorizeConfig> configCache = new ConcurrentHashMap<>();
     private org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
     private LoggerService loggerService;
@@ -82,7 +78,7 @@ public class AuthorizeAndLoggerAdvice {
     }
 
     protected boolean doAuth(ProceedingJoinPoint pjp) {
-        String cacheName = getMethodName(pjp);
+        String cacheName = pjp.getTarget().getClass().getName().concat(".").concat(getMethodName(pjp));
         AuthorizeConfig config = configCache.get(cacheName);
         MethodSignature methodSignature = ((MethodSignature) pjp.getSignature());
         Map<String, Object> root = new LinkedHashMap<>();
@@ -111,6 +107,10 @@ public class AuthorizeAndLoggerAdvice {
         return config.doAuth(WebUtil.getLoginUser(), root);
     }
 
+    public String buildCounterKey(String baseKey) {
+        return StringUtil.concat(baseKey, "_", DateTimeUtils.format(new Date(), DateTimeUtils.YEAR_MONTH_DAY));
+    }
+
     public Object authorize(ProceedingJoinPoint pjp) {
         ProcessInfo info = new ProcessInfo();
         Object obj = null;
@@ -118,6 +118,7 @@ public class AuthorizeAndLoggerAdvice {
             boolean access = false;
             String authMsg = authorizationFailsMessage;
             String authCode = "502";
+            //尝试验证权限
             try {
                 access = doAuth(pjp);
             } catch (BusinessException e) {
@@ -125,20 +126,32 @@ public class AuthorizeAndLoggerAdvice {
                 authCode = "5021";
             }
             if (!access) {
+                //未通过授权
                 info.setAccess(false);
                 obj = new ResponseMessage(false, authMsg, authCode);
                 info.setData(obj);
+                if (getCounter() != null) {
+                    counter.next(buildCounterKey(AuthorizeFailedCounterKey));
+                }
             } else {
+                //通过授权
                 info.setAccess(true);
                 info.setInTime(System.currentTimeMillis());
                 obj = pjp.proceed();
                 info.setData(obj);
                 info.setOutTime(System.currentTimeMillis());
+                if (getCounter() != null) {
+                    counter.next(buildCounterKey(AuthorizeSuccessCounterKey));
+                }
             }
         } catch (Throwable e) {
             obj = new ResponseMessage(false, e);
+            if (getCounter() != null) {
+                counter.next(buildCounterKey(AuthorizeExceptionCounterKey));
+            }
         } finally {
             info.setData(obj);
+            //尝试输出日志信息
             logger(pjp, info);
         }
         return obj;
@@ -148,19 +161,23 @@ public class AuthorizeAndLoggerAdvice {
 
     protected void logger(ProceedingJoinPoint pjp, ProcessInfo info) {
         if (getLoggerService() == null) {
+            //已关闭日志服务
             return;
         }
         LogInfo logInfo = new LogInfo();
+        //使用request里的attr判断是否命中缓存（并不是很好）
         Object cached = WebUtil.getHttpServletRequest().getAttribute("data_from_cache");
         if (cached != null) {
-            logInfo.setCache(String.valueOf(cached));
+            logInfo.setCache_key(String.valueOf(cached));
         }
         try {
+            //生成日志信息
             Class<?> target = pjp.getTarget().getClass();
             StringBuilder sb = new StringBuilder();
             Method method = ((MethodSignature) pjp.getSignature()).getMethod();
             String methodName = getMethodName(pjp);
-            String desc = loggerDescCache.get(methodName);
+            String cacheName = pjp.getTarget().getClass().getName().concat(".").concat(getMethodName(pjp));
+            String desc = loggerDescCache.get(cacheName);
             if (desc == null) {
                 AccessLogger accessLogger = ClassUtil.getAnnotation(target, AccessLogger.class);
                 AccessLogger m_logger = ClassUtil.getAnnotation(method, AccessLogger.class);
@@ -173,28 +190,28 @@ public class AuthorizeAndLoggerAdvice {
                 if (m_logger != null) {
                     sb.append(m_logger.value());
                 }
-                loggerDescCache.put(methodName, sb.toString());
+                loggerDescCache.put(cacheName, desc = sb.toString());
             }
 
             HttpServletRequest request = WebUtil.getHttpServletRequest();
             Class<?> clazz = pjp.getTarget().getClass();
             logInfo.setU_id(MD5.encode(String.valueOf(System.nanoTime())));
-            logInfo.setDesc(desc);//方法描述
+            logInfo.setModule_desc(desc);//方法描述
             logInfo.setClass_name(clazz.getName());//映射类名
-            logInfo.setIp(WebUtil.getIpAddr(request));//ip地址
-            logInfo.setMethod(request.getMethod().concat(".").concat(methodName));//方法：GET.select()
-            logInfo.setHeaders(JSON.toJSONString(WebUtil.getHeaders(request)));//http请求头
+            logInfo.setClient_ip(WebUtil.getIpAddr(request));//ip地址
+            logInfo.setRequest_method(request.getMethod().concat(".").concat(methodName));//方法：GET.select()
+            logInfo.setRequest_header(JSON.toJSONString(WebUtil.getHeaders(request)));//http请求头
             logInfo.setReferer(request.getHeader("referer"));//referer
-            logInfo.setUri(WebUtil.getUri(request, false));//请求相对路径
-            logInfo.setUrl(WebUtil.getBasePath(request).concat(logInfo.getUri()));//请求绝对路径
+            logInfo.setRequest_uri(WebUtil.getUri(request, false));//请求相对路径
+            logInfo.setRequest_url(WebUtil.getBasePath(request).concat(logInfo.getRequest_uri()));//请求绝对路径
             logInfo.setUser_agent(request.getHeader("User-agent"));//客户端标识
-            logInfo.setParams(JSON.toJSONString(WebUtil.getParams(request)));
+            logInfo.setRequest_param(JSON.toJSONString(WebUtil.getParams(request)));
             User user = WebUtil.getLoginUser();
             if (user != null)
                 logInfo.setUser_id(user.getU_id());//当前登录的用户
         } catch (Exception e) {
             logger.error("create logInfo error", e);
-            logInfo.setResponse(StringUtil.throwable2String(e));
+            logInfo.setResponse_content(StringUtil.throwable2String(e));
         }
         try {
             logInfo.setRequest_time(info.getInTime());
@@ -204,20 +221,22 @@ public class AuthorizeAndLoggerAdvice {
                     ResponseMessage res = (ResponseMessage) obj;
                     if (res.getSourceData() instanceof Throwable) {
                         if (!(res.getSourceData() instanceof BusinessException)) {
-                            logInfo.setException(StringUtil.throwable2String((Throwable) res.getSourceData()));
+                            logInfo.setException_info(StringUtil.throwable2String((Throwable) res.getSourceData()));
                         }
                     }
-                    logInfo.setCode(res.getCode());
+                    logInfo.setResponse_code(res.getCode());
                 } else {
-                    logInfo.setCode("200");
+                    logInfo.setResponse_code("200");
                 }
-                logInfo.setResponse(FastJsonHttpMessageConverter.toJson(obj));
+                logInfo.setResponse_content(FastJsonHttpMessageConverter.toJson(obj));
+            } else {
+                logInfo.setResponse_content("null");
             }
             logInfo.setResponse_time(info.getOutTime());
         } catch (Throwable e) {
             logger.error("logger aop proceed error", e);
-            logInfo.setException(StringUtil.throwable2String(e));
-            logInfo.setCode("500");
+            logInfo.setException_info(StringUtil.throwable2String(e));
+            logInfo.setResponse_code("500");
         }
         //输入日志
         try {
@@ -241,6 +260,14 @@ public class AuthorizeAndLoggerAdvice {
 
     public void setAuthorizationFailsMessage(String authorizationFailsMessage) {
         this.authorizationFailsMessage = authorizationFailsMessage;
+    }
+
+    public Counter getCounter() {
+        return counter;
+    }
+
+    public void setCounter(Counter counter) {
+        this.counter = counter;
     }
 
     private static class ProcessInfo {
@@ -283,6 +310,7 @@ public class AuthorizeAndLoggerAdvice {
         public void setOutTime(long outTime) {
             this.outTime = outTime;
         }
+
     }
 
     private static class AuthorizeConfig {
@@ -374,7 +402,7 @@ public class AuthorizeAndLoggerAdvice {
                         //执行表达式
                         args.put("user", user);
                         ExecuteResult result = DynamicScriptEngineFactory.getEngine(expre.getType()).execute(expre.getId(), args);
-                        if (result.isSuccess() && Boolean.getBoolean(result.getResult().toString())) {
+                        if (result.isSuccess() && "true".equals(String.valueOf(result.getResult()))) {
                             return true;
                         } else {
                             return false;

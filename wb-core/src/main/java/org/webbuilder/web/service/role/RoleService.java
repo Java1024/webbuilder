@@ -2,11 +2,13 @@ package org.webbuilder.web.service.role;
 
 import org.webbuilder.web.core.service.GenericService;
 import org.webbuilder.web.core.utils.RandomUtil;
+import org.webbuilder.web.dao.module.ModuleMapper;
 import org.webbuilder.web.dao.role.RoleModuleMapper;
 import org.webbuilder.web.po.role.Role;
 import org.webbuilder.web.dao.role.RoleMapper;
 import org.webbuilder.web.po.role.RoleModule;
 import org.springframework.stereotype.Service;
+import org.webbuilder.web.service.module.ModuleService;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -28,6 +30,9 @@ public class RoleService extends GenericService<Role, String> {
     @Resource
     protected RoleModuleMapper roleModuleMapper;
 
+    @Resource
+    protected ModuleService moduleService;
+
     @Override
     protected RoleMapper getMapper() {
         return this.roleMapper;
@@ -41,6 +46,7 @@ public class RoleService extends GenericService<Role, String> {
             //保存角色模块关联
             for (RoleModule module : roleModule) {
                 module.setU_id(RandomUtil.randomChar(6));
+                module.setRole_id(data.getU_id());
                 roleModuleMapper.insert(module);
             }
         }
@@ -57,6 +63,7 @@ public class RoleService extends GenericService<Role, String> {
             //保存角色模块关联
             for (RoleModule module : roleModule) {
                 module.setU_id(RandomUtil.randomChar(6));
+                module.setRole_id(data.getU_id());
                 roleModuleMapper.insert(module);
             }
         }

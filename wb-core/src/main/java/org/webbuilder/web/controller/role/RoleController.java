@@ -20,8 +20,8 @@ import javax.annotation.Resource;
  */
 @Controller
 @RequestMapping(value = "/role")
-@Authorize(role = Role.SYS_ROLE_ADMIN)
 @AccessLogger("角色管理")
+@Authorize(module = "role")
 public class RoleController extends GenericController<Role, String> {
 
     //默认服务类

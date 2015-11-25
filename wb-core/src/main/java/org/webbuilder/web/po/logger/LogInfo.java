@@ -11,27 +11,27 @@ public class LogInfo extends GenericPo<String> {
     /**
      * 请求者ip
      */
-    private String ip;
+    private String client_ip;
 
     /**
      * 请求路径
      */
-    private String uri;
+    private String request_uri;
 
     /**
      * 完整路径
      */
-    private String url;
+    private String request_url;
 
     /**
      * 对应的方法,格式为 HTTP方法+java方法 如:GET.list()
      */
-    private String method;
+    private String request_method;
 
     /**
      * 响应结果
      */
-    private String response;
+    private String response_content;
 
     /**
      * 用户主键
@@ -66,12 +66,12 @@ public class LogInfo extends GenericPo<String> {
     /**
      * 响应码
      */
-    private String code;
+    private String response_code;
 
     /**
      * 请求头信息
      */
-    private String headers;
+    private String request_header;
 
     /**
      * 对应类名
@@ -81,62 +81,23 @@ public class LogInfo extends GenericPo<String> {
     /**
      * 功能摘要
      */
-    private String desc;
+    private String module_desc;
 
     /**
      * 请求参数
      */
-    private String params;
+    private String request_param;
 
     /**
      * 响应异常
      */
-    private String exception;
+    private String exception_info;
 
     /**
      * 命中缓存
      */
-    private String cache;
+    private String cache_key;
 
-    public String getParams() {
-        return params;
-    }
-
-    public void setParams(String params) {
-        this.params = params;
-    }
-
-    public String getIp() {
-        return ip;
-    }
-
-    public void setIp(String ip) {
-        this.ip = ip;
-    }
-
-    public String getUri() {
-        return uri;
-    }
-
-    public void setUri(String uri) {
-        this.uri = uri;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public String getMethod() {
-        return method;
-    }
-
-    public void setMethod(String method) {
-        this.method = method;
-    }
 
     public String getUser_id() {
         return user_id;
@@ -188,21 +149,6 @@ public class LogInfo extends GenericPo<String> {
         this.user_agent = user_agent;
     }
 
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getHeaders() {
-        return headers;
-    }
-
-    public void setHeaders(String headers) {
-        this.headers = headers;
-    }
 
     public String getClass_name() {
         return class_name;
@@ -212,40 +158,96 @@ public class LogInfo extends GenericPo<String> {
         this.class_name = class_name;
     }
 
-    public String getDesc() {
-        return desc;
-    }
-
-    public void setDesc(String desc) {
-        this.desc = desc;
-    }
-
-    public String getResponse() {
-        return response;
-    }
-
-    public void setResponse(String response) {
-        this.response = response;
-    }
-
-    public String getException() {
-        return exception;
-    }
-
-    public void setException(String exception) {
-        this.exception = exception;
-    }
-
-    public String getCache() {
-        return cache;
-    }
-
-    public void setCache(String cache) {
-        this.cache = cache;
-    }
-
     @Override
     public String toString() {
         return FastJsonHttpMessageConverter.toJson(this);
+    }
+
+    public String getClient_ip() {
+        return client_ip;
+    }
+
+    public void setClient_ip(String client_ip) {
+        this.client_ip = client_ip;
+    }
+
+    public String getRequest_uri() {
+        return request_uri;
+    }
+
+    public void setRequest_uri(String request_uri) {
+        this.request_uri = request_uri;
+    }
+
+    public String getRequest_url() {
+        return request_url;
+    }
+
+    public void setRequest_url(String request_url) {
+        this.request_url = request_url;
+    }
+
+    public String getRequest_method() {
+        return request_method;
+    }
+
+    public void setRequest_method(String request_method) {
+        this.request_method = request_method;
+    }
+
+    public String getResponse_content() {
+        return response_content;
+    }
+
+    public void setResponse_content(String response_content) {
+        this.response_content = response_content;
+    }
+
+    public String getResponse_code() {
+        return response_code;
+    }
+
+    public void setResponse_code(String response_code) {
+        this.response_code = response_code;
+    }
+
+    public String getRequest_header() {
+        return request_header;
+    }
+
+    public void setRequest_header(String request_header) {
+        this.request_header = request_header;
+    }
+
+    public String getModule_desc() {
+        return module_desc;
+    }
+
+    public void setModule_desc(String module_desc) {
+        this.module_desc = module_desc;
+    }
+
+    public String getRequest_param() {
+        return request_param;
+    }
+
+    public void setRequest_param(String request_param) {
+        this.request_param = request_param;
+    }
+
+    public String getException_info() {
+        return exception_info;
+    }
+
+    public void setException_info(String exception_info) {
+        this.exception_info = exception_info;
+    }
+
+    public String getCache_key() {
+        return cache_key;
+    }
+
+    public void setCache_key(String cache_key) {
+        this.cache_key = cache_key;
     }
 }

@@ -8,20 +8,10 @@
             <!--动态生成查询条件-->
             <foreach item="item" index="index" collection="$fields">
                 <if test="#this[item]!=null">
-                    <choose>
-                        <when test="$fieldsInfo[item] == 'date' ">
-                            AND ${$tableName}.${item}=to_date(#{${item}},'YYYY-MM-DD HH24:MI:SS')
-                        </when>
-                        <otherwise>AND ${$tableName}.${item}=#{${item}}</otherwise>
-                    </choose>
+                    AND ${$tableName}.${item}=#{${item}}
                 </if>
                 <if test="#this[item+'$NOT']!=null">
-                    <choose>
-                        <when test="$fieldsInfo[item] == 'date' ">
-                            AND ${$tableName}.${item}!=to_date(#{${item+'$NOT'}},'YYYY-MM-DD HH24:MI:SS')
-                        </when>
-                        <otherwise>AND ${$tableName}.${item}!=#{${item+'$NOT'}}</otherwise>
-                    </choose>
+                    AND ${$tableName}.${item}!=#{${item+'$NOT'}}
                 </if>
                 <if test="#this[item+'$LIKE']!=null">
                     AND INSTR(${$tableName}.${item},#{${item+'$LIKE'}})>0
@@ -30,10 +20,10 @@
                     AND INSTR(${$tableName}.${item},#{${item+'$NOTLIKE'}})&lt;=0
                 </if>
                 <if test="#this[item+'$START']!=null">
-                    AND ${$tableName}.${item} LIKE #{${item+'$START'}}||'%'
+                    AND ${$tableName}.${item} LIKE CONCAT(#{${item+'$START'}},'%')
                 </if>
                 <if test="#this[item+'$END']!=null">
-                    AND ${$tableName}.${item} LIKE '%'||#{${item+'$END'}}
+                    AND ${$tableName}.${item} LIKE CONCAT('%',#{${item+'$END'})
                 </if>
                 <if test="#this[item+'$IN']!=null">
                     AND ${$tableName}.${item} IN
@@ -54,26 +44,10 @@
                     AND ${$tableName}.${item} IS NOT NULL
                 </if>
                 <if test="#this[item+'$GT']!=null">
-                    <choose>
-                        <when test="$fieldsInfo[item] == 'date' ">
-                            AND ${$tableName}.${item} &gt;=to_date(#{${item+'$GT'}},'YYYY-MM-DD HH24:MI:SS')
-                        </when>
-                        <when test="$fieldsInfo[item] == 'number' ">
-                            AND ${$tableName}.${item} &gt;=#{${item+'$GT'}}
-                        </when>
-                        <otherwise></otherwise>
-                    </choose>
+                    AND ${$tableName}.${item} &gt;=#{${item+'$GT'}}
                 </if>
                 <if test="#this[item+'$LT']!=null">
-                    <choose>
-                        <when test="$fieldsInfo[item] == 'date' ">
-                            AND ${$tableName}.${item} &lt;=to_date(#{${item+'$LT'}},'YYYY-MM-DD HH24:MI:SS')
-                        </when>
-                        <when test="$fieldsInfo[item] == 'number' ">
-                            AND ${$tableName}.${item} &lt;=#{${item+'$LT'}}
-                        </when>
-                        <otherwise></otherwise>
-                    </choose>
+                    AND ${$tableName}.${item} &lt;=#{${item+'$LT'}}
                 </if>
             </foreach>
         <!--动态生成查询条件结束-->
@@ -85,7 +59,7 @@
                 <when test="$includes!=null and $includes.size()>0">
                     <foreach item="item" index="index" collection="$includes" open="" separator="," close="">
                         <if test="item in $fields">
-                            ${$tableName}.${item} as "${item}"
+                            ${$tableName}.${item} as `${item}`
                         </if>
                     </foreach>
                 </when>
@@ -93,7 +67,7 @@
                 <when test="($includes==null or $includes.size()==0) and $excludes!=null and $excludes.size()>0">
                     <foreach item="item" index="index" collection="$fields" open=" " separator="," close="">
                         <if test="!(item in $excludes)">
-                            ${$tableName}.${item} as "${item}"
+                            ${$tableName}.${item} as `${item}`
                         </if>
                     </foreach>
                 </when>

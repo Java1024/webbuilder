@@ -10,6 +10,7 @@ import org.webbuilder.sql.Update;
 import org.webbuilder.sql.param.insert.InsertParam;
 import org.webbuilder.sql.param.query.QueryParam;
 import org.webbuilder.sql.param.update.UpdateParam;
+import org.webbuilder.utils.base.StringUtil;
 import org.webbuilder.web.core.bean.GenericPo;
 import org.webbuilder.web.core.bean.PageUtil;
 import org.webbuilder.web.core.dao.GenericMapper;
@@ -64,17 +65,20 @@ public class CustomFormService extends GenericService<CustomFormData, String> {
     }
 
     public String insert(String form_id, Map<String, Object> data) throws Exception {
+        //ProcessUtil.process("form_id.insert",0.1);
         Table table = getTable(form_id);
         String uid = (String) data.get("u_id");
-        if (uid == null) {
+        if (StringUtil.isNullOrEmpty(uid)) {
             uid = GenericPo.createUID();
             data.put("u_id", uid);
         }
         data.put("create_date", new Date());
         InsertParam param = new InsertParam();
         param.values(data);
+        //ProcessUtil.process("form_id.insert",0.5);
         table.createInsert().insert(param);
-        return uid;
+        //ProcessUtil.process("form_id.insert").done();
+        return String.valueOf(param.getData().get("u_id"));
     }
 
     public int update(String form_id, String u_id, Map<String, Object> data) throws Exception {
@@ -149,6 +153,9 @@ public class CustomFormService extends GenericService<CustomFormData, String> {
         param.doPaging(pageIndex, pageUtil.getPageSize());
         param.include(pageUtil.getIncludes());
         param.exclude(pageUtil.getExcludes());
+        if (pageUtil.getSortField() != null) {
+            param.orderBy("desc".equalsIgnoreCase(pageUtil.getSortOrder()), pageUtil.getSortField());
+        }
         Map<String, Object> result = new HashMap<>();
         result.put("data", query.list(param));
         result.put("total", total);

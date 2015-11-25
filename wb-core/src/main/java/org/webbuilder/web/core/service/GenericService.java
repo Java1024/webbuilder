@@ -5,6 +5,7 @@ import org.mybatis.spring.SqlSessionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
+import org.webbuilder.sql.param.query.QueryParam;
 import org.webbuilder.web.core.bean.GenericPo;
 import org.webbuilder.web.core.bean.PageUtil;
 import org.webbuilder.web.core.bean.ValidResults;
@@ -15,6 +16,7 @@ import javax.validation.ValidationException;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -171,6 +173,13 @@ public abstract class GenericService<Po extends GenericPo<Pk>, Pk> implements Se
         return getMapper().select(conditions);
     }
 
+    @Transactional(readOnly = true)
+    public Po selectSingle(Map<String, Object> conditions) throws Exception {
+        List<Po> data = this.select(conditions);
+        if (data == null || data.size() == 0) return null;
+        return data.get(0);
+    }
+
     /**
      * 分页查询列表,并返回查询结果，支持查询条件见 {@link GenericService#select(Map)}
      *
@@ -212,5 +221,11 @@ public abstract class GenericService<Po extends GenericPo<Pk>, Pk> implements Se
         return getMapper().selectByPk(pk);
     }
 
+    public static class QueryCondition extends HashMap<String, Object> {
 
+        public QueryCondition put(String key, Object value) {
+            super.put(key, value);
+            return this;
+        }
+    }
 }

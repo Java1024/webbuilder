@@ -28,8 +28,10 @@ import java.net.URLEncoder;
 import java.util.*;
 
 /**
+ * 已过时的权限验证拦截器，推荐使用aop方式进行权限控制
  * Created by 浩 on 2015-08-25 0025.
  */
+@Deprecated
 public class AuthorizeInterceptor implements HandlerInterceptor {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 

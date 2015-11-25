@@ -1,9 +1,14 @@
 package org.webbuilder.web.service.user;
 
 import org.springframework.stereotype.Service;
+import org.webbuilder.utils.base.MD5;
+import org.webbuilder.utils.base.StringUtil;
 import org.webbuilder.web.core.service.GenericService;
+import org.webbuilder.web.core.utils.RandomUtil;
+import org.webbuilder.web.dao.role.UserRoleMapper;
 import org.webbuilder.web.dao.user.UserMapper;
 import org.webbuilder.web.po.module.Module;
+import org.webbuilder.web.po.role.UserRole;
 import org.webbuilder.web.po.user.User;
 import org.webbuilder.web.service.module.ModuleService;
 import org.webbuilder.web.service.storage.StorageService;
@@ -26,6 +31,10 @@ public class UserService extends GenericService<User, String> {
     protected UserMapper userMapper;
 
     @Resource
+    protected UserRoleMapper userRoleMapper;
+
+
+    @Resource
     protected ModuleService moduleService;
 
     @Override
@@ -38,6 +47,45 @@ public class UserService extends GenericService<User, String> {
 
     public User selectByUserName(String username) throws Exception {
         return this.getMapper().selectByUserName(username);
+    }
+
+    @Override
+    public int insert(User data) throws Exception {
+        tryValidPo(data);
+        data.setU_id(RandomUtil.randomChar(6));
+        data.setCreate_date(new Date());
+        data.setUpdate_date(new Date());
+        data.setPassword(MD5.encode(data.getPassword()));
+        int i = userMapper.insert(data);
+        if (data.getUserRoles().size() != 0) {
+            for (UserRole userRole : data.getUserRoles()) {
+                userRole.setU_id(RandomUtil.randomChar());
+                userRole.setUser_id(data.getU_id());
+                userRoleMapper.insert(userRole);
+            }
+        }
+        return i;
+    }
+
+    @Override
+    public int update(User data) throws Exception {
+        tryValidPo(data);
+        data.setUpdate_date(new Date());
+        if (!"$default".equals(data.getPassword())) {
+            data.setPassword(MD5.encode(data.getPassword()));
+            userMapper.updatePassword(data);
+        }
+        int i = userMapper.update(data);
+        if (data.getUserRoles().size() != 0) {
+            //删除所有
+            userRoleMapper.deleteByUserId(data.getU_id());
+            for (UserRole userRole : data.getUserRoles()) {
+                userRole.setU_id(RandomUtil.randomChar());
+                userRole.setUser_id(data.getU_id());
+                userRoleMapper.insert(userRole);
+            }
+        }
+        return i;
     }
 
     public void initAdminUser(User user) throws Exception {

@@ -21,7 +21,7 @@ import javax.annotation.Resource;
 @RestController
 @RequestMapping(value = "/form", produces = ResponseMessage.CONTENT_TYPE_JSON)
 @AccessLogger("表单管理")
-@Authorize(role = Role.SYS_ROLE_ADMIN)
+@Authorize(role = "form")
 public class FormController extends GenericController<Form, String> {
 
     //默认服务类
