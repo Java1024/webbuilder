@@ -11,6 +11,7 @@ import org.webbuilder.sql.param.insert.InsertParam;
 import org.webbuilder.sql.param.query.QueryParam;
 import org.webbuilder.sql.param.update.UpdateParam;
 import org.webbuilder.sql.parser.CommonTableMetaDataParser;
+import org.webbuilder.sql.support.MysqlDataBaseMetaData;
 import org.webbuilder.sql.support.OracleDataBaseMetaData;
 import org.webbuilder.sql.support.common.CommonDataBase;
 import org.webbuilder.sql.support.executor.AbstractJdbcSqlExecutor;
@@ -28,13 +29,15 @@ import java.util.Map;
  */
 public class SQLTest {
     DataBase dataBase;
-
     Connection connection;
 
     public SQLTest() {
         try {
-            Class.forName("oracle.jdbc.driver.OracleDriver");
-            connection = DriverManager.getConnection("jdbc:oracle:thin:@server.142:1521:ORCL", "cqcy", "cqcy");
+//            Class.forName("oracle.jdbc.driver.OracleDriver");
+//            connection = DriverManager.getConnection("jdbc:oracle:thin:@server.142:1521:ORCL", "cqcy", "cqcy");
+
+            Class.forName("com.mysql.jdbc.Driver");
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/wb?useUnicode=true&characterEncoding=utf-8", "root", "root");
             connection.setAutoCommit(false);
         } catch (Exception e) {
             e.printStackTrace();
@@ -55,7 +58,7 @@ public class SQLTest {
     public void init() throws Exception {
 
         //定义数据库
-        DataBaseMetaData dataBaseMetaData = new OracleDataBaseMetaData();
+        DataBaseMetaData dataBaseMetaData = new MysqlDataBaseMetaData();
         dataBase = new CommonDataBase(dataBaseMetaData, new AbstractJdbcSqlExecutor() {
             @Override
             public Connection getConnection() {
@@ -64,23 +67,18 @@ public class SQLTest {
 
             @Override
             public void resetConnection(Connection connection) {
-                // try {
-                //  connection.close();
-                // } catch (SQLException e) {
-                //    e.printStackTrace();
-                // }
             }
         });
 
         //定义表结构---- 表结构可通过解析html，xml，json等自动生成
 
-        String s_user_content = FileUtil.readFile2String(Resources.getResourceAsFile("tables/s_user.html").getAbsolutePath());
+        String s_user_content = FileUtil.readFile2String(Resources.getResourceAsFile("mysql/s_user.html").getAbsolutePath());
         TableMetaData s_user = new CommonTableMetaDataParser().parse(s_user_content, "html");
         s_user.setName("s_user_02");
         s_user.setDataBaseMetaData(dataBaseMetaData);
         s_user.setComment("测试表");
         //定义表结构
-        String area_content = FileUtil.readFile2String(Resources.getResourceAsFile("tables/area.html").getAbsolutePath());
+        String area_content = FileUtil.readFile2String(Resources.getResourceAsFile("mysql/area.html").getAbsolutePath());
         TableMetaData area = new CommonTableMetaDataParser().parse(area_content, "html");
         area.setName("area");
         area.setDataBaseMetaData(dataBaseMetaData);
@@ -138,10 +136,6 @@ public class SQLTest {
         System.out.println(query.list(param));
         System.out.println(query.single(param));//单个值
         System.out.println(query.total(param));//查询总数
-        //------------------自定义函数查询--------------
-        param = new QueryParam(false);
-        param.include(new MethodField().count("id").as("total"));
-        System.out.println(query.single(param));
     }
 
 
@@ -159,15 +153,16 @@ public class SQLTest {
     @Test
     public void testCreate() throws Exception {
         dataBase.createTable(dataBase.getTable("s_user_02").getMetaData());
+        dataBase.createTable(dataBase.getTable("area").getMetaData());
     }
 
     @Test
     public void testAlter() throws Exception {
-        String s_user_content = FileUtil.readFile2String(Resources.getResourceAsFile("tables/s_user.html").getAbsolutePath());
+        String s_user_content = FileUtil.readFile2String(Resources.getResourceAsFile("mysql/s_user.html").getAbsolutePath());
         TableMetaData s_user = new CommonTableMetaDataParser().parse(s_user_content, "html");
         s_user.setName("s_user_02");
         s_user.setComment("测试表");
-        FieldMetaData metaData = new FieldMetaData("test_f", String.class, "varchar2(256)");
+        FieldMetaData metaData = new FieldMetaData("test_f", String.class, "varchar(256)");
         metaData.setComment("测试字段");
         s_user.addField(metaData);
         dataBase.alterTable(s_user);

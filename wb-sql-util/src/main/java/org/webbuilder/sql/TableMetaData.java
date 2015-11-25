@@ -24,11 +24,36 @@ public class TableMetaData implements Serializable {
 
     private String location;
 
+    private boolean readOnly;
+
     private Map<String, FieldMetaData> fieldMetaDatas = new LinkedHashMap<>();
 
     private Map<String, Correlation> correlations = new LinkedHashMap<>();
 
     private Map<String, Trigger> triggerBase = new ConcurrentHashMap<>();
+    private Map<String, Object> attr = new LinkedHashMap<>();
+
+    public Object attr(String key, Object attr) {
+        this.attr.put(key, attr);
+        return attr;
+    }
+
+    public Object attr(String key) {
+        return attr.get(key);
+    }
+
+    public Map<String, Object> attr() {
+        return attr;
+    }
+
+    public Map<String, Object> attr(Map<String, Object> attr) {
+        this.attr.putAll(attr);
+        return this.attr;
+    }
+
+    public Object removeAttr(String attr) {
+        return this.attr.remove(attr);
+    }
 
     public TableMetaData on(Trigger trigger) {
         triggerBase.put(trigger.getName(), trigger);
@@ -155,6 +180,14 @@ public class TableMetaData implements Serializable {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public boolean isReadOnly() {
+        return readOnly;
+    }
+
+    public void setReadOnly(boolean readOnly) {
+        this.readOnly = readOnly;
     }
 
     public static class Correlation implements Serializable {

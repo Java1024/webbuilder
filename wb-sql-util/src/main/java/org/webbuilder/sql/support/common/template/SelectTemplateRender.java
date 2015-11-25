@@ -63,7 +63,7 @@ public class SelectTemplateRender implements SqlTemplate {
         //需要查询的关联表
         Set<String> needSelectTable = new LinkedHashSet<>();
         //includes未指定或者指定* 则认定查询所有字段
-        if (includes.size() == 0 || includes.contains("*")) {
+        if (includes.size() == 0 || includes.contains(new IncludeField("*"))) {
             for (FieldMetaData metaData : tableMetaData.getFields()) {
                 if (excludes.contains(metaData.getName())) continue;
                 sqlAppender.addEdSpc(tableMetaData.getName(), ".", metaData.getName());
@@ -268,7 +268,7 @@ public class SelectTemplateRender implements SqlTemplate {
             appender.addEdSpc(",");
         }
         if (orderBy.size() > 0)
-            appender.remove(appender.size());
+            appender.removeLast();
         return tables;
     }
 

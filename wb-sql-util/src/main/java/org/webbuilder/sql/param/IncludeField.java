@@ -3,6 +3,9 @@ package org.webbuilder.sql.param;
 import org.webbuilder.utils.base.StringUtil;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * 关联字段，在select，update，insert时，用于指定进行操作的列。
@@ -129,9 +132,14 @@ public class IncludeField implements Serializable {
         return builder.toString();
     }
 
+    private int hashCode = -1;
+
     @Override
     public int hashCode() {
-        return toString().hashCode();
+        if (hashCode == -1) {
+            hashCode = toString().hashCode();
+        }
+        return hashCode;
     }
 
     @Override
@@ -163,5 +171,17 @@ public class IncludeField implements Serializable {
 
     public void setSkipCheck(boolean skipCheck) {
         this.skipCheck = skipCheck;
+    }
+
+    public static void main(String[] args) {
+        Set<IncludeField> set = new LinkedHashSet<>();
+        set.add(new IncludeField("*"));
+
+        System.out.println("*".hashCode());
+        System.out.println(new IncludeField("*").hashCode());
+
+        System.out.println(new IncludeField("*").equals("*"));
+
+        System.out.println(set.contains(new IncludeField("1")));
     }
 }

@@ -6,13 +6,13 @@ import java.util.*;
  * Created by 浩 on 2015-11-06 0006.
  */
 public class SqlRenderConfig {
-    private Set<ExecuteCondition> conditions = new LinkedHashSet<>();
+    protected Set<ExecuteCondition> conditions = new LinkedHashSet<>();
 
-    private Map<String, Object> properties = new LinkedHashMap<>();
+    protected Map<String, Object> properties = new LinkedHashMap<>();
 
-    private Set<IncludeField> includes = new LinkedHashSet<>();
+    protected Set<IncludeField> includes = new LinkedHashSet<>();
 
-    private Set<String> excludes = new LinkedHashSet<>();
+    protected Set<String> excludes = new LinkedHashSet<>();
 
     public SqlRenderConfig() {
 

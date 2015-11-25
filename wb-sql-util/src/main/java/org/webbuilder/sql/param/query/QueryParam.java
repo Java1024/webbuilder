@@ -1,5 +1,7 @@
 package org.webbuilder.sql.param.query;
 
+import com.alibaba.fastjson.JSON;
+import org.webbuilder.sql.param.ExecuteCondition;
 import org.webbuilder.sql.param.SqlRenderConfig;
 import org.webbuilder.sql.parser.ExecuteConditionParser;
 
@@ -15,6 +17,8 @@ public class QueryParam extends SqlRenderConfig {
     private int pageIndex = 0;
 
     private int pageSize = 50;
+
+    private Map<String, Object> param = new LinkedHashMap<>();
 
     public QueryParam skipTrigger() {
         this.addProperty("skipTrigger", true);
@@ -52,7 +56,7 @@ public class QueryParam extends SqlRenderConfig {
         queryParam.setPaging(this.paging);
         queryParam.setPageIndex(this.getPageIndex());
         queryParam.setPageSize(this.getPageSize());
-
+        queryParam.param = this.param;
     }
 
     public QueryParam(boolean paging) {
@@ -107,21 +111,33 @@ public class QueryParam extends SqlRenderConfig {
         return this;
     }
 
+    @Override
+    public Set<ExecuteCondition> getConditions() {
+        return ExecuteConditionParser.parseByMap(param);
+    }
+
     public QueryParam where(String conditionJson) {
-        this.getConditions().addAll(ExecuteConditionParser.parseByJson(conditionJson));
+        param.putAll(JSON.parseObject(conditionJson));
+        // this.getConditions().addAll(ExecuteConditionParser.parseByJson(conditionJson));
         return this;
     }
 
     public QueryParam where(String key, Object value) {
-        Map<String, Object> hashMap = new HashMap<>();
-        hashMap.put(key, value);
-        where(hashMap);
+        param.put(key, value);
         return this;
     }
 
 
     public QueryParam where(Map<String, Object> conditionMap) {
-        this.getConditions().addAll(ExecuteConditionParser.parseByMap(conditionMap));
+        param.putAll(conditionMap);
         return this;
+    }
+
+    public Map<String, Object> getParam() {
+        return param;
+    }
+
+    public void setParam(Map<String, Object> param) {
+        this.param = param;
     }
 }

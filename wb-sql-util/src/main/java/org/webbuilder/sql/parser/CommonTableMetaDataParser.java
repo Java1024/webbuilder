@@ -33,6 +33,7 @@ public class CommonTableMetaDataParser implements TableMetaDataParser {
         typeMapper.put("double", Double.class);
         typeMapper.put("float", Double.class);
         typeMapper.put("boolean", Integer.class);
+        typeMapper.put("long", Long.class);
     }
 
     @Override
@@ -84,7 +85,7 @@ public class CommonTableMetaDataParser implements TableMetaDataParser {
             fieldMetaData.setAlias(alias);
             fieldMetaData.setLength(StringUtil.toInt(length, 256));
             fieldMetaData.setPrimaryKey("true".equals(isPk));
-            fieldMetaData.setCanUpdate("true".equals(canUpdate));
+            fieldMetaData.setCanUpdate(!("false".equals(canUpdate)));
             fieldMetaData.setNotNull("true".equals(isNotNull));
             fieldMetaData.setDefaultValue(defaultValue);
             fieldMetaData.setValidator(validator);

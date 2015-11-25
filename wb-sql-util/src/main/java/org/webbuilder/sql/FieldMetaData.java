@@ -1,6 +1,8 @@
 package org.webbuilder.sql;
 
 import java.io.Serializable;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Created by 浩 on 2015-11-06 0006.
@@ -31,6 +33,9 @@ public class FieldMetaData implements Serializable {
 
     private boolean canUpdate = true;
 
+    private Map<String, Object> attr = new LinkedHashMap<>();
+
+
     public FieldMetaData() {
     }
 
@@ -38,6 +43,27 @@ public class FieldMetaData implements Serializable {
         this.name = name;
         this.javaType = javaType;
         this.dataType = dataType;
+    }
+
+    public Object attr(String key, Object attr) {
+        this.attr.put(key, attr);
+        return attr;
+    }
+    public Map<String, Object> attr(Map<String, Object> attr) {
+        this.attr.putAll(attr);
+
+        return this.attr;
+    }
+    public Object attr(String key) {
+        return attr.get(key);
+    }
+
+    public Map<String, Object> attr() {
+        return attr;
+    }
+
+    public Object removeAttr(String attr) {
+        return this.attr.remove(attr);
     }
 
     public boolean isCanUpdate() {

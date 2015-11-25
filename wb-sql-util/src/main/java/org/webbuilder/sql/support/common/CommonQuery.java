@@ -73,6 +73,7 @@ public class CommonQuery extends TriggerExecutor implements Query {
         QueryParam tmp = new QueryParam(false);
         tmp.setConditions(param.getConditions());
         tmp.setProperties(param.getProperties());
+        tmp.setParam(param.getParam());
         IncludeField field = new IncludeField("1");
         field.setAs("total");
         field.setMethod("count");
