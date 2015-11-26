@@ -1,12 +1,12 @@
 package org.webbuilder.web.service.resource;
 
-import org.webbuilder.utils.base.MD5;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.stereotype.Service;
 import org.webbuilder.web.core.service.GenericService;
 import org.webbuilder.web.core.utils.RandomUtil;
 import org.webbuilder.web.dao.resource.ResourcesMapper;
 import org.webbuilder.web.po.resource.Resources;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.stereotype.Service;
+import org.webbuilder.web.service.config.ConfigService;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
@@ -18,10 +18,12 @@ import java.util.Map;
  * Created by generator
  *
  * @Copyright 2015 www.cqtaihong.com Inc. All rights reserved.
- * 注意：本内容仅限于重庆泰虹医药网络发展有限公司内部传阅，禁止外泄以及用于其他的商业目的
  */
 @Service
 public class ResourcesService extends GenericService<Resources, String> {
+
+    @Resource
+    protected ConfigService configService;
 
     //默认数据映射接口
     @Resource
@@ -63,6 +65,8 @@ public class ResourcesService extends GenericService<Resources, String> {
         data.setU_id(this.newUid(6));//6位随机id
         return super.insert(data);
     }
+
+
 
     public String newUid(int len) throws Exception {
         String uid = RandomUtil.randomChar(len);

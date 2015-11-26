@@ -1,31 +1,28 @@
 package org.webbuilder.web.controller.file;
 
-import org.webbuilder.utils.base.DateTimeUtils;
-import org.webbuilder.utils.base.MD5;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.webbuilder.utils.base.StringUtil;
 import org.webbuilder.utils.base.file.FileUtil;
 import org.webbuilder.web.core.aop.logger.AccessLogger;
 import org.webbuilder.web.core.authorize.annotation.Authorize;
 import org.webbuilder.web.core.bean.ResponseData;
 import org.webbuilder.web.core.bean.ResponseMessage;
-import org.webbuilder.web.core.utils.RandomUtil;
 import org.webbuilder.web.po.resource.Resources;
-import org.webbuilder.web.po.user.User;
 import org.webbuilder.web.service.config.ConfigService;
+import org.webbuilder.web.service.resource.FileService;
 import org.webbuilder.web.service.resource.ResourcesService;
-import org.apache.commons.codec.digest.DigestUtils;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.net.URLEncoder;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -47,6 +44,9 @@ public class FileController {
 
     @Resource
     private ResourcesService resourcesService;
+
+    @Resource
+    private FileService fileService;
 
     //文件名中不允许出现的字符 \ / : | ? < > "
     private static final Pattern fileNameKeyWordPattern = Pattern.compile("(\\\\)|(/)|(:)(|)|(\\?)|(>)|(<)|(\")");
@@ -135,71 +135,15 @@ public class FileController {
     public Object upload(@RequestParam("file") CommonsMultipartFile[] files, HttpSession session) {
         if (logger.isInfoEnabled())
             logger.info(String.format("start upload , file number:%s", files.length));
-        //配置中的文件上传根路径
-        String fileBasePath = configService.get("upload", "basePath", "/upload").trim();
-        //文件存储的相对路径，以日期分隔，每天创建一个新的目录
-        String filePath = "/file/".concat(DateTimeUtils.format(new Date(), DateTimeUtils.YEAR_MONTH_DAY));
-        //文件存储绝对路径
-        String absPath = fileBasePath.concat(filePath);
-        File path = new File(absPath);
-        if (!path.exists()) path.mkdirs(); //创建目录
-        //生成的资源对象
         List<Resources> resourcesList = new LinkedList<>();
         for (int i = 0; i < files.length; i++) {
             CommonsMultipartFile file = files[i];
             if (!file.isEmpty()) {
                 if (logger.isInfoEnabled())
                     logger.info(String.format("start write file:%s", file.getOriginalFilename()));
-                int pre = (int) System.currentTimeMillis();
                 try {
                     String fileName = files[i].getOriginalFilename();
-                    String newName = MD5.encode(String.valueOf(System.nanoTime())); //临时文件名 ,纳秒的md5值
-                    String fileAbsName = absPath.concat("/").concat(newName);
-                    //try with resource
-                    try (BufferedInputStream in = new BufferedInputStream(files[i].getInputStream());
-                         //写出文件
-                         BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(fileAbsName))) {
-                        byte[] buffer = new byte[2048 * 10];
-                        int len;
-                        while ((len = in.read(buffer)) != -1) {
-                            os.write(buffer, 0, len);
-                        }
-                        os.flush();
-                    }
-                    File newFile = new File(fileAbsName);
-                    //获取文件的md5值
-                    String md5;
-                    try (FileInputStream inputStream = new FileInputStream(newFile)) {
-                        md5 = DigestUtils.md5Hex(inputStream);
-                    }
-                    //判断文件是否已经存在
-                    Resources resources = resourcesService.selectByMd5(md5);
-                    if (resources != null) {
-                        resourcesList.add(resources);
-                        newFile.delete();//文件已存在则删除临时文件不做处理
-                        logger.debug(String.format("存在重复文件md5:%s", md5));
-                        continue;
-                    }
-                    //使用md5作为文件名
-                    newName = md5;
-                    newFile.renameTo(new File(absPath.concat("/").concat(newName)));
-                    //获取已经上传的文件md5
-                    long finalTime = System.currentTimeMillis() - pre;
-                    if (logger.isInfoEnabled())
-                        logger.info(String.format("write file:%s,success use time:%sms", file.getOriginalFilename(), finalTime));
-                    //存放资源信息。
-                    resources = new Resources();
-                    resources.setStatus(1);
-                    resources.setPath(filePath);
-                    resources.setMd5(md5);
-                    resources.setCreate_date(new Date());
-                    resources.setType("file");
-                    resources.setName(fileName);
-                    User user;
-                    if ((user = (User) session.getAttribute("user")) != null) {
-                        resources.setCreator_id(user.getU_id());
-                    }
-                    resourcesService.insert(resources);
+                    Resources resources = fileService.saveFile(files[i].getInputStream(), fileName);
                     resourcesList.add(resources);
                 } catch (Exception e) {
                     return new ResponseMessage(false, e);

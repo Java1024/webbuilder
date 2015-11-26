@@ -1,7 +1,5 @@
 package org.webbuilder.web.service.form;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.webbuilder.sql.DataBase;
 import org.webbuilder.sql.Query;

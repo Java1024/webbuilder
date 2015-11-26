@@ -15,8 +15,6 @@ import java.util.Map;
  * 系统模块服务类
  * Created by generator
  *
- * @Copyright 2015 www.cqtaihong.com Inc. All rights reserved.
- * 注意：本内容仅限于重庆泰虹医药网络发展有限公司内部传阅，禁止外泄以及用于其他的商业目的
  */
 @Service
 public class ModuleService extends GenericService<Module, String> {
