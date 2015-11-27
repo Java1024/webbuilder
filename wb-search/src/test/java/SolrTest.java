@@ -15,7 +15,7 @@ import java.io.IOException;
  * Created by 浩 on 2015-10-23 0023.
  */
 public class SolrTest {
-    static String url = "http://202.98.57.19:9006/solr";
+    static String url = "http://localhost/solr";
     static SolrClient client = new HttpSolrClient(url);
 
     public static void main(String[] args) throws IOException, SolrServerException {
