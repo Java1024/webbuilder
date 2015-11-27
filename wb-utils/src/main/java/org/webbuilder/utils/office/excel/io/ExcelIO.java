@@ -12,10 +12,7 @@ import org.webbuilder.utils.base.AnnotationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintWriter;
+import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -458,4 +455,15 @@ public final class ExcelIO {
         toHtml.printPage();
     }
 
+
+    public static void main(String[] args) throws FileNotFoundException {
+        ReadExcelConfig<HashMap> config = new ReadExcelConfig<HashMap>() {
+            @Override
+            public void headerNotFound(String header, Object val, HashMap nowObj) {
+                nowObj.put(header, val);
+            }
+        };
+        List<HashMap> hashMaps = ExcelIO.read(new FileInputStream("d:/test.xlsx"), HashMap.class, config);
+        System.out.println(hashMaps);
+    }
 }

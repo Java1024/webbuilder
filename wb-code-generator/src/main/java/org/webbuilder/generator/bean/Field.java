@@ -1,10 +1,7 @@
 package org.webbuilder.generator.bean;
 
 import org.webbuilder.utils.base.StringUtil;
-import org.webbuilder.utils.db.def.valid.Validator;
-import org.webbuilder.utils.db.def.valid.ValidatorFactory;
 import org.webbuilder.utils.office.excel.annotation.Excel;
-import org.webbuilder.utils.office.excel.io.Header;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -185,9 +182,6 @@ public class Field {
     }
 
     public void valid() throws Exception {
-        ValidatorFactory.NOT_EMPTY.valid("名称不能为空", name);
-        ValidatorFactory.NOT_EMPTY.valid("备注不能为空", remark);
-        ValidatorFactory.NOT_EMPTY.valid("数据类型不能为空", dataType);
     }
 
     public boolean isPrimaryKey() {

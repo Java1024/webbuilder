@@ -37,6 +37,9 @@ public class Form extends GenericPo<String> {
     //数据库名称
     private String db_name;
 
+    //触发器配置
+    private String trigger_config;
+
 
     /**
     * 获取 主键

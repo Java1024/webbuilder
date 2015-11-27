@@ -1,6 +1,5 @@
 package org.webbuilder.generator.bean;
 
-import org.webbuilder.utils.db.def.valid.ValidatorFactory;
 
 import java.io.File;
 import java.util.LinkedHashSet;
@@ -116,9 +115,6 @@ public class GeneratorConfig {
     }
 
     public void valid() throws Exception {
-        ValidatorFactory.NOT_NULL.valid("输出目录不能为空", getOutput());
-        ValidatorFactory.NOT_EMPTY.valid("类名不能为空", getClassName());
-        ValidatorFactory.NOT_EMPTY.valid("包名不能为空", getPackageName());
     }
 
     public Map<String, String> getDbConfig() {
