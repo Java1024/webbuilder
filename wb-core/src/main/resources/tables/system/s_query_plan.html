@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head lang="cn">
+    <meta charset="UTF-8">
+    <title>查询方案表</title>
+</head>
+<body>
+<input field-meta name="u_id" primary_key="true" remark="主键" java-type="string" data-type="varchar2(64)" />
+<input field-meta name="type" not-null="true" remark="方案类型" java-type="string" data-type="varchar2(64)"/>
+<input field-meta name="name" not-null="true" remark="方案名称" java-type="string" data-type="varchar2(128)"/>
+<input field-meta name="query_condition" remark="可选查询条件" java-type="string" data-type="clob"/>
+<input field-meta name="show_fields" remark="列表显示字段" java-type="string" data-type="clob"/>
+<input field-meta name="info_template_id" remark="查看详情模板id" java-type="string" data-type="varchar2(256)"/>
+
+<input field-meta name="creator_id" can-update="false" remark="创建人" java-type="string" data-type="varchar2(256)"/>
+<input field-meta name="create_time" can-update="false" remark="创建时间" java-type="date" data-type="date"/>
+<input field-meta name="update_time" remark="修改时间" java-type="date" data-type="date"/>
+</body>
+</html>

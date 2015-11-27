@@ -183,19 +183,21 @@ public class Module extends GenericPo<String> implements Comparable<Module> {
      * @return String 模块操作选项
      */
     public String getM_option() {
-       // if (this.m_option == null)
-         //   return "[{\"id\":\"M\", \"text\":\"菜单可见\", \"uri\":\"\"},{\"id\":\"C\", \"text\":\"新增\", \"uri\":\"\"},{\"id\":\"R\", \"text\":\"查询\", \"uri\":\"\"},{\"id\":\"U\", \"text\":\"修改\", \"uri\":\"\"},{\"id\":\"D\", \"text\":\"删除\", \"uri\":\"\"}]";
         return this.m_option;
     }
 
     public Map<String, Object> getM_optionMap() {
-        List<Map<String, Object>> opt = JSON.parseObject(getM_option(), LinkedList.class);
-        if(opt==null)return new HashMap<>();
-        Map<String, Object> all = new LinkedHashMap<>();
-        for (Map<String, Object> map : opt) {
-            all.put(String.valueOf(map.get("id")), map);
+        try {
+            List<Map<String, Object>> opt = JSON.parseObject(getM_option(), LinkedList.class);
+            if (opt == null) return new HashMap<>();
+            Map<String, Object> all = new LinkedHashMap<>();
+            for (Map<String, Object> map : opt) {
+                all.put(String.valueOf(map.get("id")), map);
+            }
+            return all;
+        } catch (Exception e) {
+            return new HashMap<>();
         }
-        return all;
     }
 
     /**

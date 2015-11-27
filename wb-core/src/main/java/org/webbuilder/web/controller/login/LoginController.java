@@ -7,12 +7,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.webbuilder.utils.base.DateTimeUtils;
 import org.webbuilder.utils.base.MD5;
-import org.webbuilder.utils.base.StringUtil;
-import org.webbuilder.utils.http.HttpUtils;
 import org.webbuilder.utils.storage.Storage;
 import org.webbuilder.utils.storage.counter.Counter;
 import org.webbuilder.web.core.aop.logger.AccessLogger;
-import org.webbuilder.web.core.authorize.AuthorizeInterceptor;
 import org.webbuilder.web.core.bean.ResponseMessage;
 import org.webbuilder.web.core.exception.BusinessException;
 import org.webbuilder.web.core.utils.WebUtil;
@@ -27,8 +24,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  * Created by 浩 on 2015-08-26 0026.
@@ -179,44 +174,6 @@ public class LoginController {
         return new ResponseMessage(true, "登陆成功");
     }
 
-    /**
-     * 单点登录回掉，登录成功后，授权系统会调用此地址，传入被授权的token，
-     * <br/>通过token和accessKey去授权系统提取已登陆用户的信息，并对本系统中用户信息的绑定
-     *
-     * @param token   被授权的token
-     * @param url     登陆成功后跳转的地址
-     * @param request HttpServletRequest
-     * @return 重定向地址
-     */
-    @RequestMapping(value = "/sso/callback", method = RequestMethod.GET)
-    @AccessLogger("单点登陆回掉")
-    public String sso(@RequestParam("token") String token, String url, HttpServletRequest request) {
-        String ssoAccessHost = configService.get("sso", "host", "http://localhost:8080/sso/");
-        String ssoAccessUrl = ssoAccessHost.concat(configService.get("sso", "uri", "login/%s/%s"));
-        String accessKey = configService.get("sso", "accessKey", "");
-        if (StringUtil.isNullOrEmpty(url)) {
-            url = WebUtil.getBasePath(request);
-        }
-        Map<String, String> param = new LinkedHashMap<>();
-        param.put("token", token);
-        param.put("accessKey", accessKey);
-        try {
-            ssoAccessUrl = String.format(ssoAccessUrl, accessKey, token);
-            String data = HttpUtils.doPost(ssoAccessUrl, param);
-            ResponseMessage message = ResponseMessage.fromJson(data);
-            if (message.isSuccess()) {
-                Map<String, Object> userInfo = (Map) message.getData();
-                //提取sso系统中的用户信息
-
-            } else {
-                return "redirect:".concat(AuthorizeInterceptor.loginPage);
-            }
-        } catch (Exception e) {
-            logger.error("sso login error!", e);
-            return "redirect:".concat(AuthorizeInterceptor.loginPage);
-        }
-        return "redirect:".concat(url);
-    }
 
     public Counter getCounter() {
         return counter;
