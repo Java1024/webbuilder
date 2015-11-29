@@ -12,6 +12,7 @@
     <artifactId>core</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+
     <repositories>
         <repository>
             <id>people.apache.snapshots</id>
@@ -343,22 +344,6 @@
             <artifactId>aspectjweaver</artifactId>
             <version>${aspectj.version}</version>
         </dependency>
-        <!-- hibernate -->
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
-            <version>${hibernate.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-entitymanager</artifactId>
-            <version>${hibernate.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate.javax.persistence</groupId>
-            <artifactId>hibernate-jpa-2.0-api</artifactId>
-            <version>1.0.1.Final</version>
-        </dependency>
 
         <!-- hibernate-validator -->
         <dependency>
@@ -377,15 +362,6 @@
             <artifactId>netty-all</artifactId>
             <version>${netty.version}</version>
         </dependency>
-
-        <dependency>
-            <groupId>org.mybatis.generator</groupId>
-            <artifactId>mybatis-generator-core</artifactId>
-            <version>1.3.2</version>
-            <type>jar</type>
-            <scope>test</scope>
-        </dependency>
-
         <dependency>
             <groupId>net.sf.ehcache</groupId>
             <artifactId>ehcache</artifactId>
