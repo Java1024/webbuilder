@@ -100,7 +100,7 @@ public class TableMetaData implements Serializable {
     }
 
     public void addCorrelation(Correlation correlation) {
-        correlations.put(correlation.getTargetTable(), correlation);
+        correlations.put(correlation.getAlias(), correlation);
     }
 
     public boolean hasCorrelation(String table) {
@@ -126,7 +126,7 @@ public class TableMetaData implements Serializable {
             if (this.getName().equals(t_name)) return this.hasField(info[1]);
             //外表
             if (!this.hasCorrelation(info[0])) return false;
-            TableMetaData target = dataBaseMetaData.getTableMetaData(info[0]);
+            TableMetaData target = dataBaseMetaData.getTableMetaData(this.getCorrelation(info[0]).getTargetTable());
             if (target == null) return false;
             return target.hasField(info[1]);
         }
@@ -137,7 +137,11 @@ public class TableMetaData implements Serializable {
         if (!hasField(name)) return null;
         if (name.contains(".")) {
             String[] tmp = name.split("[.]");
-            return dataBaseMetaData.getTable(tmp[0]).getField(tmp[1]);
+            TableMetaData tableMetaData = dataBaseMetaData.getTable(tmp[0]);
+            if (this.hasCorrelation(tmp[0]) && tableMetaData == null) {
+                tableMetaData = getDataBaseMetaData().getTableMetaData(getCorrelation(tmp[0]).getTargetTable());
+            }
+            return tableMetaData.getField(tmp[1]);
         } else {
             return fieldMetaDatas.get(name);
         }
@@ -193,6 +197,8 @@ public class TableMetaData implements Serializable {
     public static class Correlation implements Serializable {
         private String targetTable;
 
+        private String alias;
+
         private boolean one2one = true;
 
         private MOD mod = MOD.LEFT_JOIN;
@@ -235,6 +241,17 @@ public class TableMetaData implements Serializable {
 
         public void setMod(MOD mod) {
             this.mod = mod;
+        }
+
+        public String getAlias() {
+            if (alias == null) {
+                alias = targetTable;
+            }
+            return alias;
+        }
+
+        public void setAlias(String alias) {
+            this.alias = alias;
         }
 
         public enum MOD {

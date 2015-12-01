@@ -1,5 +1,8 @@
-<correlation target="area">
-    <condition filed="area_id" value="area.id" sql="true"></condition>
+<correlation target="area" alias="areaTest">
+    <condition filed="area_id" value="areaTest.id" sql="true"></condition>
+</correlation>
+<correlation target="area" alias="areaTest2">
+    <condition filed="s_area_id" value="areaTest2.id" sql="true"></condition>
 </correlation>
 <table-meta name="s_user" remark="用户表">
 </table-meta>
@@ -7,6 +10,7 @@
        validator="min(8)" validator-msg="id长度不低于8" can-update="false" primary-key="true"/>
 <input name="username" field-meta  remark="用户名" java-type="string" can-update="true" not-null="true" data-type="varchar(256)"/>
 <input name="area_id" field-meta   remark="地区主键" java-type="int" can-update="true" data-type="int"/>
+<input name="s_area_id" field-meta   remark="第二地区主键" java-type="int" can-update="true" data-type="int"/>
 
 <script trigger="select.before" language="groovy">
     def user = param.get("user");

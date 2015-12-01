@@ -121,9 +121,9 @@ public class SQLTest {
         //-----------------多条件查询条件-------------
         QueryParam param = new QueryParam();
         String where = "{\"area_id$NOTNULL\":\"1\"," +
-                "\"username$LIKE\":{\"value\":\"w\",\"nest\":{\"area.id\":{\"type\":\"or\",\"value\":2}} }}";
+                "\"username$LIKE\":{\"value\":\"\",\"nest\":{\"areaTest.id\":{\"type\":\"or\",\"value\":2}} }}";
 
-        param.select("id", "username", "area.name").where(where).orderBy("id").noPaging();
+        param.select("id", "username", "areaTest.*","areaTest2.name","areaTest2.id").where(where).orderBy("id").noPaging();
 //        param.addProperty("user",new HashMap<String,Object>(){
 //            {
 //                put("area_id",111);

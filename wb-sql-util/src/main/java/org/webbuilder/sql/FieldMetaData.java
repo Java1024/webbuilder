@@ -49,11 +49,13 @@ public class FieldMetaData implements Serializable {
         this.attr.put(key, attr);
         return attr;
     }
+
     public Map<String, Object> attr(Map<String, Object> attr) {
         this.attr.putAll(attr);
 
         return this.attr;
     }
+
     public Object attr(String key) {
         return attr.get(key);
     }
@@ -111,6 +113,7 @@ public class FieldMetaData implements Serializable {
     }
 
     public Class<?> getJavaType() {
+        if (javaType == null) return String.class;
         return javaType;
     }
 

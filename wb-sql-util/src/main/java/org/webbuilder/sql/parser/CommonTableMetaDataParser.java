@@ -9,10 +9,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.webbuilder.sql.FieldMetaData;
 import org.webbuilder.sql.TableMetaData;
+import org.webbuilder.sql.exception.TriggerException;
 import org.webbuilder.sql.param.ExecuteCondition;
 import org.webbuilder.sql.trigger.ScriptTriggerSupport;
+import org.webbuilder.utils.base.Resources;
 import org.webbuilder.utils.base.StringUtil;
+import org.webbuilder.utils.base.file.FileUtil;
 
+import java.io.File;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -37,14 +41,23 @@ public class CommonTableMetaDataParser implements TableMetaDataParser {
     }
 
     @Override
-    public TableMetaData parse(String content, String type) throws Exception {
+    public TableMetaData parse(Object content, String type) throws Exception {
         if (type.equalsIgnoreCase("html")) {
-            return parseHTML(content);
+            return parseHTML(String.valueOf(content), null);
+        }
+        if (type.equalsIgnoreCase("file") && content instanceof File) {
+            return parseHTMLFile(((File) content));
         }
         return null;
     }
 
-    protected TableMetaData parseHTML(String content) throws Exception {
+    protected TableMetaData parseHTMLFile(File file) throws Exception {
+        String content = FileUtil.readFile2String(file.getAbsolutePath());
+        TableMetaData data = parseHTML(content, file.getParentFile().getAbsolutePath());
+        return data;
+    }
+
+    protected TableMetaData parseHTML(String content, String triggerLocation) throws Exception {
         TableMetaData tableMetaData = new TableMetaData();
         Document document = Jsoup.parse(content);
         Elements t_name = document.getElementsByTag("table-meta");
@@ -55,14 +68,13 @@ public class CommonTableMetaDataParser implements TableMetaDataParser {
             Elements attrs = t_name.get(0).getElementsByTag("attr");
             for (Element attr : attrs) {
                 for (Attribute attribute : attr.attributes().asList()) {
-                    tableMetaData.attr(attribute.getKey(),attribute.getValue());
+                    tableMetaData.attr(attribute.getKey(), attribute.getValue());
                 }
             }
         }
         //加载自定义属性
         //
         Elements attrs;
-
         Elements elements = document.getElementsByAttribute("field-meta");
         for (Element element : elements) {
             FieldMetaData fieldMetaData = new FieldMetaData();
@@ -94,7 +106,7 @@ public class CommonTableMetaDataParser implements TableMetaDataParser {
             attrs = element.getElementsByTag("attr");
             for (Element attr : attrs) {
                 for (Attribute attribute : attr.attributes().asList()) {
-                    tableMetaData.attr(attribute.getKey(),attribute.getValue());
+                    tableMetaData.attr(attribute.getKey(), attribute.getValue());
                 }
             }
             tableMetaData.addField(fieldMetaData);
@@ -104,9 +116,12 @@ public class CommonTableMetaDataParser implements TableMetaDataParser {
         Elements correlations = document.getElementsByTag("correlation");
         for (Element correlation : correlations) {
             TableMetaData.Correlation cor = new TableMetaData.Correlation();
-
             String target = correlation.attr("target");
+            String alias = correlation.attr("alias");
             cor.setTargetTable(target);
+            if(!StringUtil.isNullOrEmpty(alias)){
+                cor.setAlias(alias);
+            }
             Elements conditions = correlation.getElementsByTag("condition");
             for (Element condition : conditions) {
                 String filed = condition.attr("filed");
@@ -133,7 +148,29 @@ public class CommonTableMetaDataParser implements TableMetaDataParser {
         for (Element trigger : triggers) {
             String name = trigger.attr("trigger");
             String language = trigger.attr("language");
+            String src = trigger.attr("src");
             String text = trigger.html();
+            if (!StringUtil.isNullOrEmpty(src)) {
+                if (triggerLocation != null) {
+                    String absPath = triggerLocation.concat("/").concat(src);
+                    try {
+                        //先尝试相对路径
+                        if (new File(absPath).canRead()) {
+                            text = FileUtil.readFile2String(absPath);
+                        }
+                    } catch (Exception e) {
+                        try {
+                            //尝试绝对路径
+                            File file = Resources.getResourceAsFile(src);
+                            if (file.canRead()) {
+                                text = FileUtil.readFile2String(file.getAbsolutePath());
+                            }
+                        } catch (Exception e1) {
+                            throw new TriggerException(String.format("init trigger error,file:%s and %s not found!", absPath, src), e1);
+                        }
+                    }
+                }
+            }
             ScriptTriggerSupport triggerSupport = new ScriptTriggerSupport();
             triggerSupport.setContent(text);
             triggerSupport.setLanguage(language);

@@ -84,30 +84,39 @@ public class SelectTemplateRender implements SqlTemplate {
                 }
                 String field = include.getField();
                 //查询关联表的所有字段
-                if (include.isAnotherTable() && "*".equals(field)) {  //多表关联
-                    String targetTableName = include.getTargetTable();//关联表
-                    TableMetaData.Correlation correlation = tableMetaData.getCorrelation(targetTableName);
-                    //未设置关联条件,或者不是1对1关联
-                    if (!tableMetaData.hasCorrelation(targetTableName) || !correlation.isOne2one()) {
-                        continue;
-                    }
-                    needSelectTable.add(targetTableName);
-                    //元数据
-                    TableMetaData targetTableMetaData = tableMetaData.getCorrelationTable(targetTableName);
-                    if (targetTableMetaData != null) {
-                        //查询关联表的所有字段
-                        for (FieldMetaData fieldMetaData : targetTableMetaData.getFields()) {
-                            IncludeField tmp_inc = new IncludeField(fieldMetaData.getFullName());
+                if (include.isAnotherTable()) {  //多表关联
+                    if ("*".equals(field)) {
+                        String targetTableName = include.getTargetTable();//关联表
+                        TableMetaData.Correlation correlation = tableMetaData.getCorrelation(targetTableName);
+                        //未设置关联条件,或者不是1对1关联
+                        if (!tableMetaData.hasCorrelation(targetTableName) || !correlation.isOne2one()) {
+                            continue;
+                        }
+                        needSelectTable.add(correlation.getAlias());
+                        //元数据
+                        TableMetaData targetTableMetaData = tableMetaData.getCorrelationTable(correlation.getTargetTable());
+                        if (targetTableMetaData != null) {
+                            //查询关联表的所有字段
+                            for (FieldMetaData fieldMetaData : targetTableMetaData.getFields()) {
+                                IncludeField tmp_inc = new IncludeField();
+                                tmp_inc.setField(correlation.getAlias().concat(".").concat(fieldMetaData.getName()));
+                                tmp_inc.setMainTable(tableMetaData.getName());
+                                sqlAppender.addSpc(keywordsMapper.getFieldTemplate(tmp_inc));
+                                sqlAppender.add(",");
+                            }
+                        }
+                    } else {
+                        needSelectTable.add(include.getTargetTable());
+                        TableMetaData.Correlation correlation = tableMetaData.getCorrelation(include.getTargetTable());
+                        if (correlation != null && tableMetaData.hasField(include.getTargetTable().concat(".").concat(include.getField()))) {
+                            IncludeField tmp_inc = new IncludeField();
+                            tmp_inc.setField(correlation.getAlias().concat(".").concat(include.getField()));
                             tmp_inc.setMainTable(tableMetaData.getName());
                             sqlAppender.addSpc(keywordsMapper.getFieldTemplate(tmp_inc));
                             sqlAppender.add(",");
                         }
                     }
-                }
-                //能直接进行查询
-                if (tableMetaData.hasField(include.getFullField())) {
-                    if (include.getTargetTable() != null)
-                        needSelectTable.add(include.getTargetTable());
+                } else if (tableMetaData.hasField(include.getFullField())) {
                     sqlAppender.addSpc(keywordsMapper.getFieldTemplate(include));
                     sqlAppender.add(",");
                 }
@@ -128,7 +137,7 @@ public class SelectTemplateRender implements SqlTemplate {
             if (condition.getTable() == null)
                 condition.setTable(tableMetaData.getName());
             String field = condition.getFullField();
-            if (!tableMetaData.hasField(field)) continue;
+            if (!tableMetaData.hasField(field) && !tableMetaData.hasCorrelation(condition.getTable())) continue;
             condition.setTableMetaData(tableMetaData);
             if (!field.contains(".")) condition.setTable(tableMetaData.getName());
             if (flag++ == 0) condition.setAppendType("");
@@ -212,11 +221,11 @@ public class SelectTemplateRender implements SqlTemplate {
         for (String table : tables) {
             if (table.equals(tableMetaData.getName())) continue;
             TableMetaData.Correlation correlation = tableMetaData.getCorrelation(table);
+            if (correlation == null) continue;
             TableMetaData.Correlation.MOD mod = correlation.getMod();
             if (mod == null) continue;
             //初始化表链接 left join {tableName} on {conditions}
-            appender.addSpc(mod.toSql());
-            appender.addEdSpc(table);
+            appender.addSpc(mod.toSql(), correlation.getTargetTable(), correlation.getAlias());
             appender.addSpc("on");
             WrapperCondition param_tmp = renderCondition(correlation.getCondition(), appender);
             param.putAll(param_tmp.getParams());

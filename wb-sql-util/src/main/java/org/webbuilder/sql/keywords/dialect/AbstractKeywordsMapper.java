@@ -37,7 +37,8 @@ public abstract class AbstractKeywordsMapper implements KeywordsMapper {
         WrapperCondition condition = new WrapperCondition();
         Set<String> tables = new LinkedHashSet<>();
         tables.add(executeCondition.getTable());
-        if (!executeCondition.getTableMetaData().hasField(executeCondition.getFullField()))
+        if (!executeCondition.getTableMetaData().hasField(executeCondition.getFullField())
+                &&!executeCondition.getTableMetaData().hasCorrelation(executeCondition.getTable()))
             return null;
         //模板
         FieldTemplateWrapper wrapper = getQueryTypeMapper(executeCondition.getQueryType());
