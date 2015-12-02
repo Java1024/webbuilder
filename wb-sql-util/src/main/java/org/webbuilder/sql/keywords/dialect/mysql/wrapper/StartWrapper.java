@@ -28,7 +28,7 @@ public class StartWrapper extends EQWrapper {
             builder.append(String.format("CONCAT(%s,'%s')", String.valueOf(condition.getValue()), "%"));
             return builder.toString();
         }
-        builder.append(String.format("CONCAT(#{%s$END},'%s')", getFiledName(condition), "%"));
+        builder.append(String.format("CONCAT(#{%s},'%s')", getFiledName(condition), "%"));
         return builder.toString();
     }
 
