@@ -18,12 +18,9 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class LocalStorageDriver extends CommonStorageDriver {
 
-    public static final String NAME = "local";
-
 
     public LocalStorageDriver() {
         //注册驱动
-        StorageDriverManager.registerDriver(this);
         try {
             this.addListener(new DriverListener() {
                 @Override
@@ -57,11 +54,13 @@ public class LocalStorageDriver extends CommonStorageDriver {
 
     @Override
     public String getName() {
-        return NAME;
+        if(name==null)
+            name = "local";
+        return name;
     }
 
     @Override
     public void init() throws Exception {
-
+        StorageDriverManager.registerDriver(this);
     }
 }

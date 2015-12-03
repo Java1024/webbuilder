@@ -1,6 +1,5 @@
 package org.webbuilder.web.core;
 
-import org.webbuilder.web.service.form.FormService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEvent;
@@ -15,9 +14,6 @@ import javax.annotation.Resource;
  */
 public class ServerInitConfig implements ApplicationListener {
     private Logger logger = LoggerFactory.getLogger(ServerInitConfig.class);
-
-    @Resource
-    private FormService formService;
 
     @Resource
     private DynamicScriptService dynamicScriptService;

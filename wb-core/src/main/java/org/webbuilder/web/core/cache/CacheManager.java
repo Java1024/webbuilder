@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 
 /**
- * spring 缓存管理器
+ * spring 缓存管理器，基于StorageDriver驱动
  * Created by 浩 on 2015-08-24 0024.
  */
 public class CacheManager extends AbstractCacheManager {
@@ -29,6 +29,7 @@ public class CacheManager extends AbstractCacheManager {
     @Override
     public Cache getCache(String name) {
         Cache cache = super.getCache(name);
+        //如果换成名称不存在，则自动创建一个缓存实现
         if (cache == null) {
             SpringCacheImpl tmp = new SpringCacheImpl();
             tmp.setDriver(driver);

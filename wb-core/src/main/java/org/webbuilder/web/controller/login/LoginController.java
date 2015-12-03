@@ -88,7 +88,7 @@ public class LoginController {
             } else {
                 db.initRoleInfo();
                 request.getSession().setAttribute("user", db);//设置登录用户
-                if(getCounter()!=null){
+                if (getCounter() != null) {
                     getCounter().next(getRealCounterKey(getCounterKey()));
                 }
             }
@@ -98,14 +98,14 @@ public class LoginController {
         return new ResponseMessage(true, "登陆成功");
     }
 
-    public String getRealCounterKey(String baseKey){
-        return baseKey.concat(DateTimeUtils.format(new Date(),DateTimeUtils.YEAR_MONTH_DAY));
+    public String getRealCounterKey(String baseKey) {
+        return baseKey.concat(DateTimeUtils.format(new Date(), DateTimeUtils.YEAR_MONTH_DAY));
     }
 
     /**
      * 不使用验证码登录，多次密码错误进行ip+用户名限制，达到限制次数后禁止登陆（即便再次输入正确的密码）
      */
-    @RequestMapping(method = RequestMethod.GET)
+    @RequestMapping//(method = RequestMethod.POST)
     @AccessLogger("限制登陆次数方式")
     public Object login(@RequestParam("username") String username,
                         @RequestParam("password") String password,
@@ -155,16 +155,16 @@ public class LoginController {
                 }
                 HttpSession session = request.getSession();
                 exit(session);//退出登录
+                session = request.getSession();
                 //踢出已经登陆的用户
                 String sessionId = httpSessionManager.getSessionIdByUserId(db.getU_id());
                 if (sessionId != null && !sessionId.equals(session.getId()))
                     httpSessionManager.removeSession(sessionId);
-
                 session.setAttribute("user", db);//设置登录用户
                 //添加新的用户
                 httpSessionManager.addUser(db.getU_id(), session);
                 storage.remove(cacheKey);//删除错误记录
-                if(getCounter()!=null){
+                if (getCounter() != null) {
                     getCounter().next(getRealCounterKey(getCounterKey()));
                 }
             }

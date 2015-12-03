@@ -14,12 +14,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- * 系统配置控制器，继承自GenericController,使用rest+json
+ * 系统配置控制器，继承自GenericController,使用rest+json。
+ * 此功能将传配置文件放到数据库和缓存中，可动态修改配置。
  * Created by generator 2015-8-17 11:16:45
  */
 @RestController

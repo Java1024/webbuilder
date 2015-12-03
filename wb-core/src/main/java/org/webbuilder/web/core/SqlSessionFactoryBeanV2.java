@@ -12,8 +12,6 @@ import java.util.*;
  * Created by 浩 on 2015-07-21 0021.
  */
 public class SqlSessionFactoryBeanV2 extends SqlSessionFactoryBean {
-    private Resource[] typeAliasesResources;
-
     @Override
     public void setTypeAliasesPackage(String typeAliasesPackage) {
         if (typeAliasesPackage != null) {
@@ -24,10 +22,6 @@ public class SqlSessionFactoryBeanV2 extends SqlSessionFactoryBean {
             }
             this.setTypeAliases(classes.toArray(new Class[classes.size()]));
         }
-    }
-
-    public void setTypeAliasesResources(Resource[] resource) {
-        System.out.println(resource);
     }
 
     public Set<Class<?>> find(String packageName) {

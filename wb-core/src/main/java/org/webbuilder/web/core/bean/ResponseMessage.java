@@ -11,10 +11,19 @@ import javax.validation.ValidationException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * 响应消息。controller中处理后，返回此对象，响应请求结果给客户端。
+ */
 public class ResponseMessage {
 
+    /**
+     * message处理类，可以自定义message处理方案
+     */
     private transient static final Map<Class, MessageHandler> handlers = new ConcurrentHashMap<>();
 
+    /**
+     * jsoup跨域请求
+     */
     private transient String callback;
 
     static {
@@ -82,8 +91,8 @@ public class ResponseMessage {
             if (data instanceof Throwable) {
                 //为获取到指定的异常信息处理器，使用通用异常处理器
                 messageHandler = getMessageHandler(Exception.class);
-                if(data instanceof ValidationException){
-                    this.code="400";
+                if (data instanceof ValidationException) {
+                    this.code = "400";
                 }
             } else {
                 messageHandler = getMessageHandler(Object.class);

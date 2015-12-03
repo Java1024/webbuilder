@@ -34,7 +34,6 @@ public class FileService {
         String absPath = fileBasePath.concat(filePath);
         File path = new File(absPath);
         if (!path.exists()) path.mkdirs(); //创建目录
-
         String newName = MD5.encode(String.valueOf(System.nanoTime())); //临时文件名 ,纳秒的md5值
         String fileAbsName = absPath.concat("/").concat(newName);
         //try with resource

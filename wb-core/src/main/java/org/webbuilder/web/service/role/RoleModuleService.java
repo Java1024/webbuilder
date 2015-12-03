@@ -25,10 +25,4 @@ public class RoleModuleService extends GenericService<RoleModule, String> {
         return this.roleModuleMapper;
     }
 
-
-    public boolean on(RoleModule roleModule, String event, Map<String, Object> param) {
-
-        return true;
-    }
-
 }

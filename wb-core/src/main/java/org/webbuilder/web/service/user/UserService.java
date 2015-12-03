@@ -3,6 +3,7 @@ package org.webbuilder.web.service.user;
 import org.springframework.stereotype.Service;
 import org.webbuilder.utils.base.MD5;
 import org.webbuilder.utils.base.StringUtil;
+import org.webbuilder.web.core.exception.BusinessException;
 import org.webbuilder.web.core.service.GenericService;
 import org.webbuilder.web.core.utils.RandomUtil;
 import org.webbuilder.web.dao.role.UserRoleMapper;
@@ -19,7 +20,6 @@ import java.util.*;
 /**
  * 后台管理用户服务类
  * Created by generator
- *
  */
 @Service
 public class UserService extends GenericService<User, String> {
@@ -50,6 +50,9 @@ public class UserService extends GenericService<User, String> {
     @Override
     public int insert(User data) throws Exception {
         tryValidPo(data);
+        if (selectByUserName(data.getUsername()) != null) {
+            throw new BusinessException("用户名已存在!");
+        }
         data.setU_id(RandomUtil.randomChar(6));
         data.setCreate_date(new Date());
         data.setUpdate_date(new Date());
@@ -68,6 +71,10 @@ public class UserService extends GenericService<User, String> {
     @Override
     public int update(User data) throws Exception {
         tryValidPo(data);
+        User old = this.selectByUserName(data.getUsername());
+        if (old != null && !old.getU_id().equals(data.getU_id())) {
+            throw new BusinessException("用户名已存在!");
+        }
         data.setUpdate_date(new Date());
         if (!"$default".equals(data.getPassword())) {
             data.setPassword(MD5.encode(data.getPassword()));

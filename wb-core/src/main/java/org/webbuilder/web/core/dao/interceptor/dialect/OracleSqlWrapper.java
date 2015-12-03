@@ -28,8 +28,8 @@ public class OracleSqlWrapper extends AbstractSqlWrapper {
             }
         }
         builder.append(") row_ )");
-        int startWith = conf.getMaxResults() * (conf.getPageIndex() + 1);
-        builder.append("WHERE rownum_ <= ").append(startWith).append(" and rownum_ > ").append(conf.getFirstResult());
+        int startWith = conf.getPageSize() * (conf.getPageIndex() + 1);
+        builder.append("WHERE rownum_ <= ").append(startWith).append(" and rownum_ > ").append(conf.getPageSize() * conf.getPageIndex());
         return builder.toString();
     }
 

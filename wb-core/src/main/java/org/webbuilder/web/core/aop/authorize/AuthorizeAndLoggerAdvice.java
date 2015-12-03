@@ -33,15 +33,38 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class AuthorizeAndLoggerAdvice {
 
-    private String AuthorizeSuccessCounterKey = "success";
-    private String AuthorizeFailedCounterKey = "fail";
-    private String AuthorizeExceptionCounterKey = "exception";
-    private Counter counter;
-    private final Map<String, AuthorizeConfig> configCache = new ConcurrentHashMap<>();
     private org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    private String AuthorizeSuccessCounterKey = "success"; //访问成功计数器key
+    private String AuthorizeFailedCounterKey = "fail"; //访问失败计数器key
+    private String AuthorizeExceptionCounterKey = "exception"; //访问异常计数器key
+
+    /**
+     * 计数器，用于统计访问情况，当不注入此属性时，不进行计数
+     */
+    private Counter counter;
+
+    /**
+     * 日志服务，用于记录访问日志的服务类，如果不注入此属性，将不进行日志记录
+     */
     private LoggerService loggerService;
+
+    /**
+     * 授权配置缓存，将已经解析过的配置缓存，防止重复解析，提升性能
+     */
+    private final Map<String, AuthorizeConfig> configCache = new ConcurrentHashMap<>();
+
+    /**
+     * 授权失败时的响应信息
+     */
     private String authorizationFailsMessage = "无访问权限";
 
+    /**
+     * 根据切面通知获取拦截到的方法名称
+     *
+     * @param pjp 切面通知对象
+     * @return 方法名称，如: userInfo(String pk)
+     */
     protected String getMethodName(ProceedingJoinPoint pjp) {
         StringBuilder methodName = new StringBuilder(pjp.getSignature().getName()).append("(");
         MethodSignature signature = (MethodSignature) pjp.getSignature();
@@ -54,12 +77,20 @@ public class AuthorizeAndLoggerAdvice {
         return methodName.append(")").toString();
     }
 
+    /**
+     * 将权限注解信息初始化到权限配置中，用于将类和方法上的注解合并
+     *
+     * @param config    权限配置
+     * @param authorize 权限注解
+     */
     private void initAuthConfig(AuthorizeConfig config, Authorize authorize) {
         if (authorize != null) {
             config.getRoles().addAll(Arrays.asList(authorize.role()));
             config.getLevel().addAll(Arrays.asList(authorize.level()));
             config.getModules().addAll(Arrays.asList(authorize.module()));
+            //如果指定了表达式
             if (!StringUtil.isNullOrEmpty(authorize.expression())) {
+                //编译表达式
                 String scriptId = StringUtil.concat("author_script_", authorize.expression().hashCode());
                 DynamicScriptEngine engine = DynamicScriptEngineFactory.getEngine(authorize.expressionLanguage());
                 try {
@@ -77,10 +108,19 @@ public class AuthorizeAndLoggerAdvice {
         }
     }
 
+    /**
+     * 根据切面通知进行授权验证，如果 当前登录用户持有被拦截方法的访问权限，则返回true，否则返回false
+     *
+     * @param pjp 切面通知对象
+     * @return 是否通过验证
+     */
     protected boolean doAuth(ProceedingJoinPoint pjp) {
+        //授权配置缓存的名称
         String cacheName = pjp.getTarget().getClass().getName().concat(".").concat(getMethodName(pjp));
         AuthorizeConfig config = configCache.get(cacheName);
         MethodSignature methodSignature = ((MethodSignature) pjp.getSignature());
+        //此为用于执行表达式需要的参数
+        //参数有:当前登录用户(user),当前请求方法中参数名称和值。以及request对象。
         Map<String, Object> root = new LinkedHashMap<>();
         String[] names = methodSignature.getParameterNames();
         Object[] args = pjp.getArgs();
@@ -88,30 +128,52 @@ public class AuthorizeAndLoggerAdvice {
             root.put(names[i], args[i]);
         }
         root.put("request", WebUtil.getHttpServletRequest());
+        //如果为null，代表为第一次访问，则进行配置解析。
         if (config == null) {
             Method method = methodSignature.getMethod();
             Class<?> controller = pjp.getTarget().getClass();
             Authorize authorize_c = ClassUtil.getAnnotation(controller, Authorize.class);
             Authorize authorize_m = ClassUtil.getAnnotation(method, Authorize.class);
-            if (authorize_c == null && authorize_m == null) {
-                return true;
-            }
             config = new AuthorizeConfig();
-            initAuthConfig(config, authorize_c);
-            initAuthConfig(config, authorize_m);
+            //无注解则代表无需进行授权即可访问
+            if (authorize_c == null && authorize_m == null) {
+                config.setNeedAuth(false);//无需授权
+            } else {
+                initAuthConfig(config, authorize_c);
+                initAuthConfig(config, authorize_m);
+            }
             configCache.put(cacheName, config);
         }
-        if (WebUtil.getLoginUser() == null) {
-            throw new BusinessException("");
+        if (!config.isNeedAuth()) {
+            return true;
         }
+        //这里如果用户未登陆，则抛出BusinessException。
+        if (WebUtil.getLoginUser() == null) {
+            throw new BusinessException("请登录");
+        }
+        //执行验证
         return config.doAuth(WebUtil.getLoginUser(), root);
     }
 
+    /**
+     * 根据一个基础key和当前年月日生成一个计数器key,根据不同的key来代表每一天的访问量
+     * 此方法有待优化，每天的key不应该每次访问都进行生成，且用户应该可以自定义key
+     *
+     * @param baseKey 基础key
+     * @return 计数器key，如: success_2015-10-10
+     */
     public String buildCounterKey(String baseKey) {
         return StringUtil.concat(baseKey, "_", DateTimeUtils.format(new Date(), DateTimeUtils.YEAR_MONTH_DAY));
     }
 
+    /**
+     * 权限验证，在aop中配置环绕通知，以实现对方法的权限验证。
+     *
+     * @param pjp 切面通知对象
+     * @return 验证结果，如果失败，则返回 ResponseMessage的失败信息。否则返回拦截方法的返回值
+     */
     public Object authorize(ProceedingJoinPoint pjp) {
+        //执行验证的情况信息，用于访问日志的输出
         ProcessInfo info = new ProcessInfo();
         Object obj = null;
         try {
@@ -122,6 +184,7 @@ public class AuthorizeAndLoggerAdvice {
             try {
                 access = doAuth(pjp);
             } catch (BusinessException e) {
+                //抛出BusinessException 标识需要登陆
                 authMsg = "请登陆";
                 authCode = "5021";
             }
@@ -145,7 +208,12 @@ public class AuthorizeAndLoggerAdvice {
                 }
             }
         } catch (Throwable e) {
-            obj = new ResponseMessage(false, e);
+            //处理异常信息
+            if (e instanceof Exception) {
+                obj = new ResponseMessage(false, e);
+            } else {
+                obj = new ResponseMessage(false, new RuntimeException(e));
+            }
             if (getCounter() != null) {
                 counter.next(buildCounterKey(AuthorizeExceptionCounterKey));
             }
@@ -157,6 +225,9 @@ public class AuthorizeAndLoggerAdvice {
         return obj;
     }
 
+    /**
+     * 访问日志中，访问方法的摘要缓存，避免每次通过注解去获取摘要
+     */
     private static final Map<String, String> loggerDescCache = new ConcurrentHashMap<>();
 
     protected void logger(ProceedingJoinPoint pjp, ProcessInfo info) {
@@ -217,6 +288,7 @@ public class AuthorizeAndLoggerAdvice {
             logInfo.setRequest_time(info.getInTime());
             Object obj = info.getData();
             if (obj != null) {
+                //如果返回结果为 ResponseMessage，则将ResponseMessage封装的信息解析到日志
                 if (obj instanceof ResponseMessage) {
                     ResponseMessage res = (ResponseMessage) obj;
                     if (res.getSourceData() instanceof Throwable) {
@@ -347,6 +419,15 @@ public class AuthorizeAndLoggerAdvice {
         Set<Expression> expression = new HashSet<>();
         Authorize.MOD mod = Authorize.MOD.INTERSECTION;
         boolean api;
+        boolean needAuth = true;
+
+        public void setNeedAuth(boolean needAuth) {
+            this.needAuth = needAuth;
+        }
+
+        public boolean isNeedAuth() {
+            return needAuth;
+        }
 
         public boolean doAuth(User user, Map<String, Object> args) {
             boolean success = false;

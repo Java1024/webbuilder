@@ -16,7 +16,7 @@ public class MysqlSqlWrapper extends AbstractSqlWrapper {
                 builder.append(" ").append(conf.getSortOrder().toLowerCase().equals("desc") ? "desc" : "asc");
             }
         }
-        builder.append(" limit ").append(conf.getFirstResult()).append(",").append(conf.getMaxResults());
+        builder.append(" limit ").append(conf.getPageSize() * conf.getPageIndex()).append(",").append(conf.getPageSize() * (conf.getPageIndex() + 1));
         return builder.toString();
     }
 

@@ -37,8 +37,7 @@ public class DynamicScriptController extends GenericController<DynamicScript, St
 
     @RequestMapping(value = "/{id:.+}/exec", method = {RequestMethod.GET})
     @Authorize(role = {}, module = {"script"}, level = {"EXEC"})
-    public ResponseMessage exec(@PathVariable("id") String id,
-                                @RequestParam(value = "param", defaultValue = "{}") String param) {
+    public ResponseMessage exec(@PathVariable("id") String id,@RequestParam(value = "param", defaultValue = "{}") String param) {
         ResponseMessage message;
         try {
             ExecuteResult result = dynamicScriptExecutor.exec(id, JSON.parseObject(param));

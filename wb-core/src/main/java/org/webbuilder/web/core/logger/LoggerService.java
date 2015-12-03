@@ -12,9 +12,4 @@ import java.util.Map;
 public interface LoggerService extends Serializable {
 
     void log(LogInfo logInfo) throws Exception;
-
-    List<LogInfo> search(Map<String, Object> conditions) throws Exception;
-
-    int total(Map<String, Object> conditions) throws Exception;
-
 }

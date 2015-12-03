@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * json参数 转换器，用于将json格式的参数转换为对象
  * Created by 浩 on 2015-09-29 0029.
  */
 public class JsonParamMethodArgumentResolver implements HandlerMethodArgumentResolver {
@@ -25,6 +26,7 @@ public class JsonParamMethodArgumentResolver implements HandlerMethodArgumentRes
 
     @Override
     public boolean supportsParameter(MethodParameter methodParameter) {
+        //注解了JsonParam则支持此功能
         return methodParameter.hasParameterAnnotation(JsonParam.class);
     }
 
@@ -44,6 +46,7 @@ public class JsonParamMethodArgumentResolver implements HandlerMethodArgumentRes
             if (json == null)
                 json = jsonParam.defaultValue();
         } else {
+            //将参数列表也识别为json
             Map<String, String[]> map = nativeWebRequest.getParameterMap();
             JSONObject jsonObject = new JSONObject();
             for (Map.Entry<String, String[]> entry : map.entrySet()) {

@@ -10,12 +10,19 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
+ * 本地session管理器实现
  * Created by 浩 on 2015-09-28 0028.
  */
 public class LocalHttpSessionManager implements HttpSessionManager {
 
+    /**
+     * httpSession存储器，sessionId:HttpSession
+     */
     private static final Map<String, HttpSession> sessionStorage = new ConcurrentHashMap<>();
 
+    /**
+     * 用户ID与session管理存储器，userId:HttpSession
+     */
     private static final Map<String, HttpSession> userSessionStorage = new ConcurrentHashMap<>();
 
     @Override

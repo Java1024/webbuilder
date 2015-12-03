@@ -10,10 +10,14 @@ import java.io.Serializable;
 import java.util.*;
 
 /**
+ * 通用的PO对象，实现基本的属性和方法。新建的PO都应继承该类
  * Created by 浩 on 2015-07-20 0020.
  */
 public class GenericPo<PK> implements Serializable {
 
+    /**
+     * 主键
+     */
     private PK u_id;
 
     public PK getU_id() {
@@ -34,10 +38,21 @@ public class GenericPo<PK> implements Serializable {
         this.u_id = u_id;
     }
 
+    /**
+     * 创建一个主键，根据当前时戳和随机数的一个MD5值
+     *
+     * @return
+     */
     public static String createUID() {
         return MD5.encode(String.valueOf(System.nanoTime()) + String.valueOf(Math.random()));
     }
 
+    /**
+     * 使用hibernate验证器验证一个对象
+     *
+     * @param object 需要验证的对象
+     * @return 验证结果
+     */
     public static final ValidResults valid(Object object) {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         Validator validator = factory.getValidator();
@@ -51,6 +66,11 @@ public class GenericPo<PK> implements Serializable {
         return results;
     }
 
+    /**
+     * 验证自生
+     *
+     * @return 验证结果
+     */
     public ValidResults valid() {
         return valid(this);
     }

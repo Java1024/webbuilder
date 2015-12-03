@@ -79,8 +79,8 @@ public class POIExcelIO implements ExcelApi {
         // POIFSFileSystem fs = new POIFSFileSystem(input);
         // 兼容读取 支持2007 +
         Workbook wbs = WorkbookFactory.create(input);
-        for (int sn : config.getSheets()) {
-            Sheet sheet = wbs.getSheetAt(sn);// wb.getSheetAt(0);
+        for (int x = 0; x < wbs.getNumberOfSheets(); x++) {
+            Sheet sheet = wbs.getSheetAt(x);
             // 得到总行数
             int rowNum = sheet.getLastRowNum();
             Row row = sheet.getRow(0);

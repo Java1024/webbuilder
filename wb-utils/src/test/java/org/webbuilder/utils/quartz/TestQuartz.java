@@ -15,7 +15,6 @@ public class TestQuartz {
 
     @Test
     public void testQuartz() throws Exception {
-
        final DynamicScriptEngine engine = DynamicScriptEngineFactory.getEngine("js");
         engine.compile("test","var i = '我是js脚本';return i");
 

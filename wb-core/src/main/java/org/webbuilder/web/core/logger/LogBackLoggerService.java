@@ -20,13 +20,4 @@ public class LogBackLoggerService implements LoggerService {
         }
     }
 
-    @Override
-    public List<LogInfo> search(Map<String, Object> conditions) throws Exception {
-        return null;
-    }
-
-    @Override
-    public int total(Map<String, Object> conditions) throws Exception {
-        return 0;
-    }
 }

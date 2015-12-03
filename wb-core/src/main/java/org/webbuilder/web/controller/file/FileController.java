@@ -39,12 +39,22 @@ public class FileController {
 
     private org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    /**
+     * 配置服务类，用于获取文件存放路径等配置信息
+     */
     @Resource
     private ConfigService configService;
 
+    /**
+     * 资源服务类，每一个上传的文件都对应一个资源。通过存放到数据库的资源信息，可以实现文件秒传。
+     * 通过资源id进行下载，使系统更安全
+     */
     @Resource
     private ResourcesService resourcesService;
 
+    /**
+     * 文件服务类，用于进行文件保存等操作
+     */
     @Resource
     private FileService fileService;
 
@@ -94,6 +104,7 @@ public class FileController {
                     skip = StringUtil.toInt(Range);
                 } catch (Exception e) {
                 }
+
                 response.setContentLength((int) fSize);//文件大小
                 response.setContentType(contentType);
                 response.setHeader("Content-disposition", "attachment;filename=" + URLEncoder.encode(name, "utf-8"));
@@ -126,13 +137,12 @@ public class FileController {
     /**
      * 上传文件，进行md5一致性校验，不保存重复文件。成功后返回文件信息{uid,md5,name}
      *
-     * @param files   文件列表
-     * @param session HttpSession
+     * @param files 文件列表
      * @return 上传结果
      */
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     @AccessLogger("上传文件")
-    public Object upload(@RequestParam("file") CommonsMultipartFile[] files, HttpSession session) {
+    public Object upload(@RequestParam("file") CommonsMultipartFile[] files) {
         if (logger.isInfoEnabled())
             logger.info(String.format("start upload , file number:%s", files.length));
         List<Resources> resourcesList = new LinkedList<>();
@@ -143,7 +153,7 @@ public class FileController {
                     logger.info(String.format("start write file:%s", file.getOriginalFilename()));
                 try {
                     String fileName = files[i].getOriginalFilename();
-                    Resources resources = fileService.saveFile(files[i].getInputStream(), fileName);
+                    Resources resources = fileService.saveFile(files[i].getFileItem().getInputStream(), fileName);
                     resourcesList.add(resources);
                 } catch (Exception e) {
                     return new ResponseMessage(false, e);

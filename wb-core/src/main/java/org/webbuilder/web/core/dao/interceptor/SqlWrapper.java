@@ -13,13 +13,12 @@ public interface SqlWrapper {
 
     class WrapperConf {
         public String sql;
-        public int maxResults = 20;
-        public int firstResult = 0;
-        public int pageIndex = 1;
+        public int pageSize = 20;
+        public int pageIndex = 0;
         public String sortField;
         public String sortOrder;
 
-        public boolean doPaging=true;
+        public boolean doPaging = true;
 
         public String getSql() {
             return sql;
@@ -29,22 +28,13 @@ public interface SqlWrapper {
             this.sql = sql;
         }
 
-        public int getMaxResults() {
-            return maxResults;
+        public int getPageSize() {
+            return pageSize;
         }
 
-        public void setMaxResults(int maxResults) {
-            if (maxResults == 0)
-                maxResults = 25;
-            this.maxResults = maxResults;
-        }
-
-        public int getFirstResult() {
-            return firstResult;
-        }
-
-        public void setFirstResult(int firstResult) {
-            this.firstResult = firstResult;
+        public void setPageSize(int pageSize) {
+            if (pageSize == 0) pageSize = 20;
+            this.pageSize = pageSize;
         }
 
         public String getSortField() {
@@ -81,10 +71,9 @@ public interface SqlWrapper {
 
         public static WrapperConf fromMap(Map<String, Object> param) {
             WrapperConf wrapperConf = new WrapperConf();
-            int maxResults = StringUtil.toInt(param.get("maxResults"));
-            int firstResult = StringUtil.toInt(param.get("firstResult"));
+            int pageSize = StringUtil.toInt(param.get("pageSize"));
             int pageIndex = StringUtil.toInt(param.get("pageIndex"));
-            if (maxResults == 0 && firstResult == 0 && pageIndex == 0)
+            if (pageSize == 0 && pageIndex == 0)
                 wrapperConf.setDoPaging(false);
             try {
                 String sortField = (String) param.get("sortField");
@@ -93,8 +82,7 @@ public interface SqlWrapper {
                 wrapperConf.setSortOrder(sortOrder);
             } catch (Exception e) {
             }
-            wrapperConf.setFirstResult(firstResult);
-            wrapperConf.setMaxResults(maxResults);
+            wrapperConf.setPageSize(pageSize);
             wrapperConf.setPageIndex(pageIndex);
             return wrapperConf;
         }

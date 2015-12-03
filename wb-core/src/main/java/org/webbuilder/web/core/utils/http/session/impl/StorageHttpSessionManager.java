@@ -16,19 +16,24 @@ import java.util.regex.Pattern;
 
 
 /**
+ * 基于存储器驱动的session管理器，如果存储器驱动位本地实现，建议使用{@link LocalHttpSessionManager}
  * Created by 浩 on 2015-08-27 0027.
  */
 public class StorageHttpSessionManager implements HttpSessionManager {
 
     /**
      * 用于存储httpSession的存储驱动
+     * 注意，如果是分布式环境，如redis实现的session共享，此驱动应该和redis中存放session的数据库一致
      */
     private static StorageDriver driver;
 
+    /**
+     * 用户列表驱动
+     */
     private static StorageDriver userListDriver;
 
     /**
-     * userId 进行前缀追加
+     * userId 进行前缀追加，防止与其他缓存冲突
      */
     private static final String userIdPrefix = "login_userId$";
 
@@ -39,13 +44,13 @@ public class StorageHttpSessionManager implements HttpSessionManager {
 
 
     public <V> Storage<String, V> sessionStorage() throws Exception {
-        return driver.getStorage("http_sessions");
+        return driver.getStorage("http.sessions");
     }
 
     public <V> Storage<String, V> userStorage() throws Exception {
         if (userListDriver == null)
             userListDriver = driver;
-        return userListDriver.getStorage("user_list");
+        return userListDriver.getStorage("user.list");
     }
 
     public void removeSession(String id) throws Exception {
@@ -77,7 +82,7 @@ public class StorageHttpSessionManager implements HttpSessionManager {
     /**
      * 移除一个user
      *
-     * @param userId
+     * @param userId 要移除的userId
      * @throws Exception
      */
     @CacheEvict(value = "user.login.list", allEntries = true)

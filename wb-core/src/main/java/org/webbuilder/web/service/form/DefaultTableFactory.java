@@ -59,8 +59,7 @@ public class DefaultTableFactory {
             try {
                 File file = localFile.getFile();
                 if (file.getName().endsWith(".html")) {
-                    String content = FileUtil.readFile2String(file.getAbsolutePath());
-                    TableMetaData newTable = parser.parse(content, "html");
+                    TableMetaData newTable = parser.parse(file, "file");
                     newTable.setLocation(file.getAbsolutePath());
                     if (newTable.getName() == null) {
                         newTable.setName(file.getName().split("[.]")[0]);
@@ -105,8 +104,10 @@ public class DefaultTableFactory {
                         }
                     }
                     //备份
-                    if (autoAlter)
+                    if (autoAlter) {
+                        String content = FileUtil.readFile2String(file.getAbsolutePath());
                         bakTable(oldName, content);
+                    }
                     logger.debug("init table success {}", file);
                 }
             } catch (Exception e) {

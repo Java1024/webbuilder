@@ -1,9 +1,11 @@
 package org.webbuilder.web.core.utils;
 
-import java.util.HashSet;
 import java.util.Random;
 import java.util.UUID;
 
+/**
+ * 随机数工具，用于产生随机数，随机密码等
+ */
 public class RandomUtil {
     private static final Random random = new Random();
 

@@ -20,14 +20,6 @@ public class StorageService {
         return getDriver(getDefault_name());
     }
 
-    public StorageDriver getConfigDriver() {
-        return getDriver(PropertiesStorageDriver.NAME);
-    }
-
-    public StorageDriver getLocalDriver() {
-        return getDriver(LocalStorageDriver.NAME);
-    }
-
     public StorageDriver getDriver(String name) {
         return StorageDriverManager.getDriver(name);
     }

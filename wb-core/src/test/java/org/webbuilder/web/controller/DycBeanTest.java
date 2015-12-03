@@ -7,6 +7,7 @@ import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.webbuilder.web.core.utils.DynamicDeployBeans;
+import org.webbuilder.web.service.basic.sql.SqlExecutor;
 import org.webbuilder.web.service.user.UserService;
 
 import javax.annotation.Resource;

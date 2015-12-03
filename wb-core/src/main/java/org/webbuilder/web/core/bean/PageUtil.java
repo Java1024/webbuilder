@@ -13,7 +13,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * 分页 工具
+ * 分页，查询增强工具
  *
  * @author ZhouHao
  */
@@ -56,10 +56,19 @@ public class PageUtil {
      */
     private int type;
 
+    /**
+     * 是否进行分页
+     */
     private boolean paging = true;
 
+    /**
+     * 指定要查询的字段
+     */
     private Set<String> includes = new LinkedHashSet<>();
 
+    /**
+     * 指定不查询的字段
+     */
     private Set<String> excludes = new LinkedHashSet<>();
 
     public Set<String> getIncludes() {
@@ -78,11 +87,23 @@ public class PageUtil {
         return excludes;
     }
 
+    /**
+     * 指定查询的字段列表，如传入 username,name，在sql里就只会执行 select username,name from table。
+     *
+     * @param fields 查询的字段列表
+     * @return this 引用
+     */
     public PageUtil includes(String... fields) {
         includes.addAll(Arrays.asList(fields));
         return this;
     }
 
+    /**
+     * 指定不需要查询的的字段列表
+     *
+     * @param fields 不需要查询的字段列表
+     * @return this 引用
+     */
     public PageUtil excludes(String... fields) {
         excludes.addAll(Arrays.asList(fields));
         includes.removeAll(Arrays.asList(fields));
@@ -226,18 +247,9 @@ public class PageUtil {
      */
     public Map<String, Object> params(int total) {
         Map<String, Object> params = params();
-        int firstResult = this.getStart();
-        int pageIndex = getPageIndex();
-        // 当前页没有数据后跳转到最后一页
-        if (this.getPageIndex() != 0 && this.getStart() >= total) {
-            int tmp = total / this.getPageSize();
-            pageIndex = total % this.getPageSize() == 0 ? tmp - 1 : tmp;
-            firstResult = pageIndex * this.getPageSize();
-        }
         // 设置分页参数
-        params.put("maxResults", this.getPageSize());
-        params.put("firstResult", firstResult);
-        params.put("pageIndex", pageIndex);
+        params.put("pageSize", getPageSize());
+        params.put("pageIndex", pageIndex(total));
         return params;
     }
 
@@ -251,7 +263,6 @@ public class PageUtil {
         return pageIndex;
     }
 
-
     @Override
     public int hashCode() {
         return new StringBuilder(getKey())
@@ -259,6 +270,8 @@ public class PageUtil {
                 .append(getPageSize())
                 .append(getSortField())
                 .append(getSortOrder())
+                .append(getIncludes())
+                .append(getExcludes())
                 .toString().hashCode();
     }
 }
