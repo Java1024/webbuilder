@@ -36,7 +36,6 @@ Authorize注解属性支持:(module,level),role,expression(表达式支持ognl�
         public Object info(@PathVariable("id") String id) {
             return super.info(id);
         }
-        
     }
 ```
 使用注解需要在springmvc配置中加入:
