@@ -1,6 +1,11 @@
 #模块组成
 wb项目核心模块，基于Spring+SpringMvc+MyBaits,所有模块通过restful+json访问。
-#目录结构
+
++ [项目结构](#项目结构)
++ [使用](#使用)
++ [全部功能](https://github.com/wb-goup/webbuilder/blob/master/wb-core/ALL.md)
+
+#项目结构
 ```bash
 |---org.webbuilde.web
 |-----------|--controller             springMvc控制层
