@@ -109,9 +109,13 @@ mybatis配置,配置应根据数据库类型,建立不同的目录,以实现不�
     <!-------------重要------------------>
     <!--字段信息配置，在查询的时候，指定字段信息，引用通用mapper配置，即可动态生成查询条件-->
     <sql id="fieldConfig">
+        <!--定义一个名为$fieldsInfo,类型为map的变量,等同于:{"key":"value",.....}
+         主要用于区分每个字段的类型,string,date,int 等
+        -->
         <bind name="$fieldsInfo"
               value="#{'u_id':'string','remark':'string','content':'string'
                     ,'create_date':'date','update_date':'date'}"/>
+         <!--定义一个名为$fields的集合,主要用于获取所有字段-->
         <bind name="$fields" value="$fieldsInfo.keySet()"/>
     </sql>
     <!--表名-->
