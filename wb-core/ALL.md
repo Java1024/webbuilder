@@ -1,8 +1,10 @@
 ####目录
-+ [权限控制&访问日志](#权限控制)
-+ [缓存](#缓存)
++ 一、[权限控制&访问日志](#权限控制)
++ 二、[缓存](#缓存)
 
-##权限控制
+
+
+#一、权限控制
 #####权限结构说明:
 ```bash
 |--------Module                 #系统模块,系统的所有可访问的功能,可设置此模块的可操作类型(CRUD等)
@@ -61,8 +63,8 @@ Authorize注解属性支持:(module,level),role,expression(表达式支持ognl�
     </aop:config>
 ```
 
-##缓存
-缓存功能基于web-util中的storage功能,轻度封装了spring的cacheManager,已实现本地缓存,和redis缓存支持.
+##二、缓存
+缓存功能基于[wb-utils](https://github.com/wb-goup/webbuilder/tree/master/wb-utils)模块中的storage功能,轻度封装了spring的cacheManager,已实现本地缓存,和redis缓存支持.
 配置:
 在spring配置文件中加入如下片段:
 本地缓存配置:
