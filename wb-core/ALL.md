@@ -64,9 +64,38 @@ Authorize注解属性支持:(module,level),role,expression(表达式支持ognl�
 ```
 
 ##二、缓存
-缓存功能基于[wb-utils](https://github.com/wb-goup/webbuilder/tree/master/wb-utils)模块中的storage功能,轻度封装了spring的cacheManager,已实现本地缓存,和redis缓存支持.
-配置:
-在spring配置文件中加入如下片段:
+缓存功能基于[wb-utils](https://github.com/wb-goup/webbuilder/tree/master/wb-utils)模块中的storage功能。
+轻度封装了spring的cacheManager,已实现本地缓存,和redis缓存支持.
+#####使用:
+1、可通过在controller或者service方法上加入注解@Cacheable启用缓存,@CacheEvict销毁缓存,来实现对方法返回结果缓存操作
+```java
+    //在查询到结果后，将u_id作为key加入缓存，下次调用，如果命中缓存，将直接返回缓存数据
+    @Cacheable(value = "my_cache", key = "#u_id")
+    public String selectByPk(String u_id) throws Exception {
+        return getMapper().selectByPk(u_id);
+    }
+    //修改后
+    @CacheEvict(value = "my_cache", key = "#data.u_id")
+    public String update(PO data) throws Exception {
+        return getMapper().update(data);
+    }
+```
+具体用法请咨询度娘:
+[spring Cacheable 注解](https://www.baidu.com/s?wd=Spring缓存注解Cacheable)、
+[spring spel 表达式](https://www.baidu.com/s?wd=Spring+spel+表达式)
+
+2、可通过StorageDriverManager.getDriver(name);来获取一个已经注册的存储驱动,通过驱动来获取存储器,通过存储器来获取缓存
+    如:
+```java
+//获取名为default的存储器驱动
+StorageDriver driver = StorageDriverManager.getDriver("default");
+//从驱动中获取名为user.cache,类型为User的存储器
+Storage<String, User> storage = driver.getStorage("user.cache",User.class);
+//从存储器中获取一个User对象
+User user = storage.get("user_id");
+```
+#####spring 配置
+
 本地缓存配置:
 ```xml
 <!--注册本地storage驱动-->
@@ -111,28 +140,4 @@ redis缓存配置:
     <!--缓存注解支持,在需要缓存的service方法中，注解 @Cacheable 或者@CacheEvict-->
     <cache:annotation-driven cache-manager="cacheManager"/>
 ```
-如何使用:
-1、可通过在controller或者service方法上加入注解@Cacheable启用缓存,@CacheEvict销毁缓存,来实现对方法返回结果缓存操作
-```java
-    //在查询到结果后，将u_id作为key加入缓存，下次调用，如果命中缓存，将直接返回缓存数据
-    @Cacheable(value = "my_cache", key = "#u_id")
-    public String selectByPk(String u_id) throws Exception {
-        return getMapper().selectByPk(u_id);
-    }
-    //修改后
-    @CacheEvict(value = "my_cache", key = "#data.u_id")
-    public String update(PO data) throws Exception {
-        return getMapper().update(data);
-    }
-```
-具体用法请咨询度娘:
-[spring Cacheable 注解](https://www.baidu.com/s?wd=Spring缓存注解Cacheable)
-[spring spel 表达式](https://www.baidu.com/s?wd=Spring+spel+表达式)
 
-2、可通过StorageDriverManager.getDriver(name);来获取一个已经注册的存储驱动,通过驱动来获取存储器,通过存储器来获取缓存
-    如:
-```java
-StorageDriver driver = StorageDriverManager.getDriver("default");
-Storage<String, User> storate = driver.getStorage("user.cache",User.class);
-User user = storate.get("user_id");
-```
