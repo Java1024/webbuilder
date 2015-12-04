@@ -1,6 +1,6 @@
 ####目录
-+ 一、[权限控制&访问日志](#一、权限控制)
-+ 二、[缓存](#二、缓存)
++ 一、[权限控制&访问日志](#一权限控制)
++ 二、[缓存](#二缓存)
 
 
 
@@ -98,7 +98,7 @@ User user = storage.get("user_id");
 
 本地缓存配置:
 ```xml
-<!--注册本地storage驱动-->
+<!--注册本地storage驱动,基于ConcurrentHashMap-->
 <bean id="localDriver" class="org.webbuilder.utils.storage.driver.local.LocalStorageDriver" init-method="init">
     <property name="name" value="${storage.default.name}"/>
 </bean>
@@ -108,7 +108,7 @@ User user = storage.get("user_id");
     <property name="driver" ref="localDriver"/>
 </bean>
 
-<!--缓存注解支持,在需要缓存的service方法中，注解 @Cacheable 或者@CacheEvict-->
+<!--注解式缓存支持-->
 <cache:annotation-driven cache-manager="cacheManager"/>
 ```
 redis缓存配置:
@@ -132,12 +132,12 @@ redis缓存配置:
     <bean id="redisDriver" class="org.webbuilder.utils.storage.driver.redis.RedisStorageDriver" init-method="init">
         <property name="name" value="${storage.default.name}"/>
         <property name="pool" ref="redisPool"/>
-        <!--使用2进制序列化与反序列化。如果不注入此属性默认使用的是json方式(存储的对象无序实现Serializable接口)-->
+        <!--使用jdk自带的对象序列化与反序列化。如果不注入此属性默认使用的是json方式-->
         <property name="defaultParserClass" value="org.webbuilder.utils.storage.instance.parser.ByteStorageParser"/>
-        <!--使用redis的hash方式实现对象的缓存存储（默认）-->
+        <!--使用redis的hash接口实现对象的缓存存储（使用hash结构让不同对象的存储相互隔离）-->
         <property name="defaultStorageClass" value="org.webbuilder.utils.storage.instance.redis.RedisHashStorage"/>
     </bean>
-    <!--缓存注解支持,在需要缓存的service方法中，注解 @Cacheable 或者@CacheEvict-->
+    <!--注解式缓存支持-->
     <cache:annotation-driven cache-manager="cacheManager"/>
 ```
 
