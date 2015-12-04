@@ -151,6 +151,7 @@ mybatis配置,配置应根据数据库类型,建立不同的目录,以实现不�
     </select>
 </mapper>
 ```
+通用配置看过来:[BasicMapper.xml](https://github.com/wb-goup/webbuilder/blob/master/wb-core/src/main/java/org/webbuilder/web/dao/basic/mapper/mysql/BasicMapper.xml)
 ####3、建立service
 ```java
 /**
