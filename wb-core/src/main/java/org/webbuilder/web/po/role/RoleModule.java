@@ -37,9 +37,6 @@ public class RoleModule extends GenericPo<String> {
     private Map<String, String> script_confMap;
 
     public boolean on(String event, Map<String, Object> param) {
-        if(script_confMap!=null){
-            
-        }
         return true;
     }
 

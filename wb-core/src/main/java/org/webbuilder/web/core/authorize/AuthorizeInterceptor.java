@@ -140,6 +140,7 @@ public class AuthorizeInterceptor implements HandlerInterceptor {
 
     //验证授权
     private boolean validAuthorize(HttpServletRequest request, HttpServletResponse response, AuthorizeInfo authorize) throws Exception {
+        if (authorize == null) return false;
         boolean authorized = false;
         User user = WebUtil.getLoginUser(request);
         String msg = ajaxLoginMsg;
@@ -171,7 +172,7 @@ public class AuthorizeInterceptor implements HandlerInterceptor {
                 String uri = WebUtil.getBasePath(request).concat(WebUtil.getUri(request, true));
                 String url = loginPath.concat(loginPath.contains("?") ? "&" : "?").concat("url=").concat(URLEncoder.encode(uri, "utf8"));
                 if (logger.isInfoEnabled()) {
-                    logger.info(String.format("not login,redirect:", url));
+                    logger.info(String.format("not login,redirect:%s", url));
                 }
                 response.sendRedirect(WebUtil.getBasePath(request).concat(url));
                 return false;
@@ -311,24 +312,7 @@ public class AuthorizeInterceptor implements HandlerInterceptor {
                 //} else if (excludes.size() > 0) {
                 //表达式验证 尚未提供支持
                 //
-            } else if (expression.size() > 0) {
-                //验证表达式
-                for (Expression expre : expression) {
-                    try {
-                        //执行表达式
-                        Map<String, Object> root = new LinkedHashMap<>();
-                        root.put("user", user);
-                        for (MethodParameter parameter : handlerMethod.getMethodParameters()) {
-                            System.out.println(parameter.getParameterName());
-                        }
-                        MethodParameter[] parameter = handlerMethod.getMethodParameters();
-                        System.out.println(parameter);
-                        DynamicScriptEngineFactory.getEngine(expre.getType()).execute(expre.getId(), root);
-                    } catch (Exception e) {
-
-                    }
-                }
-            }else{
+            } else {
                 //只需要登陆即可
                 return true;
             }

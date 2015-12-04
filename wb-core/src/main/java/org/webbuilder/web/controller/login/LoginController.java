@@ -33,8 +33,6 @@ import java.util.HashMap;
 @AccessLogger("授权")
 public class LoginController {
 
-    private org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
-
     @Resource
     private UserService userService;
 

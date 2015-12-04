@@ -154,7 +154,6 @@ public class ConfigController extends GenericController<Config, String> {
 
     @Override
     @RequestMapping(value = "/{id:.+}", method = RequestMethod.GET)
-    @AccessLogger("查询明细")
     public Object info(@PathVariable("id") String id) {
         return super.info(id);
     }

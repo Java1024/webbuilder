@@ -45,7 +45,6 @@ public class ValidResults extends ArrayList<ValidResults.ValidResult> implements
     public class ValidResult {
         public ValidResult() {
         }
-
         /**
          * 带参数构造方法，用于初始化验证的字段和验证的结果
          *

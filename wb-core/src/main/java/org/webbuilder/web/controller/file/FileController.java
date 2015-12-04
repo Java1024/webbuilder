@@ -125,6 +125,7 @@ public class FileController {
                     stream.flush();
                 } catch (Exception e) {
                     logger.debug(String.format("download file error%s", e.getMessage()));
+                    throw e;
                 }
                 return null;
             }

@@ -214,6 +214,7 @@ public class Module extends GenericPo<String> implements Comparable<Module> {
 
     @Override
     public boolean equals(Object obj) {
+        if (obj == null) return false;
         return this.hashCode() == obj.hashCode();
     }
 
