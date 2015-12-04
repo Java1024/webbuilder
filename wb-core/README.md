@@ -1,6 +1,3 @@
-# webbuilder
-##一个快速搭建企业级应用的javaweb框架
-
 #模块组成
 wb项目核心模块，基于Spring+SpringMvc+MyBaits,所有模块通过restful+json访问。
 #目录结构
