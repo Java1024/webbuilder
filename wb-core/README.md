@@ -30,7 +30,7 @@ wb项目核心模块，基于Spring+SpringMvc+MyBaits,所有模块通过restful+
 |------------------------service     基础Service,实现基本的CRUD功能的控制器
 |------------------------utils       web常用工具类
 |------------------------websocket   websocket相关，实现基于命令的websocket服务
-|--
+|-- 
 |-------------dao                    mybatis数据映射层
 |------------------------basic       基础映射接口配置,实现通用的查询sql生成。
 |------------------------config      配置管理
