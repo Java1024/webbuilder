@@ -143,6 +143,11 @@ mybatis配置,配置应根据数据库类型,建立不同的目录,以实现不�
     </select>
     
     <!--这里的查询时调用了通用配置,根据指定的字段和条件动态生成sql语句.mybatis配置中表达式使用的是ognl,拓展性很强-->
+    <!--
+            这里参数类型使用map,查询条件支持特殊写法,在字段后追加$[KEY],如:字段有name.可以传入name$LIKE 进行模糊查询。
+            支持如下功能: $LIKE,$IN(参数必须是一个集合),$GT,$LT,$NOT,$NOTNULL等等。
+            通过引入通用配置,即可实现字段的多种查询功能,无需配置
+    -->
     <select id="select" parameterType="map" resultMap="ConfigResultMap">
         <include refid="fieldConfig"/>
         <include refid="tableName"/>
