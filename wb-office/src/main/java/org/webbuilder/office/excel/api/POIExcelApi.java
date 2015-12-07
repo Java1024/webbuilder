@@ -9,6 +9,7 @@ import org.webbuilder.office.excel.config.ExcelReaderCallBack;
 import java.io.InputStream;
 
 /**
+ * POI的excel读取实现
  * Created by 浩 on 2015-12-07 0007.
  */
 public class POIExcelApi implements ExcelApi {
@@ -17,6 +18,7 @@ public class POIExcelApi implements ExcelApi {
         // POIFSFileSystem fs = new POIFSFileSystem(input);
         // 兼容读取 支持2007 +
         Workbook wbs = WorkbookFactory.create(inputStream);
+        //获取sheets
         for (int x = 0; x < wbs.getNumberOfSheets(); x++) {
             Sheet sheet = wbs.getSheetAt(x);
             // 得到总行数
@@ -29,6 +31,7 @@ public class POIExcelApi implements ExcelApi {
                     if (callBack.isShutdown()) {
                         return;
                     }
+                    //创建单元格数据
                     ExcelReaderCallBack.CellContent cellContent = new ExcelReaderCallBack.CellContent();
                     cellContent.setFirst(j == 0);
                     cellContent.setLast(j == colNum - 1);
@@ -37,13 +40,19 @@ public class POIExcelApi implements ExcelApi {
                     cellContent.setColumn(j);
                     Object value = row == null ? null : cell2Object(row.getCell(j));
                     cellContent.setValue(value);
+                    //调用回掉
                     callBack.onCell(cellContent);
                 }
             }
         }
     }
 
-
+    /**
+     * 将单元格数据转为java对象
+     *
+     * @param cell 单元格数据
+     * @return 对应的java对象
+     */
     protected Object cell2Object(Cell cell) {
         if (cell == null)
             return "";

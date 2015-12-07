@@ -5,6 +5,7 @@ import org.webbuilder.office.excel.config.ExcelReaderCallBack;
 import java.io.InputStream;
 
 /**
+ * excel操作的API接口
  * Created by 浩 on 2015-12-07 0007.
  */
 public interface ExcelApi {

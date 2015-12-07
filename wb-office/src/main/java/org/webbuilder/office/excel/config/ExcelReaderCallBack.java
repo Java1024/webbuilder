@@ -13,8 +13,16 @@ public interface ExcelReaderCallBack {
      */
     void onCell(CellContent content) throws Exception;
 
+    /**
+     * 是否已经手动结束读取，如果已经结束，将立即终止读取。
+     *
+     * @return 是否已经结束
+     */
     boolean isShutdown();
 
+    /**
+     * 终止读取
+     */
     void shutdown();
 
     /**
@@ -41,8 +49,14 @@ public interface ExcelReaderCallBack {
          */
         private Object value;
 
+        /**
+         * 是否为第一个单元格
+         */
         private boolean first;
 
+        /**
+         * 是否为最后一个单元格
+         */
         private boolean last;
 
         public int getRow() {
