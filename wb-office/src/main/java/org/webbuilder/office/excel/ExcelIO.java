@@ -1,10 +1,14 @@
 package org.webbuilder.office.excel;
 
+import org.webbuilder.office.excel.config.ExcelWriterConfig;
+import org.webbuilder.office.excel.config.Header;
 import org.webbuilder.office.excel.support.CommonExcelReader;
+import org.webbuilder.office.excel.support.CommonExcelWriter;
 import org.webbuilder.office.excel.wrapper.BeanWrapper;
 import org.webbuilder.office.excel.wrapper.HashMapWrapper;
 
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -56,4 +60,19 @@ public class ExcelIO {
         reader.setWrapper(wrapper);
         return reader.readExcel(inputStream);
     }
+
+
+    public static void write(OutputStream outputStream, List<Header> headers, List<Object> dataList) throws Exception {
+        ExcelWriterConfig config = new ExcelWriterConfig();
+        config.setHeaders(headers);
+        config.setDatas(dataList);
+        write(outputStream, config);
+    }
+
+    public static void write(OutputStream outputStream, ExcelWriterConfig config, ExcelWriterConfig... moreSheet) throws Exception {
+        CommonExcelWriter writer = new CommonExcelWriter();
+        writer.write(outputStream, config, moreSheet);
+    }
+
+
 }

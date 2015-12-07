@@ -18,7 +18,7 @@ import java.util.List;
  */
 public abstract class AbstractExcelReader<T> implements ExcelReader<T> {
 
-    protected ExcelApi api = new POIExcelApi();
+    protected ExcelApi api = POIExcelApi.getInstance();
 
     public abstract ExcelReaderWrapper<T> getWrapper();
 
