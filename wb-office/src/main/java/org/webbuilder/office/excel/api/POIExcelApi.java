@@ -102,7 +102,7 @@ public class POIExcelApi implements ExcelApi {
         Workbook workbook = new XSSFWorkbook();
         //合并所有需要写出的sheet
         List<ExcelWriterConfig> allSheet = new ArrayList<>(Arrays.asList(moreSheet));
-        allSheet.add(0,config);
+        allSheet.add(0, config);
         int index = 0;
         try {
             for (ExcelWriterConfig writerConfig : allSheet) {
@@ -169,7 +169,7 @@ public class POIExcelApi implements ExcelApi {
             }
             if (logger.isInfoEnabled())
                 logger.info("init column: {}->{}", header.getField(), header.getTitle());
-            //开始遍历数据
+            //-------------------开始遍历数据-------------
             for (int r = rowStart; r < rowEnd; r++) {
                 Object value = null;
                 Row row;
@@ -179,6 +179,7 @@ public class POIExcelApi implements ExcelApi {
                     if (callBack != null) {
                         value = callBack.startBefore(c, r);
                     }
+                    //创建行对象
                     row = sheet.getRow(r) == null ? sheet.createRow(r) : sheet.getRow(r);
                 } else {
                     Object data = datas.get(r - config.getStartWith());
@@ -188,6 +189,7 @@ public class POIExcelApi implements ExcelApi {
                     } catch (Exception e) {
                     }
                     if (value == null) value = "";
+                    //创建行对象
                     row = sheet.getRow(r + 1) == null ? sheet.createRow(r + 1) : sheet.getRow(r + 1);
                 }
                 Cell cell = row.createCell(c);
@@ -228,6 +230,8 @@ public class POIExcelApi implements ExcelApi {
             }
         }
     }
+
+
 
     /**
      * 初始化单元格
@@ -374,7 +378,7 @@ public class POIExcelApi implements ExcelApi {
      * @throws Exception
      */
     protected void prepareMerges(List<Object> dataList, Map<String, Integer> cols, ExcelWriterConfig config) {
-        // 列所在索引/////列计数器///////////上一次合并的列位置
+        // 列所在索引//列计数器////上一次合并的列位置
         int index, countNumber, lastMergeNumber;
         //已合并列的缓存
         List<String> temp = new ArrayList<>();
@@ -416,7 +420,6 @@ public class POIExcelApi implements ExcelApi {
                 }
                 // 上一行数据
                 lastData = val;
-
             }
         }
     }

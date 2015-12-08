@@ -1,10 +1,14 @@
 package org.webbuilder.office.excel.config;
 
 /**
+ * 自定义列样式
  * Created by 浩 on 2015-12-07 0007.
  */
 public class CustomColumnStyle {
-    private int width = 20;
+    /**
+     * 列宽度
+     */
+    private int width = 5000;
 
     public CustomColumnStyle() {
     }

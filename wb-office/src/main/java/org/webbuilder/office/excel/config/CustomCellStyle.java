@@ -1,29 +1,64 @@
 package org.webbuilder.office.excel.config;
 
 /**
+ * 自定义单元格样式
  * Created by 浩 on 2015-12-07 0007.
  */
 public class CustomCellStyle {
 
+    /**
+     * 字体名称
+     */
     private String fontName;
 
+    /**
+     * 字体颜色
+     */
     private short fontColor;
 
+    /**
+     * 数据类型,int,double,date,string
+     */
     private String dataType;
 
+    /**
+     * 重新赋值
+     */
     private Object value;
 
+    /**
+     * 表格样式：上边框
+     */
     private Border borderTop;
 
+    /**
+     * 表格样式：下边框
+     */
     private Border borderBottom;
 
+    /**
+     * 表格样式：左边框
+     */
     private Border borderLeft;
 
+    /**
+     * 表格样式：右边框
+     */
     private Border borderRight;
 
+    /**
+     * 数据格式
+     */
     private String format;
 
+    /**
+     * 左右对齐方式
+     */
     private short alignment;
+
+    /**
+     * 垂直对齐方式
+     */
     private short verticalAlignment;
 
     public short getAlignment() {

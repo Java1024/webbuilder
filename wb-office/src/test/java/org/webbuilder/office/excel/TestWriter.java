@@ -137,9 +137,8 @@ public class TestWriter {
             config.mergeColumn("grade", "classes", "sex");
             //2、从第2行开始写出
             config.setStartWith(1);
-            //3、合并第一行的第一列到第四列,因为设置了startWith起始行号为1,所以第一列为-1
+            //3、合并第一行的第一列到第六列,因为设置了startWith起始行号为1,所以第一列为-1
             config.addMerge(-1, 0, 5, -1);
-
             config.setCallBack(new CommonExcelWriterCallBack() {
                 @Override
                 public Object startBefore(int row, int column) {
@@ -150,7 +149,7 @@ public class TestWriter {
                 @Override
                 public CustomCellStyle getCellStyle(int row, int column, String header, Object value) {
                     CustomCellStyle style = super.getCellStyle(row, column, header, value);
-                    //不为表头或者第一行的姓名列
+                    //不为表头并且为姓名列
                     if (row > 0 && "姓名".equals(header)) {
                         //设置红色
                         style.setFontColor(HSSFColor.RED.index);
@@ -194,4 +193,5 @@ public class TestWriter {
             outputStream.flush();
         }
     }
+
 }
