@@ -24,13 +24,10 @@ import java.util.Date;
 public class TestCrawler {
 
     static int counting = 0;
-    static final String url = "http://202.98.57.19:9006/solr/";
-    static final SolrClient client = new HttpSolrClient(url);
     static final PathMatcher matcher = new AntPathMatcher();
 
     public static void main(String[] args) throws Exception {
         start();
-
     }
 
 
@@ -42,7 +39,6 @@ public class TestCrawler {
         config.setCrawlStorageFolder(crawlStorageFolder);
         config.setMaxTotalConnections(10000);
         config.setMaxConnectionsPerHost(10000);
-        config.setResumableCrawling(true);
         config.setMaxDepthOfCrawling(5);//爬行深度
         PageFetcher pageFetcher = new PageFetcher(config);
         RobotstxtConfig robotstxtConfig = new RobotstxtConfig();
@@ -53,7 +49,7 @@ public class TestCrawler {
         controller.addSeed("http://www.jd.com/");
         CommonWebCrawler crawler = new CommonWebCrawler();
         // crawler.setExtractor(new JsoupHtmlContentExtractor(".content"));
-        crawler.setWaitFor(1000);
+        crawler.setWaitFor(10);
 
         crawler.addPathMatcher("http://*.jd.com/**/*");
         crawler.addListener(new CrawlerListener() {
@@ -67,18 +63,10 @@ public class TestCrawler {
             public void onVisit(Page page, String content) {
                 try {
                     if (!matcher.match("http://item.jd.com/*.html", page.getWebURL().toString())) {
-                        System.out.println(page.getWebURL() + " 跳过!"+page.getWebURL().getDomain());
+                        System.out.println(page.getWebURL() + " 跳过!" + page.getWebURL().getDomain());
                         return;
                     }
-                    SolrInputDocument document = new SolrInputDocument();
-                    String html = new String(page.getContentData(), page.getContentCharset());
-                    document.addField("content_s", content);
-                    document.addField("url_s", page.getWebURL().toString());
-                    document.addField("title_s", Jsoup.parse(html).select("title").text());
-                    document.addField("create_date_d", new Date());
-                    document.addField("id", String.valueOf(page.getWebURL().getDocid()));
-                    client.add("main", document);
-                    client.commit("main");
+                    System.out.println(content);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
