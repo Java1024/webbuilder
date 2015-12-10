@@ -85,8 +85,9 @@ public abstract class AbstractJdbcSqlExecutor implements SqlExecutor {
             T data = wrapper.newInstance();
             for (String header : headers) {
                 Object value = resultSet.getObject(header);
-                wrapper.wrapper(data, index++, header, value);
+                wrapper.wrapper(data, index, header, value);
             }
+            index++;
             wrapper.done(data);
             datas.add(data);
         }
@@ -115,8 +116,9 @@ public abstract class AbstractJdbcSqlExecutor implements SqlExecutor {
             data = wrapper.newInstance();
             for (String header : headers) {
                 Object value = resultSet.getObject(header);
-                wrapper.wrapper(data, index++, header, value);
+                wrapper.wrapper(data, index, header, value);
             }
+            index++;
             wrapper.done(data);
         }
         resetConnection(connection);
