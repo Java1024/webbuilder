@@ -10,26 +10,30 @@ import org.webbuilder.sql.param.query.GroupBy;
 import org.webbuilder.sql.param.query.OrderBy;
 import org.webbuilder.utils.base.StringUtil;
 
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
+ * 抽象关键字映射器
  * Created by 浩 on 2015-11-09 0009.
  */
 public abstract class AbstractKeywordsMapper implements KeywordsMapper {
 
-    private static final Map<String, String> methods = new ConcurrentHashMap<>();
+    //支持的函数
+    private final Map<String, String> methods = new HashMap<>();
 
-    static {
+    public AbstractKeywordsMapper() {
         methods.put("count", "count(%s)");
         methods.put("sum", "sum(%s)");
         methods.put("avg", "avg(%s)");
     }
 
-    //
+    /**
+     * 根据查询类型获取查询字段模板包装器,
+     *
+     * @param type 查询类型
+     * @return
+     */
     protected abstract FieldTemplateWrapper getQueryTypeMapper(ExecuteCondition.QueryType type);
 
     @Override
@@ -38,7 +42,7 @@ public abstract class AbstractKeywordsMapper implements KeywordsMapper {
         Set<String> tables = new LinkedHashSet<>();
         tables.add(executeCondition.getTable());
         if (!executeCondition.getTableMetaData().hasField(executeCondition.getFullField())
-                &&!executeCondition.getTableMetaData().hasCorrelation(executeCondition.getTable()))
+                && !executeCondition.getTableMetaData().hasCorrelation(executeCondition.getTable()))
             return null;
         //模板
         FieldTemplateWrapper wrapper = getQueryTypeMapper(executeCondition.getQueryType());
@@ -76,10 +80,10 @@ public abstract class AbstractKeywordsMapper implements KeywordsMapper {
 
     @Override
     public String getFieldTemplate(IncludeField include) {
-        if (include instanceof OrderBy) {
+        if (include instanceof OrderBy) {//如果字段是order by
             return orderBy((OrderBy) include);
         } else if (include instanceof GroupBy) {
-            return groupBy((GroupBy) include);
+            return groupBy((GroupBy) include); //如果字段是group by
         } else {
             return select(include);
         }

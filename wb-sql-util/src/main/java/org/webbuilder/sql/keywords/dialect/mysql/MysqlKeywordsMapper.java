@@ -5,36 +5,51 @@ import org.webbuilder.sql.keywords.dialect.AbstractKeywordsMapper;
 import org.webbuilder.sql.keywords.dialect.mysql.wrapper.*;
 import org.webbuilder.sql.param.ExecuteCondition;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
+ * MYSQL关键字映射器,用于获取MYSQL专用的关键字等信息
  * Created by 浩 on 2015-11-09 0009.
  */
 public class MysqlKeywordsMapper extends AbstractKeywordsMapper {
 
-    private static final Map<ExecuteCondition.QueryType, FieldTemplateWrapper> wrappers = new ConcurrentHashMap<>();
+    //字段模板包装其
+    private static final Map<ExecuteCondition.QueryType, FieldTemplateWrapper> wrappers = new HashMap<>();
 
     static {
+        // =
         addWrapper(new EQWrapper(true));
+        // !=
         addWrapper(new EQWrapper(false));
 
+        // like '%?'
         addWrapper(new EndWrapper(true));
+        // not like '%?'
         addWrapper(new EndWrapper(false));
 
+        // like '?%'
+        addWrapper(new StartWrapper(true));
+        // not like '?%'
+        addWrapper(new StartWrapper(false));
+        // in (?,?)
         addWrapper(new INWrapper(true));
+        // not in (?,?)
         addWrapper(new INWrapper(false));
 
+        // like '%?%'
         addWrapper(new LIKEWrapper(true));
+        // not like '%?%'
         addWrapper(new LIKEWrapper(false));
 
+        // is null
         addWrapper(new NullWrapper(true));
+        // is not null
         addWrapper(new NullWrapper(false));
 
-        addWrapper(new StartWrapper(true));
-        addWrapper(new StartWrapper(false));
-
+        // >=
         addWrapper(new ThanWrapper(true));
+        // <=
         addWrapper(new ThanWrapper(false));
     }
 

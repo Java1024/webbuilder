@@ -5,34 +5,74 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
+ * 字段元数据类
  * Created by 浩 on 2015-11-06 0006.
  */
 public class FieldMetaData implements Serializable {
 
+    /**
+     * 表元数据
+     */
     private TableMetaData tableMetaData;
 
+    /**
+     * 字段名称
+     */
     private String name;
 
+    /**
+     * 字段别名
+     */
     private String alias;
 
+    /**
+     * 字段备注
+     */
     private String comment;
 
+    /**
+     * 字段的java类型,默认为String类型
+     */
     private Class<?> javaType;
 
+    /**
+     * 字段数据库类型,如 varchar,datetime等，(需要与使用的数据库对应)
+     */
     private String dataType;
 
+    /**
+     * 字段长度
+     */
     private int length;
 
+    /**
+     * 是否不能为null
+     */
     private boolean notNull;
 
+    /**
+     * 是否为主键
+     */
     private boolean primaryKey;
 
+    /**
+     * 默认值
+     */
     private Object defaultValue;
 
+    /**
+     * 验证器
+     */
     private String validator;
 
+    /**
+     * 字段是否可进行修改
+     */
     private boolean canUpdate = true;
 
+    /**
+     * 字段的自定义属性
+     */
     private Map<String, Object> attr = new LinkedHashMap<>();
 
 
@@ -45,25 +85,54 @@ public class FieldMetaData implements Serializable {
         this.dataType = dataType;
     }
 
+    /**
+     * 设置字段的自定义属性
+     *
+     * @param key  属性名称
+     * @param attr 属性值
+     * @return 设置的值
+     */
     public Object attr(String key, Object attr) {
         this.attr.put(key, attr);
         return attr;
     }
 
+    /**
+     * 设置多个字段的自定义属性
+     *
+     * @param attr 属性列表
+     * @return 字段的全部自定义属性
+     */
     public Map<String, Object> attr(Map<String, Object> attr) {
         this.attr.putAll(attr);
-
         return this.attr;
     }
 
+    /**
+     * 获取一个自定义属性值
+     *
+     * @param key 属性名称
+     * @return 属性值
+     */
     public Object attr(String key) {
         return attr.get(key);
     }
 
+    /**
+     * 获取所有自定义属性
+     *
+     * @return 所有自定义属性
+     */
     public Map<String, Object> attr() {
         return attr;
     }
 
+    /**
+     * 删除一个自定义属性
+     *
+     * @param attr 属性名称
+     * @return 被删除的属性值
+     */
     public Object removeAttr(String attr) {
         return this.attr.remove(attr);
     }

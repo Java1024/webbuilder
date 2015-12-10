@@ -8,18 +8,36 @@ import org.webbuilder.sql.parser.ExecuteConditionParser;
 import java.util.*;
 
 /**
+ * 查询参数
  * Created by 浩 on 2015-11-06 0006.
  */
 public class QueryParam extends SqlRenderConfig {
 
+    /**
+     * 是否分页
+     */
     private boolean paging = false;
 
+    /**
+     * 分页开始页码,从0开始
+     */
     private int pageIndex = 0;
 
+    /**
+     * 每页数量,默认50
+     */
     private int pageSize = 50;
 
+    /**
+     * 查询参数原始对象
+     */
     private Map<String, Object> param = new LinkedHashMap<>();
 
+    /**
+     * 是否跳过执行触发器
+     *
+     * @return this 实例
+     */
     public QueryParam skipTrigger() {
         this.addProperty("skipTrigger", true);
         return this;
@@ -118,7 +136,6 @@ public class QueryParam extends SqlRenderConfig {
 
     public QueryParam where(String conditionJson) {
         param.putAll(JSON.parseObject(conditionJson));
-        // this.getConditions().addAll(ExecuteConditionParser.parseByJson(conditionJson));
         return this;
     }
 

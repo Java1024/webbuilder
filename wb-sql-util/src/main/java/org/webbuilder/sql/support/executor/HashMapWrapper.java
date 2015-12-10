@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
+ * 基于HashMap的包装器,用于将查询结果包装为HashMap
  * Created by 浩 on 2015-11-10 0010.
  */
 public class HashMapWrapper implements ObjectWrapper<Map<String, Object>> {
@@ -17,6 +18,7 @@ public class HashMapWrapper implements ObjectWrapper<Map<String, Object>> {
     private static final Map<Class, DataFormat> formatBase = new ConcurrentHashMap<>();
 
     static {
+        //提供将BigDecimal类型转为Long类型
         addFormat(new DataFormat<BigDecimal, Long>() {
             @Override
             public Class<BigDecimal> support() {
@@ -28,6 +30,7 @@ public class HashMapWrapper implements ObjectWrapper<Map<String, Object>> {
                 return data.longValue();
             }
         });
+        //提供将Timestamp类型转为Date类型
         addFormat(new DataFormat<Timestamp, Date>() {
             @Override
             public Class<Timestamp> support() {
@@ -42,7 +45,6 @@ public class HashMapWrapper implements ObjectWrapper<Map<String, Object>> {
     }
 
     public HashMapWrapper() {
-
     }
 
     public static <T extends DataFormat> T addFormat(T format) {
@@ -67,6 +69,13 @@ public class HashMapWrapper implements ObjectWrapper<Map<String, Object>> {
         putValue(instance, attr, value);
     }
 
+    /**
+     * 向一个map实例填充一个属性,属性支持嵌套如,userInfo.name
+     *
+     * @param instance 要进行填充的实例
+     * @param attr     属性名
+     * @param value    属性值
+     */
     public void putValue(Map<String, Object> instance, String attr, Object value) {
         if (attr.contains(".")) {
             String[] attrs = StringUtil.splitFirst(attr, "[.]");

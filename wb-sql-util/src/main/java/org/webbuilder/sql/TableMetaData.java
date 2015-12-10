@@ -137,7 +137,7 @@ public class TableMetaData implements Serializable {
         if (!hasField(name)) return null;
         if (name.contains(".")) {
             String[] tmp = name.split("[.]");
-            TableMetaData tableMetaData = dataBaseMetaData.getTable(tmp[0]);
+            TableMetaData tableMetaData = dataBaseMetaData.getTableMetaData(tmp[0]);
             if (this.hasCorrelation(tmp[0]) && tableMetaData == null) {
                 tableMetaData = getDataBaseMetaData().getTableMetaData(getCorrelation(tmp[0]).getTargetTable());
             }

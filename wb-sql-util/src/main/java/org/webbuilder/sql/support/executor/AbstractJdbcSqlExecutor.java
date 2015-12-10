@@ -17,10 +17,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ * 基于jdbc的通用sql执行器,继承改类,实现getConnection方法,返回JDBC链接,调用其它方法即可进行sql执行
  * Created by 浩 on 2015-11-09 0009.
  */
 public abstract class AbstractJdbcSqlExecutor implements SqlExecutor {
 
+    /**
+     * @return
+     */
     public abstract Connection getConnection();
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -28,6 +32,15 @@ public abstract class AbstractJdbcSqlExecutor implements SqlExecutor {
     private static final Pattern APPEND_PATTERN = Pattern.compile("(?<=$\\{)(.+?)(?=\\})");
     private static final Pattern PREPARED_PATTERN = Pattern.compile("(?<=#\\{)(.+?)(?=\\})");
 
+    /**
+     * 将sql模板编译为sql信息个
+     * 模板语法:${}代表直接拼接sql,#{}使用预编译
+     * 如: 模板参数为:{name:"张三",age:10},sql为:select * from user where name=#{name} and age=${age}
+     * 将被编译为:select * from user where name=? and age=10。 参数列表:["张三"]
+     *
+     * @param sql sql模板
+     * @return sql 信息
+     */
     public SQLInfo compileSql(SQL sql) {
         SQLInfo sqlInfo = new SQLInfo();
         String sqlTemplate = sql.getSql();
@@ -36,6 +49,7 @@ public abstract class AbstractJdbcSqlExecutor implements SqlExecutor {
         Matcher append_matcher = APPEND_PATTERN.matcher(sqlTemplate);
         List<Object> params = new LinkedList<>();
 
+        //直接拼接sql
         while (append_matcher.matches()) {
             String group = append_matcher.group();
             Object obj = param.get(group);
@@ -46,6 +60,7 @@ public abstract class AbstractJdbcSqlExecutor implements SqlExecutor {
                 }
             sqlTemplate = sqlTemplate.replaceFirst(StringUtil.concat("$\\{", group.replace("$", "\\$"), "\\}"), String.valueOf(obj));
         }
+        //参数预编译sql
         while (prepared_matcher.find()) {
             String group = prepared_matcher.group();
             sqlTemplate = sqlTemplate.replaceFirst(StringUtil.concat("#\\{", group.replace("$", "\\$"), "\\}"), "?");
@@ -66,15 +81,18 @@ public abstract class AbstractJdbcSqlExecutor implements SqlExecutor {
 
     @Override
     public <T> List<T> list(SQL sql, ObjectWrapper<T> wrapper) throws Exception {
+        //将sql模板编译为可执行的sql
         SQLInfo info = compileSql(sql);
-        printSql(info);
+        printSql(info);//打印sql信息
         Connection connection = getConnection();
+        //预编译SQL
         PreparedStatement statement = connection.prepareStatement(info.getSql());
-        //预编译参数
         this.preparedParam(statement, info);
+        //执行sql
         ResultSet resultSet = statement.executeQuery();
         ResultSetMetaData metaData = resultSet.getMetaData();
         int count = metaData.getColumnCount();
+        //获取到执行sql后返回的列信息
         List<String> headers = new ArrayList<>();
         for (int i = 1; i <= count; i++) {
             headers.add(metaData.getColumnLabel(i));
@@ -82,6 +100,7 @@ public abstract class AbstractJdbcSqlExecutor implements SqlExecutor {
         int index = 0;
         List<T> datas = new ArrayList<>();
         while (resultSet.next()) {
+            //调用包装器,将查询结果包装为对象
             T data = wrapper.newInstance();
             for (String header : headers) {
                 Object value = resultSet.getObject(header);
@@ -91,6 +110,7 @@ public abstract class AbstractJdbcSqlExecutor implements SqlExecutor {
             wrapper.done(data);
             datas.add(data);
         }
+        //重置JDBC链接
         resetConnection(connection);
         return datas;
     }

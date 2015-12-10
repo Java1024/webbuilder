@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * sql模板对象接口,提供需要执行sql的模板以及参数等信息
  * Created by 浩 on 2015-11-06 0006.
  */
 public interface SQL {

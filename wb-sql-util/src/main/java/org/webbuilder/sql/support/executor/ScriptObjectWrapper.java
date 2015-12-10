@@ -44,8 +44,8 @@ public class ScriptObjectWrapper implements ObjectWrapper<Object> {
                 logger.warn("{} 触发器 {} 执行异常! 已使用默认Wrapper!", tableMetaData.toString(), Constant.TRIGGER_SELECT_WRAPPER_INSTANCE, e);
             }
         } else {
-            if (logger.isDebugEnabled())
-                logger.debug("{} 触发器 {} 不支持或者未注册! 已使用默认Wrapper!", tableMetaData.toString(), Constant.TRIGGER_SELECT_WRAPPER_INSTANCE);
+            if (logger.isInfoEnabled())
+                logger.info("{} 触发器 {} 不支持或者未注册! 已使用默认Wrapper!", tableMetaData.toString(), Constant.TRIGGER_SELECT_WRAPPER_INSTANCE);
         }
         return defaultWrapper.newInstance();
     }

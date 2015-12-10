@@ -5,7 +5,7 @@ import org.webbuilder.sql.param.query.QueryParam;
 import java.util.List;
 
 /**
- * 查询接口，通过此接口进行表数据查询
+ * 查询器，通过此接口进行表数据查询
  * Created by 浩 on 2015-11-06 0006.
  */
 public interface Query {

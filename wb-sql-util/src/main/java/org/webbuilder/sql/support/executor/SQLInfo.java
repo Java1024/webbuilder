@@ -1,13 +1,23 @@
 package org.webbuilder.sql.support.executor;
 
 /**
+ * 可执行的SQL信息类
  * Created by 浩 on 2015-11-09 0009.
  */
 public class SQLInfo {
+    /**
+     * sql语句
+     */
     private String sql;
 
+    /**
+     * 参数列表
+     */
     private Object[] param;
 
+    /**
+     * 参数字符串
+     */
     private String paramString;
 
     public String getSql() {

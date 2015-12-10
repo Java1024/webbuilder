@@ -13,9 +13,12 @@ import org.webbuilder.sql.support.common.oracle.OracleTableAlterRender;
 import org.webbuilder.sql.support.common.oracle.OracleTableCreateRender;
 
 /**
+ * MYSQL数据库支持
  * Created by 浩 on 2015-11-17 0017.
  */
 public class MysqlDataBaseMetaData extends DataBaseMetaData {
+
+    //初始化sql模板渲染器,使用通用的sql模板,另外提供MYSQL专用的表结构处理模板渲染器
     protected SqlTemplateRender sqlTemplateRender = new CommonSqlTemplateRender() {
         @Override
         public void init(TableMetaData tableMetaData) {
@@ -25,7 +28,9 @@ public class MysqlDataBaseMetaData extends DataBaseMetaData {
             cacheTemplate(tableMetaData.getName(), new MysqlTableCreateRender(tableMetaData));
         }
     };
+    //mysql 关键字映射
     protected KeywordsMapper keywordsMapper = new MysqlKeywordsMapper();
+
     protected String name = "mysql";
 
     @Override
