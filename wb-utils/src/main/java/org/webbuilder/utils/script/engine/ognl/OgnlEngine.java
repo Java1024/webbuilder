@@ -1,14 +1,8 @@
 package org.webbuilder.utils.script.engine.ognl;
 
 import ognl.Ognl;
-import ognl.OgnlContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.expression.EvaluationContext;
-import org.springframework.expression.Expression;
-import org.springframework.expression.ExpressionParser;
-import org.springframework.expression.spel.standard.SpelExpressionParser;
-import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.webbuilder.utils.script.engine.DynamicScriptEngine;
 import org.webbuilder.utils.script.engine.ExecuteResult;
 import org.webbuilder.utils.script.engine.common.listener.CommonScriptExecuteListener;

@@ -284,7 +284,4 @@ public class StringUtil {
         return str.split(regex,2);
     }
 
-    public static void main(String[] args) {
-        System.out.println(ListUtil.toString("user.id.aa.bb.cc".split("[.]",2)));
-    }
 }

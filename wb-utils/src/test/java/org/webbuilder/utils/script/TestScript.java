@@ -1,11 +1,16 @@
-package org.webbuilder.utils.script.js;
+package org.webbuilder.utils.script;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.webbuilder.utils.base.StringUtil;
+import org.webbuilder.utils.base.file.CallBack;
+import org.webbuilder.utils.base.file.FileUtil;
+import org.webbuilder.utils.base.file.ReadCallBack;
 import org.webbuilder.utils.script.engine.DynamicScriptEngine;
 import org.webbuilder.utils.script.engine.DynamicScriptEngineFactory;
 import org.webbuilder.utils.script.engine.ExecuteResult;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,9 +39,9 @@ public class TestScript {
         DynamicScriptEngine engine = DynamicScriptEngineFactory.getEngine("groovy");
         //engine.init("i=1;", "i = 20;");
         engine.compile("test", "return user;");
-        ExecuteResult result = engine.execute("test", new HashMap<String, Object>(){
+        ExecuteResult result = engine.execute("test", new HashMap<String, Object>() {
             {
-                put("user",20);
+                put("user", 20);
             }
         });
         Assert.assertEquals(result.getResult(), 20);
@@ -73,4 +78,27 @@ public class TestScript {
         Assert.assertEquals(result.getResult(), "张三");
     }
 
+    /**
+     * 测试执行clojure
+     */
+    @Test
+    public void testClojure() throws Exception {
+        FileUtil.readFile("d:/", true, new CallBack() {
+            @Override
+            public void isFile(File file) {
+                System.out.println(file);
+            }
+
+            @Override
+            public void isDir(File dir) {
+
+            }
+
+            @Override
+            public void readError(File file, Throwable e) {
+
+            }
+        });
+
+    }
 }

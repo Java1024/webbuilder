@@ -12,7 +12,7 @@ import java.util.*;
 /**
  * Created by 浩 on 2015-08-24 0024.
  */
-public class RedisCommonStorage<K, V>  extends RedisStorage<K, V> {
+public class RedisCommonStorage<K, V> extends RedisStorage<K, V> {
 
     /**
      * 根据key获取存储内容
@@ -109,7 +109,7 @@ public class RedisCommonStorage<K, V>  extends RedisStorage<K, V> {
                         if (filter.isOver()) over();
                         String skey = new String(key);
                         if (filter.each(skey)) {
-                            keys.add((K)skey);
+                            keys.add((K) skey);
                         }
                     }
                 });

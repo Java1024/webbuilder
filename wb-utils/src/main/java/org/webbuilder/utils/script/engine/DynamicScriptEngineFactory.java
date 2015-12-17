@@ -21,8 +21,16 @@ public final class DynamicScriptEngineFactory {
         map.put("groovy", new GroovyEngine());
         map.put("ruby", new RubyScriptEngine());
         map.put("python", new PythonScriptEngine());
-        map.put("spel", new SpElEngine());
-        map.put("ognl", new OgnlEngine());
+        try {
+            Class.forName("org.springframework.expression.ExpressionParser");
+            map.put("spel", new SpElEngine());
+        } catch (ClassNotFoundException e) {
+        }
+        try {
+            Class.forName("ognl.Ognl");
+            map.put("ognl", new OgnlEngine());
+        } catch (ClassNotFoundException e) {
+        }
     }
 
     public static final DynamicScriptEngine getEngine(String type) {
