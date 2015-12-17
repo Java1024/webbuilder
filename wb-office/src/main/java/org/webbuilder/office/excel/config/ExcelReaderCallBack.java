@@ -1,5 +1,7 @@
 package org.webbuilder.office.excel.config;
 
+import java.io.IOException;
+
 /**
  * excel读取回掉
  * Created by 浩 on 2015-12-07 0007.
@@ -25,10 +27,17 @@ public interface ExcelReaderCallBack {
      */
     void shutdown();
 
+    void sheetDone(Object sheet) throws Exception;
+
+    void done(Object workBook) throws Exception;
+
     /**
      * 单元格内容
      */
     class CellContent {
+
+        private Object cellProxy;
+
         /**
          * 当前所在表格
          */
@@ -58,6 +67,14 @@ public interface ExcelReaderCallBack {
          * 是否为最后一个单元格
          */
         private boolean last;
+
+        public Object getCellProxy() {
+            return cellProxy;
+        }
+
+        public void setCellProxy(Object cellProxy) {
+            this.cellProxy = cellProxy;
+        }
 
         public int getRow() {
             return row;

@@ -1,19 +1,17 @@
 package org.webbuilder.office.excel;
 
 import org.apache.poi.hssf.util.HSSFColor;
-import org.apache.poi.ss.usermodel.Color;
-import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.junit.Before;
 import org.junit.Test;
+import org.webbuilder.office.excel.api.poi.POIExcelApi;
+import org.webbuilder.office.excel.api.poi.callback.CommonExcelWriterCallBack;
 import org.webbuilder.office.excel.config.*;
+import org.webbuilder.utils.base.Resources;
 
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by 浩 on 2015-12-07 0007.
@@ -26,6 +24,7 @@ public class TestWriter {
 
     @Before
     public void initData() {
+        //创建模拟数据
         headers.add(new Header("年级", "grade"));
         headers.add(new Header("班级", "classes"));
         headers.add(new Header("性别", "sex"));
@@ -34,7 +33,7 @@ public class TestWriter {
         headers.add(new Header("备注", "remark"));
 
         //创建模拟数据
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < 20; i++) {
             final int t = i;
             datas.add(new HashMap<String, Object>() {
                 {
@@ -47,7 +46,7 @@ public class TestWriter {
                 }
             });
         }
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 30; i++) {
             final int t = i;
             datas.add(new HashMap<String, Object>() {
                 {
@@ -60,7 +59,7 @@ public class TestWriter {
                 }
             });
         }
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 30; i++) {
             final int t = i;
             datas.add(new HashMap<String, Object>() {
                 {
@@ -74,7 +73,7 @@ public class TestWriter {
             });
         }
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 100; i++) {
             final int t = i;
             datas.add(new HashMap<String, Object>() {
                 {
@@ -88,7 +87,7 @@ public class TestWriter {
             });
         }
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 500; i++) {
             final int t = i;
             datas.add(new HashMap<String, Object>() {
                 {
@@ -103,7 +102,7 @@ public class TestWriter {
         }
 
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 1000; i++) {
             final int t = i;
             datas.add(new HashMap<String, Object>() {
                 {
@@ -118,28 +117,81 @@ public class TestWriter {
     }
 
 
+    /**
+     * 简单粗暴的写出
+     */
     @Test
-    public void testWrite() throws Exception {
+    public void testWriteSimple() throws Exception {
         try (OutputStream outputStream = new FileOutputStream("C:\\Users\\浩\\Desktop\\test_1.xlsx")) {
             ExcelIO.write(outputStream, headers, datas);
             outputStream.flush();
         }
     }
 
+    /**
+     * 按模板方式写出
+     */
+    @Test
+    public void testWriteTemplate() throws Exception {
+        try (InputStream inputStream = Resources.getResourceAsStream("template.xlsx")
+             ; OutputStream outputStream = new FileOutputStream("d:\\test_template.xlsx")) {
+            //定义变量
+            Map<String, Object> var = new HashMap<>();
+            var.put("标题", "测试");
+            var.put("list", new ArrayList<Object>() {
+                {
+                    add(new HashMap<String, Object>() {
+                        {
+                            put("姓名", "张三");
+                            put("年龄", 20);
+                            put("性别", 1);
+                            put("年级", 1);
+                            put("班级", 2);
+                        }
+                    });
+                    for (int i = 0; i < 10; i++) {
+                        add(new HashMap<String, Object>() {
+                            {
+                                put("姓名", "张三");
+                                put("年龄", 19);
+                                put("性别", 2);
+                                put("年级", 2);
+                                put("班级", 1);
+                            }
+                        });
+                    }
+                }
+            });
+            //输出模板
+            ExcelIO.writeTemplate(inputStream, outputStream, var);
+            outputStream.flush();
+        }
+    }
+
+    /**
+     * 自定义导出,合并单元格等，有待优化
+     */
     @Test
     public void testWriteCustom() throws Exception {
-        try (OutputStream outputStream = new FileOutputStream("C:\\Users\\浩\\Desktop\\test_2.xlsx")) {
+        try (OutputStream outputStream = new FileOutputStream("d:/test.xlsx")) {
             ExcelWriterConfig config = new ExcelWriterConfig();
-            //设置表头和数据
-            config.setHeaders(headers);
             config.setDatas(datas);
+            config.setHeaders(headers);
             //1、自动合并年级和班级相同的列
             config.mergeColumn("grade", "classes", "sex");
-            //2、从第2行开始写出
-            config.setStartWith(1);
-            //3、合并第一行的第一列到第六列,因为设置了startWith起始行号为1,所以第一列为-1
-            config.addMerge(-1, 0, 5, -1);
-            config.setCallBack(new CommonExcelWriterCallBack() {
+            CommonExcelWriterCallBack ca = new CommonExcelWriterCallBack(config);
+            POIExcelApi.getInstance().write(outputStream, ca);
+            outputStream.flush();
+        }
+    }
+
+    /**
+     * 自定义导出样式，有待优化
+     */
+    @Test
+    public void testWriteCustomStyle() throws Exception {
+        try (OutputStream outputStream = new FileOutputStream("C:\\Users\\浩\\Desktop\\test_2.xlsx")) {
+            ExcelWriterConfig config = new ExcelWriterConfig() {
                 @Override
                 public Object startBefore(int row, int column) {
                     //被跳过的行(代码[2、]处设置)填充此值
@@ -180,7 +232,16 @@ public class TestWriter {
                     }
                     return null;
                 }
-            });
+            };
+            //设置表头和数据
+            config.setHeaders(headers);
+            config.setDatas(datas);
+            //1、自动合并年级和班级相同的列
+            config.mergeColumn("grade", "classes", "sex");
+            //2、从第2行开始写出
+            config.setStartWith(1);
+            //3、合并第一行的第一列到第六列,因为设置了startWith起始行号为1,所以第一列为-1
+            config.addMerge(-1, 0, 5, -1);
 
             //第二个sheet
             ExcelWriterConfig config2 = new ExcelWriterConfig();

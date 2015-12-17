@@ -2,7 +2,8 @@ package org.webbuilder.office.excel.support;
 
 import org.webbuilder.office.excel.ExcelApi;
 import org.webbuilder.office.excel.ExcelWriter;
-import org.webbuilder.office.excel.api.POIExcelApi;
+import org.webbuilder.office.excel.api.poi.POIExcelApi;
+import org.webbuilder.office.excel.api.poi.callback.CommonExcelWriterCallBack;
 import org.webbuilder.office.excel.config.ExcelWriterConfig;
 
 import java.io.OutputStream;
@@ -23,6 +24,11 @@ public class CommonExcelWriter implements ExcelWriter {
 
     @Override
     public void write(OutputStream outputStream, ExcelWriterConfig config, ExcelWriterConfig... moreSheet) throws Exception {
-        getApi().write(outputStream, config, moreSheet);
+        CommonExcelWriterCallBack call = new CommonExcelWriterCallBack(config);
+        CommonExcelWriterCallBack[] callBackArr = new CommonExcelWriterCallBack[moreSheet.length];
+        for (int i = 0; i < moreSheet.length; i++) {
+            callBackArr[i] = new CommonExcelWriterCallBack(moreSheet[i]);
+        }
+        getApi().write(outputStream, call, callBackArr);
     }
 }

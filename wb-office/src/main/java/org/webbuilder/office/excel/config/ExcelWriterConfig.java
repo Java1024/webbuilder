@@ -1,6 +1,10 @@
 package org.webbuilder.office.excel.config;
 
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+
 import java.util.Arrays;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -38,11 +42,6 @@ public class ExcelWriterConfig {
      * 导出的数据
      */
     private List<Object> datas = new LinkedList<>();
-
-    /**
-     * 写出回掉
-     */
-    private ExcelWriterCallBack callBack = new CommonExcelWriterCallBack();
 
     public ExcelWriterConfig addHeader(String header, String field) {
         this.addHeader(new Header(header, field));
@@ -118,14 +117,6 @@ public class ExcelWriterConfig {
         this.datas = datas;
     }
 
-    public ExcelWriterCallBack getCallBack() {
-        return callBack;
-    }
-
-    public void setCallBack(ExcelWriterCallBack callBack) {
-        this.callBack = callBack;
-    }
-
     public void addMerge(int rowFrom, int colFrom, int rowTo, int colTo) {
         addMerge(new Merge(rowFrom, colFrom, rowTo, colTo));
     }
@@ -133,6 +124,81 @@ public class ExcelWriterConfig {
     public void addMerge(Merge merge) {
         if (!merges.contains(merge)) ;
         merges.add(merge);
+    }
+
+
+    private CustomCellStyle cellStyle = new CustomCellStyle();
+
+    public ExcelWriterConfig() {
+        cellStyle.setAlignment(XSSFCellStyle.ALIGN_CENTER);
+        cellStyle.setVerticalAlignment(XSSFCellStyle.VERTICAL_CENTER);
+        CustomCellStyle.Border border = new CustomCellStyle.Border((short) 1, HSSFColor.BLACK.index);
+        cellStyle.setBorderLeft(border);
+        cellStyle.setBorderRight(border);
+        cellStyle.setBorderBottom(border);
+        cellStyle.setBorderTop(border);
+    }
+
+    /**
+     * 在写出开始前,设置了跳过写出的行时调用。
+     * 如果配置中设置了startWith,则在渲染被跳过的单元格时,将调用此回掉来获取自定义的值
+     *
+     * @param row    当前行
+     * @param column 当前列
+     * @return 自定义值
+     */
+    public Object startBefore(int row, int column) {
+        return "";
+    }
+
+    /**
+     * 获取一个单元格的自定义样式
+     *
+     * @param row    行,如果为-1,代表为表头行
+     * @param column 列
+     * @param header 表头
+     * @param value  单元格值
+     * @return 自定义样式
+     */
+    public CustomCellStyle getCellStyle(int row, int column, String header, Object value) {
+        if (value == null) {
+            cellStyle.setDataType("string");
+        } else {
+            if (value instanceof Integer) {
+                cellStyle.setDataType("int");
+            } else if (value instanceof Number) {
+                cellStyle.setDataType("double");
+            } else if (value instanceof Date) {
+                cellStyle.setDataType("date");
+                cellStyle.setFormat("yyyy-MM-dd");
+            } else {
+                cellStyle.setDataType("string");
+            }
+        }
+        cellStyle.setValue(value);
+        return cellStyle;
+    }
+
+    /**
+     * 获取自定义列的样式
+     *
+     * @param column 列号
+     * @param header 表头
+     * @return 自定义列样式
+     */
+    public CustomColumnStyle getColumnStyle(int column, String header) {
+        return null;
+    }
+
+    /**
+     * 获取自定义行样式
+     *
+     * @param row    行号，为-1时代表是表头行
+     * @param header 表头
+     * @return 自定义行样式
+     */
+    public CustomRowStyle getRowStyle(int row, String header) {
+        return null;
     }
 
     /**

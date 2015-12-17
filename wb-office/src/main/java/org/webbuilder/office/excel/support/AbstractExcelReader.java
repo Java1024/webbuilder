@@ -3,7 +3,7 @@ package org.webbuilder.office.excel.support;
 import org.webbuilder.office.excel.ExcelApi;
 import org.webbuilder.office.excel.ExcelReader;
 import org.webbuilder.office.excel.ExcelReaderWrapper;
-import org.webbuilder.office.excel.api.POIExcelApi;
+import org.webbuilder.office.excel.api.poi.POIExcelApi;
 import org.webbuilder.office.excel.config.AbstractExcelReaderCallBack;
 import org.webbuilder.office.excel.config.ExcelReaderCallBack;
 

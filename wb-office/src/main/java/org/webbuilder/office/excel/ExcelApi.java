@@ -1,6 +1,7 @@
 package org.webbuilder.office.excel;
 
 import org.webbuilder.office.excel.config.ExcelReaderCallBack;
+import org.webbuilder.office.excel.config.ExcelWriterCallBack;
 import org.webbuilder.office.excel.config.ExcelWriterConfig;
 
 import java.io.InputStream;
@@ -21,13 +22,5 @@ public interface ExcelApi {
      */
     void read(InputStream inputStream, ExcelReaderCallBack callBack) throws Exception;
 
-    /**
-     * 写出数据到表格，可指定多个sheet进行写出
-     *
-     * @param outputStream excel输出流
-     * @param config       excel写出配置，通过配置可自定义样式等操作
-     * @param moreSheet    多个sheet写出
-     * @throws Exception 写出异常
-     */
-    void write(OutputStream outputStream, ExcelWriterConfig config, ExcelWriterConfig... moreSheet) throws Exception;
+    void write(OutputStream outputStream, ExcelWriterCallBack callBack, ExcelWriterCallBack... moreSheet) throws Exception;
 }

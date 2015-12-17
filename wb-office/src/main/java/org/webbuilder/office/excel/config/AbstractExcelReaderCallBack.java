@@ -17,4 +17,14 @@ public abstract class AbstractExcelReaderCallBack implements ExcelReaderCallBack
     public void shutdown() {
         shutdown = true;
     }
+
+    @Override
+    public void done(Object workBook) {
+
+    }
+
+    @Override
+    public void sheetDone(Object sheet) throws Exception {
+
+    }
 }
