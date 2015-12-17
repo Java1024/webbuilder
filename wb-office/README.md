@@ -104,6 +104,8 @@ try (OutputStream outputStream = new FileOutputStream("test.xlsx")) {
 ```
 
 ####按模板导出
+完整演示请看单元测试
+
 在单元格中定义表达式来渲染数据
 表达式以${开头,以}结尾,如:${标题}。
 目前语法解析使用groovy引擎，所以表达式支持groovy语法
@@ -116,7 +118,7 @@ try (OutputStream outputStream = new FileOutputStream("test.xlsx")) {
 | user.age+"岁"                 | 逻辑运算                                 |        /             |
 | user.sex?"男":"女"            |  三目运算                                |     /     |
 | for(data in list)            |   循环输出                                |   循环目前仅针对行循环,因此表达式必须在同一行。并且以/for结束循环      |
-
+-
 ```
      try (InputStream inputStream = Resources.getResourceAsStream("template.xlsx")
                  ; OutputStream outputStream = new FileOutputStream("d:\\test_template.xlsx")) {
@@ -127,6 +129,7 @@ try (OutputStream outputStream = new FileOutputStream("test.xlsx")) {
                 //导出模板
                 ExcelIO.writeTemplate(inputStream, outputStream, var);
                 outputStream.flush();
+                }
 ```
 注意: 单元格只会输出变量引用的返回值,且仅会输出一个。
 如果一个单元格有多个变量引用表达式,将只输出最后一个。
