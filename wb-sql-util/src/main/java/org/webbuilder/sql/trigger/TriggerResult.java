@@ -3,13 +3,23 @@ package org.webbuilder.sql.trigger;
 import java.io.Serializable;
 
 /**
+ * 触发器执行结果
  * Created by 浩 on 2015-11-14 0014.
  */
 public class TriggerResult implements Serializable {
+    /**
+     * 执行是否成功
+     */
     private boolean success;
 
+    /**
+     * 返回的消息
+     */
     private String message;
 
+    /**
+     * 返回的数据
+     */
     private Object data;
 
     public TriggerResult() {

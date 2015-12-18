@@ -15,16 +15,32 @@ import org.webbuilder.sql.support.executor.SqlExecutor;
 import java.util.Map;
 
 /**
+ * 通用表操作类
  * Created by 浩 on 2015-11-09 0009.
  */
 public class CommonTable implements Table {
+    /**
+     * 默认对象包装器
+     */
     public static ObjectWrapper DEFAULT_WRAPPER = new HashMapWrapper();
 
+    /**
+     * 表元数据
+     */
     private TableMetaData metaData;
 
+    /**
+     * sql执行器
+     */
     private SqlExecutor sqlExecutor;
 
+    //
     private DataBase dataBase;
+
+    private Query query;
+    private Update update;
+    private Delete delete;
+    private Insert insert;
 
     public CommonTable(TableMetaData metaData, SqlExecutor sqlExecutor, DataBase dataBase) {
         this.metaData = metaData;
@@ -43,6 +59,9 @@ public class CommonTable implements Table {
 
     @Override
     public Query createQuery() throws QueryException {
+        //单例
+        if (query != null) return query;
+
         SqlTemplate template = metaData.getTemplate(SqlTemplate.TYPE.SELECT);
         CommonQuery query = new CommonQuery(template, sqlExecutor);
         query.setDataBase(dataBase);
@@ -52,33 +71,36 @@ public class CommonTable implements Table {
         wrapper.setTable(this);
         wrapper.setDataBase(dataBase);
         query.setObjectWrapper(wrapper);
-        return query;
+        return this.query = query;
     }
 
     @Override
     public Update createUpdate() throws UpdateException {
+        if (update != null) return update;
         SqlTemplate template = metaData.getTemplate(SqlTemplate.TYPE.UPDATE);
         CommonUpdate update = new CommonUpdate(template, sqlExecutor);
         update.setTable(this);
         update.setDataBase(dataBase);
-        return update;
+        return this.update = update;
     }
 
     @Override
     public Delete createDelete() throws DeleteException {
+        if (delete != null) return delete;
         SqlTemplate template = metaData.getTemplate(SqlTemplate.TYPE.DELETE);
         CommonDelete delete = new CommonDelete(template, sqlExecutor);
         delete.setTable(this);
         delete.setDataBase(dataBase);
-        return delete;
+        return this.delete = delete;
     }
 
     @Override
     public Insert createInsert() throws InsertException {
+        if (insert != null) return insert;
         SqlTemplate template = metaData.getTemplate(SqlTemplate.TYPE.INSERT);
         CommonInsert insert = new CommonInsert(template, sqlExecutor);
         insert.setTable(this);
         insert.setDataBase(dataBase);
-        return insert;
+        return this.insert = insert;
     }
 }

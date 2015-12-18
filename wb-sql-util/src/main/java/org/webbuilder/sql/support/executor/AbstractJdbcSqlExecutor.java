@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.webbuilder.sql.BindSQL;
 import org.webbuilder.sql.SQL;
+import org.webbuilder.sql.support.common.CommonSql;
 import org.webbuilder.utils.base.ClassUtil;
 import org.webbuilder.utils.base.StringUtil;
 
@@ -29,7 +30,7 @@ public abstract class AbstractJdbcSqlExecutor implements SqlExecutor {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private static final Pattern APPEND_PATTERN = Pattern.compile("(?<=$\\{)(.+?)(?=\\})");
+    private static final Pattern APPEND_PATTERN = Pattern.compile("(?<=\\$\\{)(.+?)(?=\\})");
     private static final Pattern PREPARED_PATTERN = Pattern.compile("(?<=#\\{)(.+?)(?=\\})");
 
     /**
@@ -41,7 +42,7 @@ public abstract class AbstractJdbcSqlExecutor implements SqlExecutor {
      * @param sql sql模板
      * @return sql 信息
      */
-    public SQLInfo compileSql(SQL sql) {
+    public static SQLInfo compileSql(SQL sql) {
         SQLInfo sqlInfo = new SQLInfo();
         String sqlTemplate = sql.getSql();
         Map<String, Object> param = sql.getParams();
@@ -50,7 +51,7 @@ public abstract class AbstractJdbcSqlExecutor implements SqlExecutor {
         List<Object> params = new LinkedList<>();
 
         //直接拼接sql
-        while (append_matcher.matches()) {
+        while (append_matcher.find()) {
             String group = append_matcher.group();
             Object obj = param.get(group);
             if (obj == null)
@@ -58,7 +59,7 @@ public abstract class AbstractJdbcSqlExecutor implements SqlExecutor {
                     obj = ClassUtil.getValueByAttribute(group, param);
                 } catch (Exception e) {
                 }
-            sqlTemplate = sqlTemplate.replaceFirst(StringUtil.concat("$\\{", group.replace("$", "\\$"), "\\}"), String.valueOf(obj));
+            sqlTemplate = sqlTemplate.replaceFirst(StringUtil.concat("\\$\\{", group.replace("$", "\\$"), "\\}"), String.valueOf(obj));
         }
         //参数预编译sql
         while (prepared_matcher.find()) {
