@@ -1,6 +1,10 @@
 # wb-office
 用于对office文档进行操作
 
+当前版本支持内容:
+excel读写,excel按模板导出
+word按模板导出
+
 ##读excel
 ```java
 try (InputStream in = Resources.getResourceAsStream("User.xlsx")) {
