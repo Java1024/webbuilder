@@ -9,19 +9,52 @@ import org.webbuilder.office.excel.config.ExcelWriterProcessor;
 import java.io.OutputStream;
 
 /**
+ * POI，excel文档写出处理器
  * Created by 浩 on 2015-12-16 0016.
  */
 public class POIExcelWriterProcessor implements ExcelWriterProcessor {
 
+    /**
+     * 文档输出流
+     */
     private OutputStream outputStream;
+    /**
+     * 工作簿对象
+     */
     private Workbook workbook;
+    /**
+     * 表格对象
+     */
     private Sheet sheet;
-    private boolean started;
-    private boolean done;
+    /**
+     * 表格索引
+     */
     private int sheetIndex = 0;
+    /**
+     * 是否已经开始处理
+     */
+    private boolean started;
+    /**
+     * 是否已经结束
+     */
+    private boolean done;
+
+    /**
+     * 当前进行渲染的行
+     */
     private Row nowRow;
+
+    /**
+     * 当前进行渲染的列
+     */
     private Cell nowCell;
 
+    /**
+     * 带参数的构造方法，参数不能为空
+     *
+     * @param outputStream 文档输出流
+     * @param workbook     工作簿实例
+     */
     public POIExcelWriterProcessor(OutputStream outputStream, Workbook workbook) {
         this.outputStream = outputStream;
         this.workbook = workbook;
@@ -35,6 +68,7 @@ public class POIExcelWriterProcessor implements ExcelWriterProcessor {
     @Override
     public <S> S start(String sheetName) throws Exception {
         if (started) {
+            //禁止重复启动
             throw new NullPointerException("processor is stared!");
         }
         sheet = workbook.createSheet(sheetName);
@@ -52,7 +86,7 @@ public class POIExcelWriterProcessor implements ExcelWriterProcessor {
 
     @Override
     public <C> C nextCell() {
-        int cellNum = nowCell != null ? nowCell.getColumnIndex()+1 : 0;
+        int cellNum = nowCell != null ? nowCell.getColumnIndex() + 1 : 0;
         nowCell = nowRow.createCell(cellNum);
         return (C) nowCell;
     }
@@ -60,6 +94,7 @@ public class POIExcelWriterProcessor implements ExcelWriterProcessor {
     @Override
     public void done() throws Exception {
         if (done) {
+            //禁止重复结束
             throw new NullPointerException("processor is done");
         }
         workbook.write(outputStream);

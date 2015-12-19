@@ -134,3 +134,22 @@ try (OutputStream outputStream = new FileOutputStream("test.xlsx")) {
 注意: 单元格只会输出变量引用的返回值,且仅会输出一个。
 如果一个单元格有多个变量引用表达式,将只输出最后一个。
 如果要进行内容拼接,可以在表达式中进行拼接
+
+
+##WORD 文档操作
+
+####模板写出
+目前版本仅支持2007以上的word文档(.docx)
+内部表达式引擎使用Groovy
+```java
+    //定义变量
+    Map<String, Object> vars = new HashMap<>();
+    //写出模板
+    WordIO.writeTemplate(in, out, vars);
+```
+模板目前支持段落以及表格渲染
+段落模板:
+1、语法支持: ${name},${sex?"男":"女"}
+表格模板:
+2、支持段落模板语法以及循环,使用方式同excel
+注意: 如果是循环渲染表格,表格的样式将被忽略
