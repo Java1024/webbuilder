@@ -4,6 +4,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.*;
 
 /**
  * Created by 浩 on 2015-12-09 0009.
@@ -91,5 +92,39 @@ public class ClassUtils {
         return getGenericType(clazz, 0);
     }
 
+
+    public static boolean instanceOf(Class clazz, Class target) {
+        if (clazz == null) return false;
+        if (clazz == target) return true;
+        if (target.isInterface()) {
+            for (Class aClass : clazz.getInterfaces()) {
+                if (aClass == target) return true;
+            }
+        }
+        if (clazz.getSuperclass() == target) return true;
+        else {
+            if (clazz.isInterface()) {
+                for (Class aClass : clazz.getInterfaces()) {
+                    if (instanceOf(aClass, target)) return true;
+                }
+            }
+            return instanceOf(clazz.getSuperclass(), target);
+        }
+    }
+
+    public static final Set<Class> commonClass = new HashSet<>();
+
+    static {
+        commonClass.add(int.class);
+        commonClass.add(double.class);
+        commonClass.add(float.class);
+        commonClass.add(byte.class);
+        commonClass.add(short.class);
+        commonClass.add(char.class);
+    }
+
+    public static boolean isCommonClass(Class clazz) {
+        return commonClass.contains(clazz);
+    }
 
 }

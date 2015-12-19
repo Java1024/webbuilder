@@ -82,14 +82,19 @@ public class StringUtils {
     /**
      * 字符串连接，将参数列表拼接为一个字符串
      *
-     * @param obj  参数
      * @param more 追加
      * @return 返回拼接后的字符串
      */
-    public static String concat(Object obj, Object... more) {
-        StringBuilder buf = new StringBuilder(String.valueOf(obj));
-        for (Object t : more)
-            buf.append(t);
+    public static String concat(Object... more) {
+        return concatSpiltWith("", more);
+    }
+
+    public static String concatSpiltWith(String split, Object... more) {
+        StringBuilder buf = new StringBuilder();
+        for (int i = 0; i < more.length; i++) {
+            if (i != 0) buf.append(split);
+            buf.append(more[i]);
+        }
         return buf.toString();
     }
 
