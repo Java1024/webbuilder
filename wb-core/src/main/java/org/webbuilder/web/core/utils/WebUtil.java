@@ -54,7 +54,11 @@ public class WebUtil {
      * @return 当前登录的用户
      */
     public static User getLoginUser(HttpSession session) {
-        return (User) session.getAttribute("user");
+        try {
+            return (User) session.getAttribute("user");
+        } catch (Exception e) {
+        }
+        return null;
     }
 
     /**

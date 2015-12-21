@@ -152,12 +152,12 @@ public class LoginController {
                     userService.initAdminUser(db);
                 }
                 HttpSession session = request.getSession();
-                exit(session);//退出登录
-                session = request.getSession();
+
                 //踢出已经登陆的用户
                 String sessionId = httpSessionManager.getSessionIdByUserId(db.getU_id());
-                if (sessionId != null && !sessionId.equals(session.getId()))
+                if (sessionId != null && !sessionId.equals(session.getId())) {
                     httpSessionManager.removeSession(sessionId);
+                }
                 session.setAttribute("user", db);//设置登录用户
                 //添加新的用户
                 httpSessionManager.addUser(db.getU_id(), session);

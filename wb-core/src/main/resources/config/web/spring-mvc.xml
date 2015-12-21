@@ -70,11 +70,6 @@
 
     <aop:aspectj-autoproxy proxy-target-class="true"/>
 
-    <bean class="org.webbuilder.web.core.aop.logger.LoggerAdvice">
-        <property name="loggerService">
-            <bean class="org.webbuilder.web.core.logger.LogBackLoggerService"></bean>
-        </property>
-    </bean>
     <!--
        <bean class="org.webbuilder.web.core.aop.authorize.AuthorizeAdvice"></bean>
    -->

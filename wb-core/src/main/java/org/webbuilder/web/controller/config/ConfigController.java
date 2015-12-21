@@ -1,20 +1,17 @@
 package org.webbuilder.web.controller.config;
 
 import com.alibaba.fastjson.JSON;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.web.bind.annotation.*;
 import org.webbuilder.web.core.aop.logger.AccessLogger;
 import org.webbuilder.web.core.authorize.annotation.Authorize;
 import org.webbuilder.web.core.bean.ResponseMessage;
 import org.webbuilder.web.core.controller.GenericController;
 import org.webbuilder.web.po.config.Config;
 import org.webbuilder.web.po.role.Role;
-import org.webbuilder.web.po.role.UserRole;
 import org.webbuilder.web.service.config.ConfigService;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -139,7 +136,7 @@ public class ConfigController extends GenericController<Config, String> {
         }
     }
 
-    @RequestMapping(value = {"/initLogBack"}, method = RequestMethod.GET)
+    @RequestMapping(value = {"/initLogBack"}, method = RequestMethod.GET )
     @AccessLogger("初始化logback日志配置文件")
     @Authorize(role = Role.SYS_ROLE_ADMIN)
     public Object initLogBack() {

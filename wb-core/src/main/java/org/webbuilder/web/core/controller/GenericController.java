@@ -131,7 +131,6 @@ public abstract class GenericController<PO extends GenericPo<PK>, PK> implements
     @Authorize(level = "C")
     public Object add(@RequestBody PO object) {
         try {
-            object.valid();
             getService().insert(object);
             return new ResponseMessage(true, object.getU_id());
         } catch (Exception e) {
@@ -196,6 +195,8 @@ public abstract class GenericController<PO extends GenericPo<PK>, PK> implements
             } else if (json.startsWith("{")) {
                 PO data = JSON.parseObject(json, getPOType());
                 getService().update(data);
+            }else{
+                return new ResponseMessage(false,"数据错误");
             }
             return new ResponseMessage(true, "更新成功!");
         } catch (Exception e) {

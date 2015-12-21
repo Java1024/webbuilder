@@ -30,7 +30,11 @@ public class LocalHttpSessionManager implements HttpSessionManager {
         HttpSession session = userSessionStorage.get(userId);
         if (session != null) {
             User user = WebUtil.getLoginUser(session);
-            return user != null ? user.getU_id() : null;
+            if (user == null) {
+                userSessionStorage.remove(userId);
+                return null;
+            }
+            return user.getU_id();
         }
         return null;
     }
@@ -41,6 +45,7 @@ public class LocalHttpSessionManager implements HttpSessionManager {
         if (session != null) {
             try {
                 session.invalidate();
+            } catch (Exception e) {
             } finally {
                 sessionStorage.remove(session.getId());
                 userSessionStorage.remove(userId);
@@ -54,7 +59,7 @@ public class LocalHttpSessionManager implements HttpSessionManager {
         if (session != null) {
             User user = WebUtil.getLoginUser(session);
             if (user != null) {
-                userSessionStorage.remove(user);
+                userSessionStorage.remove(user.getU_id());
             }
             sessionStorage.remove(sessionId);
         }

@@ -1,5 +1,6 @@
 package org.webbuilder.web.controller.role;
 
+import org.springframework.web.bind.annotation.RestController;
 import org.webbuilder.web.core.aop.logger.AccessLogger;
 import org.webbuilder.web.core.authorize.annotation.Authorize;
 import org.webbuilder.web.core.bean.JsonParam;
@@ -18,7 +19,7 @@ import javax.annotation.Resource;
  * 后台管理角色控制器，继承自GenericController,使用rest+json
  * Created by generator 2015-8-26 10:57:38
  */
-@Controller
+@RestController
 @RequestMapping(value = "/role")
 @AccessLogger("角色管理")
 @Authorize(module = "role")

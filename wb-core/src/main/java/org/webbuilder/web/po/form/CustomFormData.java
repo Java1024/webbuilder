@@ -1,6 +1,7 @@
 package org.webbuilder.web.po.form;
 
 import org.webbuilder.web.core.bean.GenericPo;
+import org.webbuilder.web.core.utils.WebUtil;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

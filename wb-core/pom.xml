@@ -53,11 +53,6 @@
 
     <properties>
 
-        <!-- base setting -->
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.build.locales>zh_CN</project.build.locales>
-        <project.build.jdk>1.7</project.build.jdk>
-
         <!-- plugin versions -->
         <plugin.maven-compiler>3.1</plugin.maven-compiler>
         <plugin.maven-surefire>2.18.1</plugin.maven-surefire>
@@ -344,7 +339,22 @@
             <artifactId>aspectjweaver</artifactId>
             <version>${aspectj.version}</version>
         </dependency>
-
+        <!-- hibernate -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>${hibernate.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <version>${hibernate.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate.javax.persistence</groupId>
+            <artifactId>hibernate-jpa-2.0-api</artifactId>
+            <version>1.0.1.Final</version>
+        </dependency>
         <!-- hibernate-validator -->
         <dependency>
             <groupId>org.hibernate</groupId>
