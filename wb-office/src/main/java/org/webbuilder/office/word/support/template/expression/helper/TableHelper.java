@@ -48,8 +48,10 @@ public class TableHelper implements WordHelper {
         XWPFTableCell cell_tmp = nowRow.getCell(firstRow.getTableCells().indexOf(cell));
         if (params == null)
             params = new String[]{""};
-        if (cell_tmp == null)
+        if (cell_tmp == null) {
             cell_tmp = nowRow.addNewTableCell();
+            cell_tmp.addParagraph(cell.getParagraphArray(0));
+        }
         for (int i = 0, len = cell.getParagraphs().size(); i < len; i++) {
             cell.removeParagraph(i);
         }

@@ -22,5 +22,13 @@ public interface ExcelApi {
      */
     void read(InputStream inputStream, ExcelReaderCallBack callBack) throws Exception;
 
+    /**
+     * 基于回掉的excel写出
+     *
+     * @param outputStream excel输出流
+     * @param callBack     回掉
+     * @param moreSheet    多个表格写出
+     * @throws Exception 写出异常
+     */
     void write(OutputStream outputStream, ExcelWriterCallBack callBack, ExcelWriterCallBack... moreSheet) throws Exception;
 }

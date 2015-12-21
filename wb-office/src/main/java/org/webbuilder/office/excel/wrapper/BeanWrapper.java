@@ -18,8 +18,6 @@ public class BeanWrapper<T> extends AbstractWrapper<T> {
 
     private Class<T> type;
 
-    private Map<String, Method> methodCache = new HashMap<>();
-
     @Override
     public T newInstance() throws Exception {
         if (type == null) {
