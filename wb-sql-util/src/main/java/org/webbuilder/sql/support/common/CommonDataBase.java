@@ -12,6 +12,7 @@ import org.webbuilder.sql.support.executor.SqlExecutor;
 import org.webbuilder.utils.base.StringUtil;
 
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 通用的数据库
@@ -28,6 +29,8 @@ public class CommonDataBase implements DataBase {
      * sql执行器
      */
     private SqlExecutor sqlExecutor;
+
+    private Map<String, Table> tableMap = new ConcurrentHashMap<>();
 
     /**
      * 构造方法，必须设置元数据和sql执行器，否则该数据库将无法正常工作
@@ -54,7 +57,14 @@ public class CommonDataBase implements DataBase {
      */
     @Override
     public Table getTable(String name) {
-        return new CommonTable(getMetaData().getTableMetaData(name), sqlExecutor, this);
+        Table table = tableMap.get(name);
+        if (table == null) {
+            TableMetaData metaData = getMetaData().getTableMetaData(name);
+            if (metaData == null) return null;
+            table = new CommonTable(metaData, sqlExecutor, this);
+            tableMap.put(name, table);
+        }
+        return table;
     }
 
     @Override
@@ -101,6 +111,7 @@ public class CommonDataBase implements DataBase {
         SQL sql = template.render(alterParam);
         sqlExecutor.exec(sql);
         getMetaData().addTable(tableMetaData);
+        tableMap.remove(tableMetaData.getName());
         return getTable(tableMetaData.getName());
     }
 }
