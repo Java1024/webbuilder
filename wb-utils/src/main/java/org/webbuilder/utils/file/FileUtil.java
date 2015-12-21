@@ -17,7 +17,7 @@ public class FileUtil extends Resources {
      * @param maxDeep  最大扫描深度
      * @param callBack 扫描回掉
      */
-    private static void scanFile(String path, int maxDeep, ScanCallBack callBack) {
+    public static void scanFile(String path, int maxDeep, ScanCallBack callBack) {
         scanFile(path, true, maxDeep, 0, callBack);
     }
 
@@ -28,8 +28,8 @@ public class FileUtil extends Resources {
      * @param depth    是否递归往下
      * @param callBack 扫描回掉
      */
-    private static void scanFile(String path, boolean depth, ScanCallBack callBack) {
-        scanFile(path, depth, 0, -1, callBack);
+    public static void scanFile(String path, boolean depth, ScanCallBack callBack) {
+        scanFile(path, depth,-1, 0,  callBack);
     }
 
     /**
@@ -38,7 +38,7 @@ public class FileUtil extends Resources {
      * @param path     指定要扫描的目录
      * @param callBack 扫描回掉
      */
-    private static void scanFile(String path, ScanCallBack callBack) {
+    public static void scanFile(String path, ScanCallBack callBack) {
         scanFile(path, false, callBack);
     }
 
