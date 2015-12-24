@@ -236,7 +236,7 @@ public class PageUtil {
             params.put("$includes", includes);//指定了查询字段
         if (excludes.size() > 0)
             params.put("$excludes", excludes);//指定排除字段
-        return params;
+        return MapUtils.removeEmptyValue(params);
     }
 
     /**

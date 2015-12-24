@@ -56,6 +56,7 @@ public class User extends GenericPo<String> {
      */
     public boolean hasAccessModuleLevel(String mId, String... levels) {
         if (!hasAccessModule(mId)) return false;
+        if (levels == null || levels.length == 0) return hasAccessModule(mId);
         Set<String> lv = roleInfo.get(getModule(mId));
         if (lv != null)
             for (String level : levels) {
@@ -89,7 +90,7 @@ public class User extends GenericPo<String> {
     public Set<Module> getModulesByPid(String pid, String level) {
         Set<Module> modules = new LinkedHashSet<>();
         for (Module module : getModules()) {
-            if (module.getP_id().equals(pid)&& hasAccessModuleLevel(module.getU_id(), level)) {
+            if (module.getP_id().equals(pid) && hasAccessModuleLevel(module.getU_id(), level)) {
                 modules.add(module);
             }
         }

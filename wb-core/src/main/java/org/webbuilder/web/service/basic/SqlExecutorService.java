@@ -7,7 +7,9 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.sql.DataSource;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Map;
 
 /**
@@ -23,7 +25,6 @@ public class SqlExecutorService extends AbstractJdbcSqlExecutor {
         return new SqlExecutor(sqlSessionTemplate, sql).setCondition(condition);
     }
 
-
     @Override
     public Connection getConnection() {
         return SqlSessionUtils.getSqlSession(
@@ -33,6 +34,5 @@ public class SqlExecutorService extends AbstractJdbcSqlExecutor {
 
     @Override
     public void resetConnection(Connection connection) {
-
     }
 }

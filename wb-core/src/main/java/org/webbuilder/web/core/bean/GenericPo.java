@@ -26,6 +26,7 @@ public class GenericPo<PK> implements Serializable {
 
     @Override
     public int hashCode() {
+        if (getU_id() == null) return 0;
         return getU_id().hashCode();
     }
 
@@ -56,6 +57,7 @@ public class GenericPo<PK> implements Serializable {
     public static final ValidResults valid(Object object) {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         Validator validator = factory.getValidator();
+
         Set<ConstraintViolation<Object>> set = validator.validate(object);
         ValidResults results = new ValidResults();
         if (set.size() != 0) {

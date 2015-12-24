@@ -1,11 +1,12 @@
 package org.webbuilder.web.core.bean;
 
 import com.alibaba.fastjson.JSON;
-import org.webbuilder.utils.base.ClassUtil;
-import org.webbuilder.utils.base.DateTimeUtils;
-import org.webbuilder.web.core.exception.BusinessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.webbuilder.utils.base.ClassUtil;
+import org.webbuilder.utils.base.DateTimeUtils;
+import org.webbuilder.web.core.exception.AccessValidException;
+import org.webbuilder.web.core.exception.BusinessException;
 
 import javax.validation.ValidationException;
 import java.util.Map;
@@ -93,6 +94,8 @@ public class ResponseMessage {
                 messageHandler = getMessageHandler(Exception.class);
                 if (data instanceof ValidationException) {
                     this.code = "400";
+                } else if (data instanceof AccessValidException) {
+                    this.code = "502";
                 }
             } else {
                 messageHandler = getMessageHandler(Object.class);

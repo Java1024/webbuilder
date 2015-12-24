@@ -59,61 +59,65 @@ public class DefaultTableFactory {
             try {
                 File file = localFile.getFile();
                 if (file.getName().endsWith(".html")) {
-                    TableMetaData newTable = parser.parse(file, "file");
-                    newTable.setLocation(file.getAbsolutePath());
-                    if (newTable.getName() == null) {
-                        newTable.setName(file.getName().split("[.]")[0]);
-                    }
-                    String oldName = newTable.getName();
-                    TableMetaData old_ver = getLastVer(oldName);
-                    //获取旧版本
-                    if (old_ver != null) {
-                        old_ver.setName(oldName);
-                        if (!autoAlter) {
-                            dataBase.getMetaData().addTable(newTable);
-                        } else {
-                            dataBase.getMetaData().addTable(old_ver);
-                            dataBase.alterTable(newTable);
-                        }
-                    } else {//无备份说明是新表
-                        if (!autoAlter) {
-                            dataBase.getMetaData().addTable(newTable);
-                        } else {
-                            try {
-                                Table table = dataBase.createTable(newTable);
-                                try {
-                                    //加载初始化数据
-                                    TriggerResult result = table.getMetaData().on("init.data");
-                                    if (result != null && result.isSuccess()) {
-                                        Object data = result.getData();
-                                        Insert insert = table.createInsert();
-                                        if (data instanceof Collection) {
-                                            for (Object d : ((Collection) data)) {
-                                                insert.insert(new InsertParam().values(((Map) d)));
-                                            }
-                                        }
-                                        if (data instanceof Map) {
-                                            insert.insert(new InsertParam().values(((Map) data)));
-                                        }
-                                    }
-                                } catch (TriggerException e) {
-                                }
-                            } catch (CreateException e) {
-                                logger.debug("表{}已存在，忽略创建!", oldName);
-                            }
-                        }
-                    }
-                    //备份
-                    if (autoAlter) {
-                        String content = FileUtil.readFile2String(file.getAbsolutePath());
-                        bakTable(oldName, content);
-                    }
-                    logger.debug("init table success {}", file);
+                    initLocalFile(file);
                 }
             } catch (Exception e) {
                 logger.error("init table error", e);
             }
         }
+    }
+
+    public void initLocalFile(File file) throws Exception {
+        TableMetaData newTable = parser.parse(file, "file");
+        newTable.setLocation(file.getAbsolutePath());
+        if (newTable.getName() == null) {
+            newTable.setName(file.getName().split("[.]")[0]);
+        }
+        String oldName = newTable.getName();
+        TableMetaData old_ver = getLastVer(oldName);
+        //获取旧版本
+        if (old_ver != null) {
+            old_ver.setName(oldName);
+            if (!autoAlter) {
+                dataBase.getMetaData().addTable(newTable);
+            } else {
+                dataBase.getMetaData().addTable(old_ver);
+                dataBase.alterTable(newTable);
+            }
+        } else {//无备份说明是新表
+            if (!autoAlter) {
+                dataBase.getMetaData().addTable(newTable);
+            } else {
+                try {
+                    Table table = dataBase.createTable(newTable);
+                    try {
+                        //加载初始化数据
+                        TriggerResult result = table.getMetaData().on("init.data");
+                        if (result != null && result.isSuccess()) {
+                            Object data = result.getData();
+                            Insert insert = table.createInsert();
+                            if (data instanceof Collection) {
+                                for (Object d : ((Collection) data)) {
+                                    insert.insert(new InsertParam().values(((Map) d)));
+                                }
+                            }
+                            if (data instanceof Map) {
+                                insert.insert(new InsertParam().values(((Map) data)));
+                            }
+                        }
+                    } catch (TriggerException e) {
+                    }
+                } catch (CreateException e) {
+                    logger.debug("表{}已存在，忽略创建!", oldName);
+                }
+            }
+        }
+        //备份
+        if (autoAlter) {
+            String content = FileUtil.readFile2String(file.getAbsolutePath());
+            bakTable(oldName, content);
+        }
+        logger.debug("init table success {}", file);
     }
 
     protected void bakTable(String tableName, String content) {
@@ -243,4 +247,5 @@ public class DefaultTableFactory {
     public boolean isAutoAlter() {
         return autoAlter;
     }
+
 }

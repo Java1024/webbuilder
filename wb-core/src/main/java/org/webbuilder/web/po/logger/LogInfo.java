@@ -1,5 +1,6 @@
 package org.webbuilder.web.po.logger;
 
+import org.webbuilder.utils.base.MD5;
 import org.webbuilder.web.core.FastJsonHttpMessageConverter;
 import org.webbuilder.web.core.bean.GenericPo;
 
@@ -100,6 +101,8 @@ public class LogInfo extends GenericPo<String> {
 
 
     public String getUser_id() {
+        if(user_id==null)
+            user_id = "-";
         return user_id;
     }
 
