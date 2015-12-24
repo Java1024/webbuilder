@@ -5,7 +5,6 @@ import org.webbuilder.web.core.aop.logger.AccessLogger;
 import org.webbuilder.web.core.authorize.annotation.Authorize;
 import org.webbuilder.web.core.bean.JsonParam;
 import org.webbuilder.web.core.bean.PageUtil;
-import org.webbuilder.web.core.bean.ResponseData;
 import org.webbuilder.web.core.bean.ResponseMessage;
 import org.webbuilder.web.service.form.CustomFormService;
 
@@ -19,6 +18,7 @@ import java.util.Map;
 @RestController
 @RequestMapping(value = "/cf", produces = ResponseMessage.CONTENT_TYPE_JSON)
 @AccessLogger("自定义表单")
+@Authorize
 public class CustomFormController {
 
     @Resource
@@ -26,7 +26,6 @@ public class CustomFormController {
 
     @RequestMapping(value = "/{form_id}", method = RequestMethod.GET)
     @AccessLogger("查看列表")
-    @Authorize(expression = "#user.hasAccessModuleLevel(#form_id,'R')")
     public Object list(@PathVariable("form_id") String form_id, @JsonParam PageUtil pageUtil) {
         // 获取条件查询
         try {
@@ -39,7 +38,6 @@ public class CustomFormController {
 
     @RequestMapping(value = "/{form_id}/{id}", method = RequestMethod.GET)
     @AccessLogger("查看详情")
-    @Authorize(expression = "#user.hasAccessModuleLevel(#form_id,'R')")
     public Object info(@PathVariable("form_id") String form_id, @PathVariable("id") String id) {
         try {
             Object data = customFormService.selectByPk(form_id, id);
@@ -51,7 +49,6 @@ public class CustomFormController {
 
     @RequestMapping(value = "/{form_id}/total", method = RequestMethod.GET)
     @AccessLogger("数量")
-    @Authorize(expression = "#user.hasAccessModuleLevel(#form_id,'R')")
     public Object total(@PathVariable("form_id") String form_id, PageUtil pageUtil) {
         try {
             // 获取条件查询
@@ -63,7 +60,6 @@ public class CustomFormController {
 
     @RequestMapping(value = "/{form_id}", method = RequestMethod.POST)
     @AccessLogger("新增")
-    @Authorize(expression = "#user.hasAccessModuleLevel(#form_id,'C')")
     public Object add(@PathVariable("form_id") String form_id,
                       @RequestBody Map<String, Object> data) {
         try {
@@ -76,7 +72,6 @@ public class CustomFormController {
 
     @RequestMapping(value = "/{form_id}/{id}", method = RequestMethod.PUT)
     @AccessLogger("修改")
-    @Authorize(expression = "#user.hasAccessModuleLevel(#form_id,'U')")
     public Object update(@PathVariable("form_id") String form_id,
                          @PathVariable("id") String id,
                          @RequestBody Map<String, Object> data) {
