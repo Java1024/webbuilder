@@ -14,16 +14,15 @@ import org.webbuilder.web.core.bean.PageUtil;
 import org.webbuilder.web.core.dao.GenericMapper;
 import org.webbuilder.web.core.exception.BusinessException;
 import org.webbuilder.web.core.service.GenericService;
+import org.webbuilder.web.core.utils.WebUtil;
 import org.webbuilder.web.dao.form.FormMapper;
 import org.webbuilder.web.po.form.CustomFormData;
 import org.webbuilder.web.po.form.Form;
+import org.webbuilder.web.po.user.User;
 import org.webbuilder.web.service.storage.StorageService;
 
 import javax.annotation.Resource;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by 浩 on 2015-08-01 0001.
@@ -63,34 +62,54 @@ public class CustomFormService extends GenericService<CustomFormData, String> {
     }
 
     public String insert(String form_id, Map<String, Object> data) throws Exception {
-        //ProcessUtil.process("form_id.insert",0.1);
         Table table = getTable(form_id);
-        String uid = (String) data.get("u_id");
+        AuthValid.tryValidAuth(WebUtil.getLoginUser(), table, "C");
+        String idField = getIdFiled(table);
+        String uid = (String) data.get(idField);
         if (StringUtil.isNullOrEmpty(uid)) {
             uid = GenericPo.createUID();
-            data.put("u_id", uid);
+            data.put(idField, uid);
         }
-        data.put("create_date", new Date());
         InsertParam param = new InsertParam();
         param.values(data);
-        //ProcessUtil.process("form_id.insert",0.5);
         table.createInsert().insert(param);
-        //ProcessUtil.process("form_id.insert").done();
-        return String.valueOf(param.getData().get("u_id"));
+        return String.valueOf(param.getData().get(idField));
     }
 
     public int update(String form_id, String u_id, Map<String, Object> data) throws Exception {
         Table table = getTable(form_id);
+        User user = WebUtil.getLoginUser();
+        AuthValid.tryValidAuth(user, table, "U");
+        //获取不能当前用户不能进行修改的字段
+        Set<String> cannotUpdate = AuthValid.getCanNotUpdateFields(user, table);
+        for (String s : cannotUpdate) {
+            data.remove(s);
+        }
         Update update = table.createUpdate();
         UpdateParam param = new UpdateParam();
-        param.where("u_id", u_id);
+        param.where(getIdFiled(table), u_id);
+        param.exclude(cannotUpdate);
         param.set(data);
         return update.update(param);
     }
 
     public Map selectByPk(String form_id, String u_id) throws Exception {
         Table table = getTable(form_id);
-        return table.createQuery().single(new QueryParam().where("u_id", u_id));
+        User user = WebUtil.getLoginUser();
+        //尝试验证查询权限
+        AuthValid.tryValidAuth(user, table, "R");
+        //获取不能查询的字段
+        Set<String> canNotQuery = AuthValid.getCanNotQueryFields(user, table);
+        QueryParam param = new QueryParam();
+        param.where(getIdFiled(table), u_id);
+        param.exclude(canNotQuery);
+        return table.createQuery().single(param);
+    }
+
+    protected String getIdFiled(Table table) {
+        Object idField = table.getMetaData().attr("id-field");
+        String idF = StringUtil.isNullOrEmpty(idField) ? "u_id" : String.valueOf(idField);
+        return idF;
     }
 
     /**
@@ -107,14 +126,28 @@ public class CustomFormService extends GenericService<CustomFormData, String> {
         if (includes.size() == 0 && excludes.size() == 0)
             return this.selectByPk(form_id, u_id);
         Table table = getTable(form_id);
-        QueryParam param = new QueryParam().where("u_id", u_id);
+        User user = WebUtil.getLoginUser();
+        AuthValid.tryValidAuth(user, table, "R");
+        //获取用户不能查询的字段
+        Set<String> canNotQuery = AuthValid.getCanNotQueryFields(user, table);
+        QueryParam param = new QueryParam();
+        param.where(getIdFiled(table), u_id);
         param.include(includes).exclude(excludes);
+        param.exclude(canNotQuery);
         return table.createQuery().single(param);
     }
 
     public List<Map> select(String form_id, Map<String, Object> params) throws Exception {
         Table table = getTable(form_id);
-        return table.createQuery().list(new QueryParam().where(params));
+        User user = WebUtil.getLoginUser();
+        AuthValid.tryValidAuth(user, table, "R");
+        //获取用户不能查询的字段
+        Set<String> canNotQuery = AuthValid.getCanNotQueryFields(user, table);
+        QueryParam param = new QueryParam();
+        param.where(params);
+        //排除不查询的字段
+        param.exclude(canNotQuery);
+        return table.createQuery().list(param);
     }
 
     @Override
@@ -143,7 +176,10 @@ public class CustomFormService extends GenericService<CustomFormData, String> {
     }
 
     public Map<String, Object> selectPager(String form_id, PageUtil pageUtil) throws Exception {
-        Query query = getTable(form_id).createQuery();
+        Table table = getTable(form_id);
+        User user = WebUtil.getLoginUser();
+        AuthValid.tryValidAuth(user, table, "R");
+        Query query = table.createQuery();
         QueryParam param = new QueryParam();
         param.where(pageUtil.getQueryMap());
         int total = query.total(param);
@@ -154,6 +190,8 @@ public class CustomFormService extends GenericService<CustomFormData, String> {
         if (pageUtil.getSortField() != null) {
             param.orderBy("desc".equalsIgnoreCase(pageUtil.getSortOrder()), pageUtil.getSortField());
         }
+        Set<String> canNotQuery = AuthValid.getCanNotQueryFields(user, table);
+        param.exclude(canNotQuery);
         Map<String, Object> result = new HashMap<>();
         result.put("data", query.list(param));
         result.put("total", total);
@@ -190,5 +228,6 @@ public class CustomFormService extends GenericService<CustomFormData, String> {
     public Map<String, Object> selectPager(PageUtil pageUtil) throws Exception {
         throw new BusinessException("此服务已关闭访问!");
     }
+
 
 }
