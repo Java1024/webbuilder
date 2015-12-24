@@ -5,6 +5,7 @@ import org.webbuilder.sql.param.ExecuteCondition;
 import org.webbuilder.sql.render.template.SqlTemplate;
 import org.webbuilder.sql.trigger.Trigger;
 import org.webbuilder.sql.trigger.TriggerResult;
+import org.webbuilder.sql.validator.Validator;
 import org.webbuilder.utils.base.StringUtil;
 
 import java.io.Serializable;
@@ -31,6 +32,7 @@ public class TableMetaData implements Serializable {
     private Map<String, Correlation> correlations = new LinkedHashMap<>();
 
     private Map<String, Trigger> triggerBase = new ConcurrentHashMap<>();
+
     private Map<String, Object> attr = new LinkedHashMap<>();
 
     public Object attr(String key, Object attr) {
@@ -84,6 +86,7 @@ public class TableMetaData implements Serializable {
 
     public FieldMetaData addField(FieldMetaData fieldMetaData) {
         fieldMetaDatas.put(fieldMetaData.getName(), fieldMetaData);
+        fieldMetaData.setTableMetaData(this);
         return fieldMetaData;
     }
 
@@ -145,7 +148,13 @@ public class TableMetaData implements Serializable {
         } else {
             return fieldMetaDatas.get(name);
         }
+    }
 
+    public Validator getValidator() {
+        if (getDataBaseMetaData() != null && getDataBaseMetaData().getValidatorFactory() != null) {
+            return getDataBaseMetaData().getValidatorFactory().getValidator(this);
+        }
+        return null;
     }
 
     public Set<FieldMetaData> getFields() {

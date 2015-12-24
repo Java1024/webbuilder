@@ -9,6 +9,7 @@ import org.webbuilder.sql.param.update.UpdateParam;
 import org.webbuilder.sql.render.template.SqlTemplate;
 import org.webbuilder.sql.support.executor.SqlExecutor;
 import org.webbuilder.sql.trigger.TriggerResult;
+import org.webbuilder.utils.common.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,6 +35,9 @@ public class CommonUpdate extends TriggerExecutor implements Update {
         //尝试执行触发器
         if (!isSkipTrigger(param))
             tryExecuteTrigger(Constant.TRIGGER_UPDATE_BEFORE, root);
+        if (!StringUtils.isTrue(param.getProperty("skipValid")))
+            //尝试验证数据
+            tryValidData(param.getData());
         SQL sql = sqlTemplate.render(param);
         int i = sqlExecutor.update(sql);
         root.put("length", i);

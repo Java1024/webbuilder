@@ -1,8 +1,7 @@
 package org.webbuilder.sql;
 
 import java.io.Serializable;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 字段元数据类
@@ -63,7 +62,7 @@ public class FieldMetaData implements Serializable {
     /**
      * 验证器
      */
-    private String validator;
+    private Set<String> validator = new LinkedHashSet<>();
 
     /**
      * 字段是否可进行修改
@@ -230,11 +229,16 @@ public class FieldMetaData implements Serializable {
         this.defaultValue = defaultValue;
     }
 
-    public String getValidator() {
+    public Set<String> getValidator() {
         return validator;
     }
 
-    public void setValidator(String validator) {
+    public void setValidator(Set<String> validator) {
         this.validator = validator;
+    }
+
+    public FieldMetaData addValidator(String validator) {
+        this.validator.add(validator);
+        return this;
     }
 }

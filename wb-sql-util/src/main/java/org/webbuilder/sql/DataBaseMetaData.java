@@ -4,6 +4,7 @@ import org.webbuilder.sql.keywords.KeywordsMapper;
 import org.webbuilder.sql.render.template.SqlRenderParam;
 import org.webbuilder.sql.render.template.SqlTemplate;
 import org.webbuilder.sql.render.template.SqlTemplateRender;
+import org.webbuilder.sql.validator.ValidatorFactory;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -15,6 +16,11 @@ import java.util.concurrent.ConcurrentHashMap;
  * Created by 浩 on 2015-11-06 0006.
  */
 public abstract class DataBaseMetaData {
+
+    /**
+     * 验证器工厂
+     */
+    private ValidatorFactory validatorFactory;
 
     /**
      * 表信息
@@ -40,6 +46,9 @@ public abstract class DataBaseMetaData {
         tableMetaData.setDataBaseMetaData(this);
         tables.put(tableMetaData.getName(), tableMetaData);
         getRender().init(tableMetaData);
+        if (getValidatorFactory() != null) {
+            getValidatorFactory().initValidator(tableMetaData);
+        }
         return tableMetaData;
     }
 
@@ -89,4 +98,11 @@ public abstract class DataBaseMetaData {
         return render.render(param);
     }
 
+    public ValidatorFactory getValidatorFactory() {
+        return validatorFactory;
+    }
+
+    public void setValidatorFactory(ValidatorFactory validatorFactory) {
+        this.validatorFactory = validatorFactory;
+    }
 }

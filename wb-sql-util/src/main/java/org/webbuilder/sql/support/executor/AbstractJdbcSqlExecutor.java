@@ -9,11 +9,9 @@ import org.webbuilder.utils.base.ClassUtil;
 import org.webbuilder.utils.base.StringUtil;
 
 import java.io.ByteArrayInputStream;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
+import java.sql.*;
 import java.util.*;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,7 +26,7 @@ public abstract class AbstractJdbcSqlExecutor implements SqlExecutor {
      */
     public abstract Connection getConnection();
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    protected Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private static final Pattern APPEND_PATTERN = Pattern.compile("(?<=\\$\\{)(.+?)(?=\\})");
     private static final Pattern PREPARED_PATTERN = Pattern.compile("(?<=#\\{)(.+?)(?=\\})");
@@ -111,9 +109,27 @@ public abstract class AbstractJdbcSqlExecutor implements SqlExecutor {
             wrapper.done(data);
             datas.add(data);
         }
+        closeResultSet(resultSet);
+        closeStatement(statement);
         //重置JDBC链接
         resetConnection(connection);
         return datas;
+    }
+
+    protected void closeResultSet(ResultSet resultSet) {
+        try {
+            resultSet.close();
+        } catch (SQLException e) {
+            logger.error("close ResultSet error", e);
+        }
+    }
+
+    protected void closeStatement(Statement statement) {
+        try {
+            statement.close();
+        } catch (SQLException e) {
+            logger.error("close ResultSet error", e);
+        }
     }
 
     @Override
@@ -142,6 +158,8 @@ public abstract class AbstractJdbcSqlExecutor implements SqlExecutor {
             index++;
             wrapper.done(data);
         }
+        closeResultSet(resultSet);
+        closeStatement(statement);
         resetConnection(connection);
         return data;
     }
@@ -160,6 +178,7 @@ public abstract class AbstractJdbcSqlExecutor implements SqlExecutor {
                 exec(bindSQL.getSql());
             }
         }
+        closeStatement(statement);
         resetConnection(connection);
     }
 
@@ -173,6 +192,7 @@ public abstract class AbstractJdbcSqlExecutor implements SqlExecutor {
         int i = statement.executeUpdate();
         if (logger.isDebugEnabled())
             logger.debug("{} rows is updated!", i);
+        closeStatement(statement);
         resetConnection(connection);
         return i;
     }
@@ -192,6 +212,7 @@ public abstract class AbstractJdbcSqlExecutor implements SqlExecutor {
             return i;
         }
         logger.debug("{} rows is delete!", i);
+        closeStatement(statement);
         resetConnection(connection);
         return i;
     }

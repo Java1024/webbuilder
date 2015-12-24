@@ -6,7 +6,10 @@ import org.webbuilder.sql.TableMetaData;
 import org.webbuilder.sql.exception.TriggerException;
 import org.webbuilder.sql.param.SqlRenderConfig;
 import org.webbuilder.sql.trigger.TriggerResult;
+import org.webbuilder.sql.validator.Validator;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -19,6 +22,12 @@ public abstract class TriggerExecutor {
     private DataBase dataBase;
 
     private Table table;
+
+    public List tryValidData(Object data) {
+        Validator validator = getTableMetaData().getValidator();
+        if (validator == null) return new LinkedList();
+        return validator.valid(data);
+    }
 
     public boolean isSkipTrigger(SqlRenderConfig config) {
         return String.valueOf(config.get("skipTrigger")).equalsIgnoreCase("true");

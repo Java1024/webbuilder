@@ -61,7 +61,6 @@ public class CommonTable implements Table {
     public Query createQuery() throws QueryException {
         //单例
         if (query != null) return query;
-
         SqlTemplate template = metaData.getTemplate(SqlTemplate.TYPE.SELECT);
         CommonQuery query = new CommonQuery(template, sqlExecutor);
         query.setDataBase(dataBase);

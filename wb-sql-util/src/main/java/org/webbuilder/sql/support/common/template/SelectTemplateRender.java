@@ -13,6 +13,7 @@ import org.webbuilder.sql.param.query.OrderBy;
 import org.webbuilder.sql.param.query.QueryParam;
 import org.webbuilder.sql.render.template.SqlTemplate;
 import org.webbuilder.sql.support.common.CommonSql;
+import org.webbuilder.utils.common.StringUtils;
 
 import java.util.*;
 
@@ -76,6 +77,8 @@ public class SelectTemplateRender implements SqlTemplate {
         }
         if (includes.size() != 0) {
             for (IncludeField include : includes) {
+                if (excludes.contains(include.getField())) continue;
+                if (excludes.contains(include.getFullField())) continue;
                 include.setMainTable(tableMetaData.getName());
                 if (include.isSkipCheck()) {
                     sqlAppender.addSpc(keywordsMapper.getFieldTemplate(include));
@@ -237,6 +240,7 @@ public class SelectTemplateRender implements SqlTemplate {
     private Set<OrderBy> initOrderBy(Object object) {
         Set<OrderBy> orderBy = new LinkedHashSet<>();
         if (object instanceof String) {
+            if (StringUtils.isNullOrEmpty(object.toString().trim())) return orderBy;
             orderBy.add(new OrderBy(String.valueOf(object)));
         } else if (object instanceof OrderBy) {
             orderBy.add((OrderBy) object);
@@ -288,6 +292,7 @@ public class SelectTemplateRender implements SqlTemplate {
         if (mod == null) mod = "asc";
         if (object == null) return tables;
         Set<OrderBy> orderBy = initOrderBy(object);
+        if (orderBy.size() == 0) return tables;
         boolean hasMore = false;
         for (OrderBy by : orderBy) {
             if (hasMore)

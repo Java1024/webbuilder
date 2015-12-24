@@ -7,6 +7,7 @@ import org.webbuilder.sql.TableMetaData;
 import org.webbuilder.sql.param.insert.InsertParam;
 import org.webbuilder.sql.render.template.SqlTemplate;
 import org.webbuilder.sql.support.executor.SqlExecutor;
+import org.webbuilder.utils.common.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,6 +31,9 @@ public class CommonInsert extends TriggerExecutor implements Insert {
         //尝试执行触发器
         if (!isSkipTrigger(param))
             tryExecuteTrigger(Constant.TRIGGER_INSERT_BEFORE, root);
+        if (!StringUtils.isTrue(param.getProperty("skipValid")))
+            //尝试验证数据
+            tryValidData(param.getData());
         SQL sql = sqlTemplate.render(param);
         sqlExecutor.insert(sql);
         if (!isSkipTrigger(param))

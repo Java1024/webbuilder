@@ -100,14 +100,22 @@ public class CommonTableMetaDataParser implements TableMetaDataParser {
             fieldMetaData.setCanUpdate(!("false".equals(canUpdate)));
             fieldMetaData.setNotNull("true".equals(isNotNull));
             fieldMetaData.setDefaultValue(defaultValue);
-            fieldMetaData.setValidator(validator);
+            if (!StringUtil.isNullOrEmpty(validator))
+                fieldMetaData.addValidator(validator);
             fieldMetaData.setDataType(dataType);
             fieldMetaData.setComment(remark);
             attrs = element.getElementsByTag("attr");
             for (Element attr : attrs) {
                 for (Attribute attribute : attr.attributes().asList()) {
-                    tableMetaData.attr(attribute.getKey(), attribute.getValue());
+                    fieldMetaData.attr(attribute.getKey(), attribute.getValue());
                 }
+            }
+            //校验器
+            Elements validators = element.getElementsByTag("validator");
+            for (Element attr : validators) {
+                String value = attr.attr("value");
+                if (!StringUtil.isNullOrEmpty(value))
+                    fieldMetaData.addValidator(value);
             }
             tableMetaData.addField(fieldMetaData);
         }
@@ -119,7 +127,7 @@ public class CommonTableMetaDataParser implements TableMetaDataParser {
             String target = correlation.attr("target");
             String alias = correlation.attr("alias");
             cor.setTargetTable(target);
-            if(!StringUtil.isNullOrEmpty(alias)){
+            if (!StringUtil.isNullOrEmpty(alias)) {
                 cor.setAlias(alias);
             }
             Elements conditions = correlation.getElementsByTag("condition");
