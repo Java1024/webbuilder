@@ -16,7 +16,7 @@ import java.util.Map;
  * Created by 浩 on 2015-08-01 0001.
  */
 @RestController
-@RequestMapping(value = "/cf", produces = ResponseMessage.CONTENT_TYPE_JSON)
+@RequestMapping(value = "/cf")
 @AccessLogger("自定义表单")
 @Authorize
 public class CustomFormController {

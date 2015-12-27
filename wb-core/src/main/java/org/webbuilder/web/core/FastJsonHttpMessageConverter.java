@@ -84,10 +84,6 @@ public class FastJsonHttpMessageConverter extends AbstractHttpMessageConverter<O
         } else if (obj instanceof ResponseMessage) {
             ResponseMessage data = (ResponseMessage) obj;
             text = JSON.toJSONString(data, this.features);
-            //指定了Callback跨域调用
-            if (!StringUtils.isNullOrEmpty(data.getCallback())) {
-                text = data.getCallback().concat("(").concat(text).concat(")");
-            }
         } else {
             text = JSON.toJSONString(obj, this.features);
         }

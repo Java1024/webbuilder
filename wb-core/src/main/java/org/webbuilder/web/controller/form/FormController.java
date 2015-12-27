@@ -19,7 +19,7 @@ import javax.annotation.Resource;
  * Created by generator(by 周浩) 2015-8-1 16:31:30
  */
 @RestController
-@RequestMapping(value = "/form", produces = ResponseMessage.CONTENT_TYPE_JSON)
+@RequestMapping(value = "/form")
 @AccessLogger("表单管理")
 @Authorize(role = "form")
 public class FormController extends GenericController<Form, String> {

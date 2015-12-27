@@ -23,54 +23,75 @@ public class ResponseMessage {
     private transient static final Map<Class, MessageHandler> handlers = new ConcurrentHashMap<>();
 
     /**
-     * jsoup跨域请求
+     * 注册一个消息处理器
+     *
+     * @param dataType 消息类型
+     * @param handler  处理器实例
+     * @return 已注册的消息处理器
      */
-    private transient String callback;
+    public static final <T> MessageHandler<T> registerMessageHandler(Class<T> dataType, MessageHandler<T> handler) {
+        return handlers.put(dataType, handler);
+    }
 
+    /**
+     * 注销一个消息处理器
+     *
+     * @param dataType 消息类型
+     * @return 已注册的消息处理器
+     */
+    public static final <T> MessageHandler<T> cancelMessageHandler(Class<T> dataType) {
+        return handlers.remove(dataType);
+    }
+
+    /**
+     * 注册默认的消息处理
+     */
     static {
-        handlers.put(Object.class, new MessageHandler<Object>() {
+        registerMessageHandler(Object.class, new MessageHandler<Object>() {
             @Override
             public Object handle(ResponseMessage message, Object msg) {
                 return msg;
             }
         });
         //默认异常信息处理
-        handlers.put(Exception.class, new MessageHandler<Exception>() {
+        registerMessageHandler(Throwable.class, new MessageHandler<Throwable>() {
             @Override
-            public Object handle(ResponseMessage message,Exception e) {
+            public Object handle(ResponseMessage message, Throwable e) {
                 LOGGER.error(e.getMessage(), e);
                 return e.getMessage();
             }
         });
         //默认业务异常信息处理
-        handlers.put(BusinessException.class, new MessageHandler<BusinessException>() {
+        registerMessageHandler(BusinessException.class, new MessageHandler<BusinessException>() {
             @Override
-            public Object handle(ResponseMessage message,BusinessException e) {
+            public Object handle(ResponseMessage message, BusinessException e) {
                 LOGGER.error(e.getMessage());
                 return e.getMessage();
             }
         });
         //验证器异常，不记录错误日志
-        handlers.put(ValidationException.class, new MessageHandler<BusinessException>() {
+        registerMessageHandler(ValidationException.class, new MessageHandler<ValidationException>() {
             @Override
-            public Object handle(ResponseMessage message,BusinessException e) {
+            public Object handle(ResponseMessage message, ValidationException e) {
                 message.setCode("400");
+                return e.getMessage();
+            }
+        });
+        //权限验证异常
+        registerMessageHandler(AccessValidException.class, new MessageHandler<AccessValidException>() {
+            @Override
+            public Object handle(ResponseMessage message, AccessValidException e) {
+                message.setCode("502");
                 return e.getMessage();
             }
         });
     }
 
+    private static final <T> MessageHandler<T> getMessageHandler(Class<T> type) {
+        return handlers.get(type);
+    }
+
     private transient static final Logger LOGGER = LoggerFactory.getLogger(ResponseMessage.class);
-
-    /**
-     * 响应格式
-     */
-    public transient static final String CONTENT_TYPE_JSON = "application/json;charset=UTF-8";
-
-    /**
-     * 响应格式
-     */
-    public transient static final String CONTENT_TYPE_HTML = "text/html;charset=UTF-8";
 
     /**
      * 是否成功
@@ -103,12 +124,7 @@ public class ResponseMessage {
         if (messageHandler == null) {
             if (data instanceof Throwable) {
                 //未获取到指定的异常信息处理器，使用通用异常处理器
-                messageHandler = getMessageHandler(Exception.class);
-                if (data instanceof ValidationException) {
-                    this.code = "400";
-                } else if (data instanceof AccessValidException) {
-                    this.code = "502";
-                }
+                messageHandler = getMessageHandler(Throwable.class);
             } else {
                 messageHandler = getMessageHandler(Object.class);
             }
@@ -155,34 +171,8 @@ public class ResponseMessage {
         this.code = code;
     }
 
-    public <T> void registerMessageHandler(MessageHandler<T> handler) {
-        Class type = ClassUtils.getGenericType(handler.getClass());
-        handlers.put(type, handler);
-    }
-
-    private <T> MessageHandler<T> getMessageHandler(Class<T> type) {
-        return handlers.get(type);
-    }
-
-    public void removeMessageHandler(Class type) {
-        handlers.remove(type);
-    }
-
     public interface MessageHandler<T> {
         Object handle(ResponseMessage message, T msg);
-    }
-
-    public String getCallback() {
-        return callback;
-    }
-
-    public void setCallback(String callback) {
-        this.callback = callback;
-    }
-
-    public ResponseMessage callback(String callback) {
-        this.callback = callback;
-        return this;
     }
 
     public Object getSourceData() {

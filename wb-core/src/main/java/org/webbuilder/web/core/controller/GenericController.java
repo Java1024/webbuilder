@@ -57,7 +57,7 @@ public abstract class GenericController<PO extends GenericPo<PK>, PK> implements
      * @return 直接返回查询结果实体交由fastJson进行json序列化，
      * 当发生错误时，不会抛出异常，而是返回{@link ResponseMessage}实体
      */
-    @RequestMapping(method = RequestMethod.GET, produces = ResponseMessage.CONTENT_TYPE_JSON)
+    @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
     @AccessLogger("查询列表")
     @Authorize(level = "R")
@@ -82,7 +82,7 @@ public abstract class GenericController<PO extends GenericPo<PK>, PK> implements
      * @param id 主键
      * @return 请求结果
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = ResponseMessage.CONTENT_TYPE_JSON)
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @ResponseBody
     @AccessLogger("查询明细")
     @Authorize(level = "R")
@@ -104,7 +104,7 @@ public abstract class GenericController<PO extends GenericPo<PK>, PK> implements
      * @param pageUtil 查询条件
      * @return 请求结果
      */
-    @RequestMapping(value = "/total", method = RequestMethod.GET, produces = ResponseMessage.CONTENT_TYPE_JSON)
+    @RequestMapping(value = "/total", method = RequestMethod.GET)
     @ResponseBody
     @AccessLogger("查询总数")
     @Authorize(level = "R")
@@ -124,7 +124,7 @@ public abstract class GenericController<PO extends GenericPo<PK>, PK> implements
      * @param object 前端请求的对象
      * @return 请求结果
      */
-    @RequestMapping(method = RequestMethod.POST, produces = ResponseMessage.CONTENT_TYPE_JSON)
+    @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
     @AccessLogger("新增")
     @Authorize(level = "C")
@@ -143,7 +143,7 @@ public abstract class GenericController<PO extends GenericPo<PK>, PK> implements
      * @param id 要删除的id标识
      * @return 请求结果
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = ResponseMessage.CONTENT_TYPE_JSON)
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @ResponseBody
     @AccessLogger("删除")
     @Authorize(level = "R")
@@ -162,7 +162,7 @@ public abstract class GenericController<PO extends GenericPo<PK>, PK> implements
      * @param object 前端请求的对象
      * @return 请求结果
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.PUT, produces = ResponseMessage.CONTENT_TYPE_JSON)
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     @ResponseBody
     @AccessLogger("修改")
     @Authorize(level = "U")
@@ -182,7 +182,7 @@ public abstract class GenericController<PO extends GenericPo<PK>, PK> implements
      * @param json 前端请求的对象
      * @return 请求结果
      */
-    @RequestMapping(method = RequestMethod.PUT, produces = ResponseMessage.CONTENT_TYPE_JSON)
+    @RequestMapping(method = RequestMethod.PUT)
     @ResponseBody
     @AccessLogger("修改")
     @Authorize(level = "U")

@@ -31,7 +31,7 @@ import java.util.Map;
 /**
  * Created by 浩 on 2015-08-17 0017.
  */
-@RequestMapping(value = "/bpm/process", produces = ResponseMessage.CONTENT_TYPE_JSON)
+@RequestMapping(value = "/bpm/process")
 @AccessLogger("工作流")
 @Authorize
 @RestController

@@ -16,7 +16,7 @@ import java.util.Map;
  * Created by 浩 on 2015-08-14 0014.
  */
 @Controller
-@RequestMapping(value = "/bpm/model",produces = ResponseMessage.CONTENT_TYPE_JSON)
+@RequestMapping(value = "/bpm/model")
 @ResponseBody
 @AccessLogger("工作流模型")
 public class BpmModelController {

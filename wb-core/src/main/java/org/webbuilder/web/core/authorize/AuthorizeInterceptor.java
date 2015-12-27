@@ -3,6 +3,7 @@ package org.webbuilder.web.core.authorize;
 import com.alibaba.fastjson.JSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -161,7 +162,7 @@ public class AuthorizeInterceptor implements HandlerInterceptor {
             String requestType = request.getHeader("X-Requested-With");
             if ("XMLHttpRequest".equals(requestType) || responseJson) {
                 // AJAX请求 响应json格式的数据
-                response.setContentType(ResponseMessage.CONTENT_TYPE_JSON);
+                response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                 response.getWriter().print(msg);
                 return false;
             } else {

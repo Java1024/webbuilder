@@ -1,5 +1,0 @@
-
-第一步：将ojdbc14.jar.zip重命名为ojdbc14.jar
-第二步：进入cmd，切换到此目录后执行以下命令
-
-mvn install:install-file -DgroupId=com.oracle -DartifactId=ojdbc14 -Dversion=10.2.0.1.0 -Dpackaging=jar -Dfile=ojdbc14.jar
