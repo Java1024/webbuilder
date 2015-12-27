@@ -1,4 +1,4 @@
-package org.webbuilder.utils.base;
+package org.webbuilder.utils.common;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

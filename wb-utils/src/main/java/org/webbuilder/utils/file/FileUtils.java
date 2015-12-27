@@ -1,6 +1,6 @@
 package org.webbuilder.utils.file;
 
-import org.webbuilder.utils.base.StringUtil;
+import org.webbuilder.utils.common.StringUtils;
 import org.webbuilder.utils.file.callback.*;
 
 import java.io.*;
@@ -8,7 +8,7 @@ import java.io.*;
 /**
  * Created by 浩 on 2015-12-09 0009.
  */
-public class FileUtil extends Resources {
+public class FileUtils extends Resources {
 
     /**
      * 指定目录,扫描文件.可指定最大扫描深度
@@ -29,7 +29,7 @@ public class FileUtil extends Resources {
      * @param callBack 扫描回掉
      */
     public static void scanFile(String path, boolean depth, ScanCallBack callBack) {
-        scanFile(path, depth,-1, 0,  callBack);
+        scanFile(path, depth, -1, 0, callBack);
     }
 
     /**
@@ -100,7 +100,7 @@ public class FileUtil extends Resources {
      */
     public static final String getFileEncode(String fileName) {
         String encode = EncodingDetect.getJavaEncode(fileName);
-        if (StringUtil.isNullOrEmpty(encode)) {
+        if (StringUtils.isNullOrEmpty(encode)) {
             encode = "utf8";
         }
         return encode;
@@ -200,6 +200,13 @@ public class FileUtil extends Resources {
     public static final void writeObj2File(Serializable obj, String fileName) throws Exception {
         try (OutputStream out = new FileOutputStream(fileName)) {
             writeObj2Steam(obj, out);
+        }
+    }
+
+    public static final void writeString2File(String str, String fileName, String encode) throws Exception {
+        try (OutputStream out = new FileOutputStream(fileName)) {
+            out.write(str.getBytes());
+            out.flush();
         }
     }
 

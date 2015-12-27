@@ -1,9 +1,8 @@
 package org.webbuilder.sql.param;
 
-import org.webbuilder.utils.base.StringUtil;
+import org.webbuilder.utils.common.StringUtils;
 
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -149,11 +148,11 @@ public class IncludeField implements Serializable {
 
     public String getFullField() {
         if (isAnotherTable()) {
-            return StringUtil.concat(targetTable, ".", field);
+            return StringUtils.concat(targetTable, ".", field);
         } else {
             if (mainTable == null)
                 return field;
-            return StringUtil.concat(mainTable, ".", field);
+            return StringUtils.concat(mainTable, ".", field);
         }
     }
 

@@ -1,12 +1,6 @@
 package org.webbuilder.web.service.config;
 
 import com.alibaba.fastjson.JSON;
-import org.webbuilder.utils.base.StringUtil;
-import org.webbuilder.web.core.logger.LoggerConfig;
-import org.webbuilder.web.core.service.GenericService;
-import org.webbuilder.web.core.service.SocketService;
-import org.webbuilder.web.dao.config.ConfigMapper;
-import org.webbuilder.web.po.config.Config;
 import org.apache.ibatis.io.Resources;
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -14,8 +8,13 @@ import org.dom4j.io.SAXReader;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor;
 import org.springframework.web.socket.WebSocketSession;
+import org.webbuilder.utils.common.StringUtils;
+import org.webbuilder.web.core.logger.LoggerConfig;
+import org.webbuilder.web.core.service.GenericService;
+import org.webbuilder.web.core.service.SocketService;
+import org.webbuilder.web.dao.config.ConfigMapper;
+import org.webbuilder.web.po.config.Config;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -120,7 +119,7 @@ public class ConfigService extends GenericService<Config, String> implements Soc
      */
     @Cacheable(value = CACHE_KEY, key = "'info_'+#name+'_key_'+#key+'_int'")
     public int getInt(String name, String key) throws Exception {
-        return StringUtil.toInt(get(name, key));
+        return StringUtils.toInt(get(name, key));
     }
 
     /**
@@ -128,7 +127,7 @@ public class ConfigService extends GenericService<Config, String> implements Soc
      */
     @Cacheable(value = CACHE_KEY, key = "'info_'+#name+'_key_'+#key+'_double'")
     public double getDouble(String name, String key) throws Exception {
-        return StringUtil.toDouble(get(name, key));
+        return StringUtils.toDouble(get(name, key));
     }
 
     /**
@@ -136,7 +135,7 @@ public class ConfigService extends GenericService<Config, String> implements Soc
      */
     @Cacheable(value = CACHE_KEY, key = "'info_'+#name+'_key_'+#key+'_long'")
     public long getLong(String name, String key) throws Exception {
-        return StringUtil.toLong(get(name, key));
+        return StringUtils.toLong(get(name, key));
     }
 
     /**
@@ -144,7 +143,7 @@ public class ConfigService extends GenericService<Config, String> implements Soc
      */
     @Cacheable(value = CACHE_KEY, key = "'info_'+#name+'_key_'+#key+'_int'")
     public int getInt(String name, String key, int defaultValue) {
-        return StringUtil.toInt(get(name, key, String.valueOf(defaultValue)));
+        return StringUtils.toInt(get(name, key, String.valueOf(defaultValue)));
     }
 
     /**
@@ -152,7 +151,7 @@ public class ConfigService extends GenericService<Config, String> implements Soc
      */
     @Cacheable(value = CACHE_KEY, key = "'info_'+#name+'_key_'+#key+'_double'")
     public double getDouble(String name, String key, double defaultValue) {
-        return StringUtil.toDouble(get(name, key, String.valueOf(defaultValue)));
+        return StringUtils.toDouble(get(name, key, String.valueOf(defaultValue)));
     }
 
     /**
@@ -160,7 +159,7 @@ public class ConfigService extends GenericService<Config, String> implements Soc
      */
     @Cacheable(value = CACHE_KEY, key = "'info_'+#name+'_key_'+#key+'_long'")
     public long getLong(String name, String key, long defaultValue) {
-        return StringUtil.toLong(get(name, key, String.valueOf(defaultValue)));
+        return StringUtils.toLong(get(name, key, String.valueOf(defaultValue)));
     }
 
     private final EntityResolver entityResolver = new EntityResolver() {

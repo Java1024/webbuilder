@@ -6,7 +6,7 @@ import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.client.solrj.request.CoreAdminRequest;
 import org.webbuilder.search.engine.SearchEngine;
 import org.webbuilder.search.engine.SearchResult;
-import org.webbuilder.utils.base.StringUtil;
+import org.webbuilder.utils.common.StringUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -86,8 +86,8 @@ public class SolrSearchEngine implements SearchEngine {
 
     protected SolrQuery buildeQueryByMap(Map<String, Object> map) {
         SolrQuery solrQuery = new SolrQuery();
-        solrQuery.setStart(StringUtil.toInt(map.get("pageIndex"), 0));
-        solrQuery.setRows(StringUtil.toInt(map.get("pageSize"), 0));
+        solrQuery.setStart(StringUtils.toInt(map.get("pageIndex"), 0));
+        solrQuery.setRows(StringUtils.toInt(map.get("pageSize"), 0));
         return solrQuery;
     }
 }

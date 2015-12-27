@@ -1,17 +1,6 @@
 package org.webbuilder.web.core.authorize;
 
 import com.alibaba.fastjson.JSON;
-import org.springframework.core.MethodParameter;
-import org.springframework.web.method.support.HandlerMethodArgumentResolver;
-import org.springframework.web.method.support.InvocableHandlerMethod;
-import org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod;
-import org.webbuilder.utils.base.StringUtil;
-import org.webbuilder.utils.script.engine.DynamicScriptEngine;
-import org.webbuilder.utils.script.engine.DynamicScriptEngineFactory;
-import org.webbuilder.web.core.authorize.annotation.Authorize;
-import org.webbuilder.web.core.bean.ResponseMessage;
-import org.webbuilder.web.core.utils.WebUtil;
-import org.webbuilder.web.po.user.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.AntPathMatcher;
@@ -21,6 +10,13 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.socket.server.support.WebSocketHttpRequestHandler;
+import org.webbuilder.utils.common.StringUtils;
+import org.webbuilder.utils.script.engine.DynamicScriptEngine;
+import org.webbuilder.utils.script.engine.DynamicScriptEngineFactory;
+import org.webbuilder.web.core.authorize.annotation.Authorize;
+import org.webbuilder.web.core.bean.ResponseMessage;
+import org.webbuilder.web.core.utils.WebUtil;
+import org.webbuilder.web.po.user.User;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -79,8 +75,8 @@ public class AuthorizeInterceptor implements HandlerInterceptor {
             authorizeInfo.getRoles().addAll(Arrays.asList(classAuth.role()));
             authorizeInfo.getLevel().addAll(Arrays.asList(classAuth.level()));
             authorizeInfo.getModules().addAll(Arrays.asList(classAuth.module()));
-            if (!StringUtil.isNullOrEmpty(classAuth.expression())) {
-                String scriptId = StringUtil.concat("author_script_", classAuth.expression().hashCode());
+            if (!StringUtils.isNullOrEmpty(classAuth.expression())) {
+                String scriptId = StringUtils.concat("author_script_", classAuth.expression().hashCode());
                 DynamicScriptEngine engine = DynamicScriptEngineFactory.getEngine(classAuth.expressionLanguage());
                 if (!engine.compiled(scriptId)) {
                     engine.compile(scriptId, classAuth.expression());
@@ -94,8 +90,8 @@ public class AuthorizeInterceptor implements HandlerInterceptor {
             authorizeInfo.getRoles().addAll(Arrays.asList(authorize.role()));
             authorizeInfo.getLevel().addAll(Arrays.asList(authorize.level()));
             authorizeInfo.getModules().addAll(Arrays.asList(authorize.module()));
-            if (!StringUtil.isNullOrEmpty(classAuth.expression())) {
-                String scriptId = StringUtil.concat("author_script_", authorize.expression().hashCode());
+            if (!StringUtils.isNullOrEmpty(classAuth.expression())) {
+                String scriptId = StringUtils.concat("author_script_", authorize.expression().hashCode());
                 DynamicScriptEngine engine = DynamicScriptEngineFactory.getEngine(authorize.expressionLanguage());
                 if (!engine.compiled(scriptId)) {
                     engine.compile(scriptId, classAuth.expression());

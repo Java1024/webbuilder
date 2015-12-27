@@ -1,7 +1,6 @@
 package org.webbuilder.generator.bean;
 
-import org.webbuilder.utils.base.StringUtil;
-import org.webbuilder.utils.office.excel.annotation.Excel;
+import org.webbuilder.utils.common.StringUtils;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -23,37 +22,27 @@ public class Field {
         jdbcTypeMapper.put("java.util.Date", "TIMESTAMP");
     }
 
-    @Excel(headerName = "名称", index = 1)
     private String name;
 
-    @Excel(headerName = "java类", index = 2)
     private String javaTypeName;
 
-    @Excel(headerName = "数据类型", index = 3)
     private String dataType;
 
-    @Excel(headerName = "备注", index = 4)
     private String remark;
 
-    @Excel(headerName = "默认值", index = 5)
     private String defaultValue;
 
-    @Excel(headerName = "主键", index = 6)
     private boolean primaryKey;
 
-    @Excel(headerName = "不能为空", index = 7)
     private boolean notNull;
 
     private String getMethodName;
     private String setMethodName;
 
-    @Excel(headerName = "是否只读", index = 8)
     private boolean readOnly;
 
-    @Excel(headerName = "是搜索条件", index = 9)
     private boolean canSearch = true;
 
-    @Excel(headerName = "列表显示", index = 10)
     private boolean list = true;
 
     private String jdbcType;
@@ -133,7 +122,7 @@ public class Field {
         if ("boolean".equals(getJavaTypeName())) {
             st = "is";
         }
-        getMethodName = st + StringUtil.toUpperCaseFirstOne(getName());
+        getMethodName = st + StringUtils.toUpperCaseFirstOne(getName());
         return getMethodName;
     }
 
@@ -142,7 +131,7 @@ public class Field {
     }
 
     public String getSetMethodName() {
-        return "set" + StringUtil.toUpperCaseFirstOne(getName());
+        return "set" + StringUtils.toUpperCaseFirstOne(getName());
     }
 
     public void setSetMethodName(String setMethodName) {

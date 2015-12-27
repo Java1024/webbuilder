@@ -8,10 +8,9 @@ import org.webbuilder.sql.param.IncludeField;
 import org.webbuilder.sql.param.WrapperCondition;
 import org.webbuilder.sql.param.query.GroupBy;
 import org.webbuilder.sql.param.query.OrderBy;
-import org.webbuilder.utils.base.StringUtil;
+import org.webbuilder.utils.common.StringUtils;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 抽象关键字映射器
@@ -115,7 +114,7 @@ public abstract class AbstractKeywordsMapper implements KeywordsMapper {
     protected String groupBy(GroupBy groupBy) {
         StringBuilder builder = new StringBuilder();
         String field = groupBy.getFullField();
-        if (StringUtil.isNullOrEmpty(groupBy.getMethod())) {
+        if (StringUtils.isNullOrEmpty(groupBy.getMethod())) {
             builder.append(field);
         }
         return builder.toString();
@@ -124,7 +123,7 @@ public abstract class AbstractKeywordsMapper implements KeywordsMapper {
     protected String orderBy(OrderBy orderBy) {
         StringBuilder builder = new StringBuilder();
         String field = orderBy.getFullField();
-        if (StringUtil.isNullOrEmpty(orderBy.getMethod())) {
+        if (StringUtils.isNullOrEmpty(orderBy.getMethod())) {
             builder.append(field);
         }
         return builder.toString();

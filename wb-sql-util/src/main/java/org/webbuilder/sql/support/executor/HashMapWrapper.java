@@ -1,6 +1,6 @@
 package org.webbuilder.sql.support.executor;
 
-import org.webbuilder.utils.base.StringUtil;
+import org.webbuilder.utils.common.StringUtils;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -78,7 +78,7 @@ public class HashMapWrapper implements ObjectWrapper<Map<String, Object>> {
      */
     public void putValue(Map<String, Object> instance, String attr, Object value) {
         if (attr.contains(".")) {
-            String[] attrs = StringUtil.splitFirst(attr, "[.]");
+            String[] attrs = StringUtils.splitFirst(attr, "[.]");
             String attr_ob_name = attrs[0];
             String attr_ob_attr = attrs[1];
             Object object = instance.get(attr_ob_name);

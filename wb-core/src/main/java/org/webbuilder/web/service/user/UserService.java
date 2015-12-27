@@ -1,8 +1,7 @@
 package org.webbuilder.web.service.user;
 
 import org.springframework.stereotype.Service;
-import org.webbuilder.utils.base.MD5;
-import org.webbuilder.utils.base.StringUtil;
+import org.webbuilder.utils.common.MD5;
 import org.webbuilder.web.core.exception.BusinessException;
 import org.webbuilder.web.core.service.GenericService;
 import org.webbuilder.web.core.utils.RandomUtil;

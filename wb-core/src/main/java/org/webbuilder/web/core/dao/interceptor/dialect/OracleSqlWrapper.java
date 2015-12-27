@@ -1,6 +1,6 @@
 package org.webbuilder.web.core.dao.interceptor.dialect;
 
-import org.webbuilder.utils.base.StringUtil;
+import org.webbuilder.utils.common.StringUtils;
 import org.webbuilder.web.core.dao.interceptor.SqlWrapper;
 
 /**
@@ -11,9 +11,9 @@ public class OracleSqlWrapper extends AbstractSqlWrapper {
     public String wrapper(SqlWrapper.WrapperConf conf) {
         if (!conf.isDoPaging()) {
             StringBuilder builder = new StringBuilder(conf.getSql());
-            if (!StringUtil.isNullOrEmpty(conf.getSortField())) {
+            if (!StringUtils.isNullOrEmpty(conf.getSortField())) {
                 builder.append(" ORDER BY ").append(conf.getSortField());
-                if (!StringUtil.isNullOrEmpty(conf.getSortOrder())) {
+                if (!StringUtils.isNullOrEmpty(conf.getSortOrder())) {
                     builder.append(" ").append(conf.getSortOrder().toUpperCase().equals("DESC") ? "DESC" : "ASC");
                 }
             }
@@ -21,9 +21,9 @@ public class OracleSqlWrapper extends AbstractSqlWrapper {
         }
         StringBuilder builder = new StringBuilder("SELECT * FROM ( SELECT row_.*, rownum rownum_ FROM (");
         builder.append(this.formatSql(conf.getSql())); //sql格式化
-        if (!StringUtil.isNullOrEmpty(conf.getSortField())) {
+        if (!StringUtils.isNullOrEmpty(conf.getSortField())) {
             builder.append(" ORDER BY ").append(conf.getSortField());
-            if (!StringUtil.isNullOrEmpty(conf.getSortOrder())) {
+            if (!StringUtils.isNullOrEmpty(conf.getSortOrder())) {
                 builder.append(" ").append(conf.getSortOrder().toUpperCase().equals("DESC") ? "DESC" : "ASC");
             }
         }

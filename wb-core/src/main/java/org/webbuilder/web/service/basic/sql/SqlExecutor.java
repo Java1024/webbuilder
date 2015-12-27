@@ -1,6 +1,6 @@
 package org.webbuilder.web.service.basic.sql;
 
-import org.webbuilder.utils.base.StringUtil;
+import org.webbuilder.utils.common.StringUtils;
 import org.webbuilder.web.core.bean.PageUtil;
 import org.apache.ibatis.session.ResultContext;
 import org.apache.ibatis.session.ResultHandler;
@@ -63,7 +63,7 @@ public class SqlExecutor {
                         Map<String, Object> map = (Map) data;
                         Object val;
                         if ((val = map.get("total")) != null || (val = map.get("TOTAL")) != null)
-                            objects.add(StringUtil.toInt(val));
+                            objects.add(StringUtils.toInt(val));
                     }
                 }
             }

@@ -5,18 +5,16 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.webbuilder.sql.*;
-import org.webbuilder.sql.param.MethodField;
 import org.webbuilder.sql.param.delete.DeleteParam;
 import org.webbuilder.sql.param.insert.InsertParam;
 import org.webbuilder.sql.param.query.QueryParam;
 import org.webbuilder.sql.param.update.UpdateParam;
 import org.webbuilder.sql.parser.CommonTableMetaDataParser;
 import org.webbuilder.sql.support.MysqlDataBaseMetaData;
-import org.webbuilder.sql.support.OracleDataBaseMetaData;
 import org.webbuilder.sql.support.common.CommonDataBase;
 import org.webbuilder.sql.support.executor.AbstractJdbcSqlExecutor;
-import org.webbuilder.utils.base.Resources;
-import org.webbuilder.utils.base.file.FileUtil;
+import org.webbuilder.utils.file.FileUtils;
+import org.webbuilder.utils.file.Resources;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -72,13 +70,13 @@ public class SQLTest {
 
         //定义表结构---- 表结构可通过解析html，xml，json等自动生成
 
-        String s_user_content = FileUtil.readFile2String(Resources.getResourceAsFile("mysql/s_user.html").getAbsolutePath());
+        String s_user_content = FileUtils.readFile2String(Resources.getResourceAsFile("mysql/s_user.html").getAbsolutePath());
         TableMetaData s_user = new CommonTableMetaDataParser().parse(s_user_content, "html");
         s_user.setName("s_user_02");
         s_user.setDataBaseMetaData(dataBaseMetaData);
         s_user.setComment("测试表");
         //定义表结构
-        String area_content = FileUtil.readFile2String(Resources.getResourceAsFile("mysql/area.html").getAbsolutePath());
+        String area_content = FileUtils.readFile2String(Resources.getResourceAsFile("mysql/area.html").getAbsolutePath());
         TableMetaData area = new CommonTableMetaDataParser().parse(area_content, "html");
         area.setName("area");
         area.setDataBaseMetaData(dataBaseMetaData);
@@ -158,7 +156,7 @@ public class SQLTest {
 
     @Test
     public void testAlter() throws Exception {
-        String s_user_content = FileUtil.readFile2String(Resources.getResourceAsFile("mysql/s_user.html").getAbsolutePath());
+        String s_user_content = FileUtils.readFile2String(Resources.getResourceAsFile("mysql/s_user.html").getAbsolutePath());
         TableMetaData s_user = new CommonTableMetaDataParser().parse(s_user_content, "html");
         s_user.setName("s_user_02");
         s_user.setComment("测试表");

@@ -1,7 +1,7 @@
 package org.webbuilder.office.word;
 
 import org.junit.Test;
-import org.webbuilder.utils.base.Resources;
+import org.webbuilder.utils.file.Resources;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

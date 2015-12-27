@@ -371,4 +371,38 @@ public class StringUtils {
         return str.split(regex, 2);
     }
 
+    /**
+     * 将对象转为字符串,如果对象为null,则返回null,而不是"null"
+     *
+     * @param object 要转换的对象
+     * @return 转换后的对象
+     */
+    public static String toString(Object object) {
+        return toString(object, null);
+    }
+
+    /**
+     * 将对象转为字符串,如果对象为null,则使用默认值
+     *
+     * @param object       要转换的对象
+     * @param defaultValue 默认值
+     * @return 转换后的字符串
+     */
+    public static String toString(Object object, String defaultValue) {
+        if (object == null) return defaultValue;
+        return String.valueOf(object);
+    }
+
+    /**
+     * 将对象转为String后进行分割，如果为对象为空或者空字符,则返回null
+     *
+     * @param object 要分隔的对象
+     * @param regex  分隔规则
+     * @return 分隔后的对象
+     */
+    public static final String[] toStringAndSplit(Object object, String regex) {
+        if (isNullOrEmpty(object)) return null;
+        return String.valueOf(object).split(regex);
+    }
+
 }

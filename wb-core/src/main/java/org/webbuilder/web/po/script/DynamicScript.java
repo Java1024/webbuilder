@@ -1,7 +1,7 @@
 package org.webbuilder.web.po.script;
 
 import org.hibernate.validator.constraints.NotEmpty;
-import org.webbuilder.utils.base.StringUtil;
+import org.webbuilder.utils.common.StringUtils;
 import org.webbuilder.web.core.bean.GenericPo;
 
 import javax.validation.constraints.Pattern;
@@ -46,7 +46,7 @@ public class DynamicScript extends GenericPo<String> {
      */
     public String getU_id() {
         if (this.u_id == null)
-            return this.u_id = StringUtil.concat(getPath(), ".", getName(), ".", getType());
+            return this.u_id = StringUtils.concat(getPath(), ".", getName(), ".", getType());
         return this.u_id;
     }
 

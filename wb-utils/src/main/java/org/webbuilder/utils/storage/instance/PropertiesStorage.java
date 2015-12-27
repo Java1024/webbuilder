@@ -1,7 +1,7 @@
 package org.webbuilder.utils.storage.instance;
 
 
-import org.webbuilder.utils.base.StringUtil;
+import org.webbuilder.utils.common.StringUtils;
 import org.webbuilder.utils.storage.Storage;
 import org.webbuilder.utils.storage.event.StorageListener;
 import org.webbuilder.utils.storage.event.Finder;
@@ -41,7 +41,7 @@ public class PropertiesStorage extends Storage<String, String> {
         for (Map.Entry kvEntry : properties.entrySet()) {
             if (finder.isOver())
                 break;
-            if (finder.each(++count,   (String)kvEntry.getKey(), (String) kvEntry.getValue())) {
+            if (finder.each(++count, (String) kvEntry.getKey(), (String) kvEntry.getValue())) {
                 res.put((String) kvEntry.getKey(), (String) kvEntry.getValue());
             }
         }
@@ -93,10 +93,10 @@ public class PropertiesStorage extends Storage<String, String> {
 
     @Override
     public void init() throws Exception {
-        if (StringUtil.isNullOrEmpty(getName())) {
+        if (StringUtils.isNullOrEmpty(getName())) {
             throw new StorageException("config name can't be null!");
         }
-        if (properties != null && StringUtil.isNullOrEmpty(getContent()))
+        if (properties != null && StringUtils.isNullOrEmpty(getContent()))
             return;
         properties = new Properties();
         properties.load(new StringReader(getContent()));

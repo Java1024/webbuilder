@@ -1,7 +1,7 @@
 package org.webbuilder.sql.trigger;
 
 import org.webbuilder.sql.exception.TriggerException;
-import org.webbuilder.utils.base.MD5;
+import org.webbuilder.utils.common.MD5;
 import org.webbuilder.utils.script.engine.DynamicScriptEngine;
 import org.webbuilder.utils.script.engine.DynamicScriptEngineFactory;
 import org.webbuilder.utils.script.engine.ExecuteResult;

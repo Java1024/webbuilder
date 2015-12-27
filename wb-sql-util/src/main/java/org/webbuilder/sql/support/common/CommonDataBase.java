@@ -7,9 +7,7 @@ import org.webbuilder.sql.param.alter.AlterParam;
 import org.webbuilder.sql.param.query.QueryParam;
 import org.webbuilder.sql.render.template.SqlRenderParam;
 import org.webbuilder.sql.render.template.SqlTemplate;
-import org.webbuilder.sql.support.executor.HashMapWrapper;
 import org.webbuilder.sql.support.executor.SqlExecutor;
-import org.webbuilder.utils.base.StringUtil;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

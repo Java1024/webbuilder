@@ -1,12 +1,10 @@
 package org.webbuilder.utils.storage.instance;
 
 
-import org.webbuilder.utils.base.ClassUtil;
+import org.webbuilder.utils.common.ClassUtils;
 import org.webbuilder.utils.storage.Storage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.Serializable;
 
 
 /**
@@ -20,7 +18,7 @@ public abstract class CacheStorage<K, V> extends Storage<K, V> {
         this.setName(name);
     }
 
-    public Class<V> getValueType(){
-        return (Class<V>) ClassUtil.getGenericType(this.getClass(),1);
+    public Class<V> getValueType() {
+        return (Class<V>) ClassUtils.getGenericType(this.getClass(), 1);
     }
 }

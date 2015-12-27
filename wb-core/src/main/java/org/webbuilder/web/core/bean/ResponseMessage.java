@@ -3,8 +3,8 @@ package org.webbuilder.web.core.bean;
 import com.alibaba.fastjson.JSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.webbuilder.utils.base.ClassUtil;
-import org.webbuilder.utils.base.DateTimeUtils;
+import org.webbuilder.utils.common.ClassUtils;
+import org.webbuilder.utils.common.DateTimeUtils;
 import org.webbuilder.web.core.exception.AccessValidException;
 import org.webbuilder.web.core.exception.BusinessException;
 
@@ -30,14 +30,14 @@ public class ResponseMessage {
     static {
         handlers.put(Object.class, new MessageHandler<Object>() {
             @Override
-            public Object handle(Object msg) {
+            public Object handle(ResponseMessage message, Object msg) {
                 return msg;
             }
         });
         //默认异常信息处理
         handlers.put(Exception.class, new MessageHandler<Exception>() {
             @Override
-            public Object handle(Exception e) {
+            public Object handle(ResponseMessage message,Exception e) {
                 LOGGER.error(e.getMessage(), e);
                 return e.getMessage();
             }
@@ -45,8 +45,16 @@ public class ResponseMessage {
         //默认业务异常信息处理
         handlers.put(BusinessException.class, new MessageHandler<BusinessException>() {
             @Override
-            public Object handle(BusinessException e) {
+            public Object handle(ResponseMessage message,BusinessException e) {
                 LOGGER.error(e.getMessage());
+                return e.getMessage();
+            }
+        });
+        //验证器异常，不记录错误日志
+        handlers.put(ValidationException.class, new MessageHandler<BusinessException>() {
+            @Override
+            public Object handle(ResponseMessage message,BusinessException e) {
+                message.setCode("400");
                 return e.getMessage();
             }
         });
@@ -79,6 +87,9 @@ public class ResponseMessage {
      */
     private String code;
 
+    /**
+     * 进行响应的元数据,不会被序列化,只是提供aop和拦截器访问
+     */
     private transient Object sourceData;
 
 
@@ -87,10 +98,11 @@ public class ResponseMessage {
         if (data == null)
             data = "null";
         sourceData = data;
+        //获取消息处理器
         MessageHandler messageHandler = getMessageHandler(data.getClass());
         if (messageHandler == null) {
             if (data instanceof Throwable) {
-                //为获取到指定的异常信息处理器，使用通用异常处理器
+                //未获取到指定的异常信息处理器，使用通用异常处理器
                 messageHandler = getMessageHandler(Exception.class);
                 if (data instanceof ValidationException) {
                     this.code = "400";
@@ -105,7 +117,7 @@ public class ResponseMessage {
         if (messageHandler == null)
             this.data = data;
         else
-            this.data = messageHandler.handle(data);
+            this.data = messageHandler.handle(this, data);
 
     }
 
@@ -144,7 +156,7 @@ public class ResponseMessage {
     }
 
     public <T> void registerMessageHandler(MessageHandler<T> handler) {
-        Class type = ClassUtil.getGenericType(handler.getClass());
+        Class type = ClassUtils.getGenericType(handler.getClass());
         handlers.put(type, handler);
     }
 
@@ -157,7 +169,7 @@ public class ResponseMessage {
     }
 
     public interface MessageHandler<T> {
-        Object handle(T msg);
+        Object handle(ResponseMessage message, T msg);
     }
 
     public String getCallback() {

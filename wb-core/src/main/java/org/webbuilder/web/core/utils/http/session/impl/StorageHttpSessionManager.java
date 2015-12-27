@@ -35,7 +35,7 @@ public class StorageHttpSessionManager implements HttpSessionManager {
     /**
      * userId 进行前缀追加，防止与其他缓存冲突
      */
-    private static final String userIdPrefix = "login_userId$";
+    private static final String userIdPrefix = "user.login.id";
 
 
     public StorageHttpSessionManager() {

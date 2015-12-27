@@ -9,7 +9,7 @@ import org.webbuilder.sql.param.SqlAppender;
 import org.webbuilder.sql.param.SqlRenderConfig;
 import org.webbuilder.sql.render.template.SqlTemplate;
 import org.webbuilder.sql.support.common.CommonSql;
-import org.webbuilder.utils.base.StringUtil;
+import org.webbuilder.utils.common.StringUtils;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -61,7 +61,7 @@ public class OracleTableCreateRender implements SqlTemplate {
     }
 
     protected String buildPrimaryKeyName(String fieldName) {
-        return StringUtil.concat(tableMetaData.getName(), "_", fieldName);
+        return StringUtils.concat(tableMetaData.getName(), "_", fieldName);
     }
 
     @Override
@@ -82,7 +82,7 @@ public class OracleTableCreateRender implements SqlTemplate {
             }
             isFirst = false;
             //注释
-            if (!StringUtil.isNullOrEmpty(fieldMetaData.getComment())) {
+            if (!StringUtils.isNullOrEmpty(fieldMetaData.getComment())) {
                 SqlAppender comment = new SqlAppender();
                 comment.addSpc("comment on column");
                 comment.addEdSpc(getTableMetaData().getName(), ".", fieldMetaData.getName());

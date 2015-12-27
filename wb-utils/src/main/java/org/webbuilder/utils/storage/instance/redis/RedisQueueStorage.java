@@ -1,6 +1,6 @@
 package org.webbuilder.utils.storage.instance.redis;
 
-import org.webbuilder.utils.base.StringUtil;
+import org.webbuilder.utils.common.StringUtils;
 import org.webbuilder.utils.storage.event.Finder;
 import redis.clients.jedis.ShardedJedis;
 
@@ -31,8 +31,8 @@ public class RedisQueueStorage extends RedisStorage {
     @Override
     public Object get(Object key) {
         try (ShardedJedis jedis = getResource()) {
-            if (StringUtil.isInt(key)) {
-                int index = StringUtil.toInt(key);
+            if (StringUtils.isInt(key)) {
+                int index = StringUtils.toInt(key);
                 List<byte[]> bytes = jedis.lrange(getKey().getBytes(), index, index);
                 List<Object> datas = new LinkedList<>();
                 for (byte[] aByte : bytes) {

@@ -1,7 +1,7 @@
 package org.webbuilder.web.po.role;
 
 import com.alibaba.fastjson.JSON;
-import org.webbuilder.utils.base.StringUtil;
+import org.webbuilder.utils.common.StringUtils;
 import org.webbuilder.web.core.bean.GenericPo;
 import org.webbuilder.web.po.module.Module;
 
@@ -121,7 +121,7 @@ public class RoleModule extends GenericPo<String> {
     }
 
     public List<String> getLevels() {
-        if (!StringUtil.isNullOrEmpty(getO_level())) {
+        if (!StringUtils.isNullOrEmpty(getO_level())) {
             try {
                 if (levels == null)
                     levels = JSON.parseObject(getO_level(), List.class);

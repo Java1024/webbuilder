@@ -2,11 +2,9 @@ package org.webbuilder.sql.param;
 
 import org.webbuilder.sql.FieldMetaData;
 import org.webbuilder.sql.TableMetaData;
-import org.webbuilder.utils.base.StringUtil;
+import org.webbuilder.utils.common.StringUtils;
 
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -139,7 +137,7 @@ public class ExecuteCondition {
 
     public String getFullField() {
         if (getTable() == null) return getField();
-        return StringUtil.concat(getTable(), ".", getField());
+        return StringUtils.concat(getTable(), ".", getField());
     }
 
     @Override

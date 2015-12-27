@@ -5,13 +5,12 @@ import org.webbuilder.sql.Query;
 import org.webbuilder.sql.SQL;
 import org.webbuilder.sql.TableMetaData;
 import org.webbuilder.sql.param.IncludeField;
-import org.webbuilder.sql.param.SqlRenderConfig;
 import org.webbuilder.sql.param.query.QueryParam;
 import org.webbuilder.sql.render.template.SqlTemplate;
 import org.webbuilder.sql.support.executor.HashMapWrapper;
 import org.webbuilder.sql.support.executor.ObjectWrapper;
 import org.webbuilder.sql.support.executor.SqlExecutor;
-import org.webbuilder.utils.base.StringUtil;
+import org.webbuilder.utils.common.StringUtils;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -84,7 +83,7 @@ public class CommonQuery extends TriggerExecutor implements Query {
         Map<String, Object> res = sqlExecutor.single(sql, DEFAULT_WRAPPER);
         int total = 0;
         if (res != null) {
-            total = StringUtil.toInt(res.get("total"));
+            total = StringUtils.toInt(res.get("total"));
         }
         return total;
     }

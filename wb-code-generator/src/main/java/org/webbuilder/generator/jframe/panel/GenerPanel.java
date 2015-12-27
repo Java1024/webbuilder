@@ -5,9 +5,6 @@ import org.webbuilder.generator.bean.GeneratorConfig;
 import org.webbuilder.generator.jframe.Main;
 import org.webbuilder.generator.service.GeneratorService;
 import org.webbuilder.generator.service.imp.CommonGeneratorServiceImp;
-import org.webbuilder.utils.office.excel.io.ExcelIO;
-import org.webbuilder.utils.office.excel.io.Header;
-import org.webbuilder.utils.office.excel.io.ReadExcelConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +31,7 @@ public class GenerPanel extends JPanel {
     protected Map<String, Component> ComponentBase = new HashMap<>();
 
     private ButtonGroup autoCreate = new ButtonGroup();
-    final String columnNames[] = {"名称", "java类", "数据类型", "备注", "默认值", "主键", "不能为空", "是否只读", "是搜索条件","列表显示"};
+    final String columnNames[] = {"名称", "java类", "数据类型", "备注", "默认值", "主键", "不能为空", "是否只读", "是搜索条件", "列表显示"};
     private JTable table = null;
     protected Component components[][] = null;
 
@@ -110,7 +107,7 @@ public class GenerPanel extends JPanel {
     public void init() {
         final Object[][] cellData = new Object[][]{};
         final DefaultTableModel model_ = new DefaultTableModel(cellData, columnNames);
-        model_.addRow(new Object[]{"u_id", "String", "varchar2(256)", "主键", "", true, true, true, true,true});
+        model_.addRow(new Object[]{"u_id", "String", "varchar2(256)", "主键", "", true, true, true, true, true});
         table = new JTable(model_) {
             {
                 getColumn("java类").setCellEditor(new DefaultCellEditor(new JComboBox() {{
@@ -178,7 +175,7 @@ public class GenerPanel extends JPanel {
                             addActionListener(new ActionListener() {
                                 @Override
                                 public void actionPerformed(ActionEvent e) {
-                                    model_.addRow(new Object[]{"", "String", "varchar2(256)", "新建字段", "", false, false, false, true,true});
+                                    model_.addRow(new Object[]{"", "String", "varchar2(256)", "新建字段", "", false, false, false, true, true});
                                 }
                             });
                         }},
@@ -220,7 +217,7 @@ public class GenerPanel extends JPanel {
                             chooser.setFileFilter(new FileFilter() {
                                 @Override
                                 public boolean accept(File f) {
-                                    if(f.isDirectory())return true;
+                                    if (f.isDirectory()) return true;
                                     return f.getName().endsWith("xls") || f.getName().endsWith("xlsx");
                                 }
 
@@ -232,17 +229,17 @@ public class GenerPanel extends JPanel {
                             chooser.setFont(Main.baseFont_min);
                             chooser.showOpenDialog(null);
                             File f = chooser.getSelectedFile();
-                            if(f==null)
+                            if (f == null)
                                 return;
                             if (f.getName() != "xls" && f.getName() != "xlsx") {
                                 try {
-                                    List<LinkedHashMap> datas = ExcelIO.read(new FileInputStream(f), LinkedHashMap.class, new ReadExcelConfig<LinkedHashMap>(){
-                                        @Override
-                                        public void headerNotFound(String header, Object val, LinkedHashMap nowObj) {
-                                            nowObj.put(header,val);
-                                        }
-                                    });
-                                    putData(table,(List) datas);
+//                                    List<LinkedHashMap> datas = ExcelIO.read(new FileInputStream(f), LinkedHashMap.class, new ReadExcelConfig<LinkedHashMap>(){
+//                                        @Override
+//                                        public void headerNotFound(String header, Object val, LinkedHashMap nowObj) {
+//                                            nowObj.put(header,val);
+//                                        }
+//                                    });
+//                                    putData(table,(List) datas);
                                     logger.info("导入成功!");
                                 } catch (Exception e1) {
                                     logger.error("加载文件失败", e1);

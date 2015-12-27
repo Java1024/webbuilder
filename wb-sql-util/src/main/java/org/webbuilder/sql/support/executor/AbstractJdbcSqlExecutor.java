@@ -4,9 +4,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.webbuilder.sql.BindSQL;
 import org.webbuilder.sql.SQL;
-import org.webbuilder.sql.support.common.CommonSql;
-import org.webbuilder.utils.base.ClassUtil;
-import org.webbuilder.utils.base.StringUtil;
+import org.webbuilder.utils.common.BeanUtils;
+import org.webbuilder.utils.common.ClassUtils;
+import org.webbuilder.utils.common.StringUtils;
 
 import java.io.ByteArrayInputStream;
 import java.sql.*;
@@ -54,19 +54,19 @@ public abstract class AbstractJdbcSqlExecutor implements SqlExecutor {
             Object obj = param.get(group);
             if (obj == null)
                 try {
-                    obj = ClassUtil.getValueByAttribute(group, param);
+                    obj = BeanUtils.attr(group, param);
                 } catch (Exception e) {
                 }
-            sqlTemplate = sqlTemplate.replaceFirst(StringUtil.concat("\\$\\{", group.replace("$", "\\$"), "\\}"), String.valueOf(obj));
+            sqlTemplate = sqlTemplate.replaceFirst(StringUtils.concat("\\$\\{", group.replace("$", "\\$"), "\\}"), String.valueOf(obj));
         }
         //参数预编译sql
         while (prepared_matcher.find()) {
             String group = prepared_matcher.group();
-            sqlTemplate = sqlTemplate.replaceFirst(StringUtil.concat("#\\{", group.replace("$", "\\$"), "\\}"), "?");
+            sqlTemplate = sqlTemplate.replaceFirst(StringUtils.concat("#\\{", group.replace("$", "\\$"), "\\}"), "?");
             Object obj = param.get(group);
             if (obj == null)
                 try {
-                    obj = ClassUtil.getValueByAttribute(group, param);
+                    obj = BeanUtils.attr(group, param);
                 } catch (Exception e) {
                 }
             params.add(obj);

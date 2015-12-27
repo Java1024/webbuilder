@@ -6,8 +6,8 @@ package org.webbuilder.web.service.resource;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.stereotype.Service;
-import org.webbuilder.utils.base.DateTimeUtils;
-import org.webbuilder.utils.base.MD5;
+import org.webbuilder.utils.common.DateTimeUtils;
+import org.webbuilder.utils.common.MD5;
 import org.webbuilder.web.core.utils.WebUtil;
 import org.webbuilder.web.po.resource.Resources;
 import org.webbuilder.web.po.user.User;

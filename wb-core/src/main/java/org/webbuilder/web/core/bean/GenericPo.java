@@ -1,6 +1,6 @@
 package org.webbuilder.web.core.bean;
 
-import org.webbuilder.utils.base.MD5;
+import org.webbuilder.utils.common.MD5;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;

@@ -6,7 +6,7 @@ import org.junit.Test;
 import org.webbuilder.office.excel.api.poi.POIExcelApi;
 import org.webbuilder.office.excel.api.poi.callback.CommonExcelWriterCallBack;
 import org.webbuilder.office.excel.config.*;
-import org.webbuilder.utils.base.Resources;
+import org.webbuilder.utils.file.Resources;
 
 import java.io.FileOutputStream;
 import java.io.InputStream;

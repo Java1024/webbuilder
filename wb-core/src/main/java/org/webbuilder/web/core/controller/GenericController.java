@@ -1,15 +1,14 @@
 package org.webbuilder.web.core.controller;
 
 import com.alibaba.fastjson.JSON;
-import org.webbuilder.utils.base.ClassUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.*;
+import org.webbuilder.utils.common.ClassUtils;
 import org.webbuilder.web.core.aop.logger.AccessLogger;
 import org.webbuilder.web.core.authorize.annotation.Authorize;
 import org.webbuilder.web.core.bean.*;
 import org.webbuilder.web.core.service.GenericService;
-import org.webbuilder.web.po.user.User;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.*;
 
 import java.io.Serializable;
 import java.util.List;
@@ -39,7 +38,7 @@ public abstract class GenericController<PO extends GenericPo<PK>, PK> implements
      * @return PO类型
      */
     protected final Class<PO> getPOType() {
-        return (Class<PO>) ClassUtil.getGenericType(this.getClass(), 0);
+        return (Class<PO>) ClassUtils.getGenericType(this.getClass(), 0);
     }
 
     /**
@@ -48,7 +47,7 @@ public abstract class GenericController<PO extends GenericPo<PK>, PK> implements
      * @return PK(主键)类型
      */
     protected final Class<PK> getPKType() {
-        return (Class<PK>) ClassUtil.getGenericType(this.getClass(), 1);
+        return (Class<PK>) ClassUtils.getGenericType(this.getClass(), 1);
     }
 
     /**
@@ -195,8 +194,8 @@ public abstract class GenericController<PO extends GenericPo<PK>, PK> implements
             } else if (json.startsWith("{")) {
                 PO data = JSON.parseObject(json, getPOType());
                 getService().update(data);
-            }else{
-                return new ResponseMessage(false,"数据错误");
+            } else {
+                return new ResponseMessage(false, "数据错误");
             }
             return new ResponseMessage(true, "更新成功!");
         } catch (Exception e) {

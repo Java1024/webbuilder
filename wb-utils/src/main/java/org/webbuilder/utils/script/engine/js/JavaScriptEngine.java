@@ -1,6 +1,6 @@
 package org.webbuilder.utils.script.engine.js;
 
-import org.webbuilder.utils.base.StringUtil;
+import org.webbuilder.utils.common.StringUtils;
 import org.webbuilder.utils.script.engine.common.CommonScriptEngine;
 
 import javax.script.CompiledScript;
@@ -17,7 +17,7 @@ public class JavaScriptEngine extends CommonScriptEngine {
 
     @Override
     public boolean compile(String id, String code) throws Exception {
-        code = StringUtil.concat("(function(){", code, "\n})();");
+        code = StringUtils.concat("(function(){", code, "\n})();");
         if (logger.isDebugEnabled()) {
             logger.debug("compile {} {} : {}", getScriptName(), id, code);
         }

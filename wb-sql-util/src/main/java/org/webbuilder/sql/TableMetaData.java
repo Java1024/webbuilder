@@ -6,7 +6,6 @@ import org.webbuilder.sql.render.template.SqlTemplate;
 import org.webbuilder.sql.trigger.Trigger;
 import org.webbuilder.sql.trigger.TriggerResult;
 import org.webbuilder.sql.validator.Validator;
-import org.webbuilder.utils.base.StringUtil;
 
 import java.io.Serializable;
 import java.util.*;

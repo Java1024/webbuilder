@@ -1,12 +1,11 @@
 package org.webbuilder.web.controller.login;
 
-import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.webbuilder.utils.base.DateTimeUtils;
-import org.webbuilder.utils.base.MD5;
+import org.webbuilder.utils.common.DateTimeUtils;
+import org.webbuilder.utils.common.MD5;
 import org.webbuilder.utils.storage.Storage;
 import org.webbuilder.utils.storage.counter.Counter;
 import org.webbuilder.web.core.aop.logger.AccessLogger;

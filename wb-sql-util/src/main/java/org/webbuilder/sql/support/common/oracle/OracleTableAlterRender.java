@@ -10,7 +10,7 @@ import org.webbuilder.sql.param.SqlRenderConfig;
 import org.webbuilder.sql.param.alter.AlterParam;
 import org.webbuilder.sql.render.template.SqlTemplate;
 import org.webbuilder.sql.support.common.CommonSql;
-import org.webbuilder.utils.base.DateTimeUtils;
+import org.webbuilder.utils.common.DateTimeUtils;
 
 import java.util.Date;
 import java.util.LinkedList;

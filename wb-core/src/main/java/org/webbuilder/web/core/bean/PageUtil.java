@@ -1,16 +1,10 @@
 package org.webbuilder.web.core.bean;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.parser.Feature;
-import com.alibaba.fastjson.parser.ParserConfig;
-import org.webbuilder.utils.base.MapUtils;
-import org.webbuilder.utils.base.StringUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.webbuilder.utils.common.MapUtils;
+import org.webbuilder.utils.common.StringUtils;
 
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * 分页，查询增强工具
@@ -170,7 +164,7 @@ public class PageUtil {
      * @return 查询条件集合
      */
     public Map<String, Object> getQueryMap() {
-        if (StringUtil.isNullOrEmpty(getKey())) {
+        if (StringUtils.isNullOrEmpty(getKey())) {
             return new HashMap<>();
         }
         if (queryMap == null)
@@ -184,7 +178,7 @@ public class PageUtil {
                     Object value = entry.getValue();
                     //进行IN相关的操作的时候，如果传入的是字符串类型的，如:1,2,3。将其转换为List后重新填充。
                     if (key.endsWith("$IN") || key.endsWith("$NOTIN")) {
-                        if (StringUtil.isNullOrEmpty(value)) continue;
+                        if (StringUtils.isNullOrEmpty(value)) continue;
                         //如果不为Iterable实现则进行转换
                         if (!(value instanceof Iterable)) {
                             List<Object> list = new LinkedList<>();
@@ -194,10 +188,10 @@ public class PageUtil {
                                 continue;
                             }
                             for (String val_str : val_strs) {
-                                if (StringUtil.isDouble(val_str))
-                                    list.add(StringUtil.toDouble(val_str));
-                                else if (StringUtil.isInt(val_str))
-                                    list.add(StringUtil.toInt(val_str));
+                                if (StringUtils.isDouble(val_str))
+                                    list.add(StringUtils.toDouble(val_str));
+                                else if (StringUtils.isInt(val_str))
+                                    list.add(StringUtils.toInt(val_str));
                                 else
                                     list.add(val_str);
                             }

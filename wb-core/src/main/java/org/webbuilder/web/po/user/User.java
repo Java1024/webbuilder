@@ -1,6 +1,6 @@
 package org.webbuilder.web.po.user;
 
-import org.webbuilder.utils.base.MapUtils;
+import org.webbuilder.utils.common.MapUtils;
 import org.webbuilder.web.core.bean.GenericPo;
 import org.webbuilder.web.po.module.Module;
 import org.webbuilder.web.po.role.Role;

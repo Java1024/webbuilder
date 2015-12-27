@@ -1,6 +1,5 @@
 package org.webbuilder.web.po.logger;
 
-import org.webbuilder.utils.base.MD5;
 import org.webbuilder.web.core.FastJsonHttpMessageConverter;
 import org.webbuilder.web.core.bean.GenericPo;
 

@@ -8,7 +8,7 @@ import org.webbuilder.sql.Update;
 import org.webbuilder.sql.param.insert.InsertParam;
 import org.webbuilder.sql.param.query.QueryParam;
 import org.webbuilder.sql.param.update.UpdateParam;
-import org.webbuilder.utils.base.StringUtil;
+import org.webbuilder.utils.common.StringUtils;
 import org.webbuilder.web.core.bean.GenericPo;
 import org.webbuilder.web.core.bean.PageUtil;
 import org.webbuilder.web.core.dao.GenericMapper;
@@ -66,7 +66,7 @@ public class CustomFormService extends GenericService<CustomFormData, String> {
         AuthValid.tryValidAuth(WebUtil.getLoginUser(), table, "C");
         String idField = getIdFiled(table);
         String uid = (String) data.get(idField);
-        if (StringUtil.isNullOrEmpty(uid)) {
+        if (StringUtils.isNullOrEmpty(uid)) {
             uid = GenericPo.createUID();
             data.put(idField, uid);
         }
@@ -108,7 +108,7 @@ public class CustomFormService extends GenericService<CustomFormData, String> {
 
     protected String getIdFiled(Table table) {
         Object idField = table.getMetaData().attr("id-field");
-        String idF = StringUtil.isNullOrEmpty(idField) ? "u_id" : String.valueOf(idField);
+        String idF = StringUtils.isNullOrEmpty(idField) ? "u_id" : String.valueOf(idField);
         return idF;
     }
 

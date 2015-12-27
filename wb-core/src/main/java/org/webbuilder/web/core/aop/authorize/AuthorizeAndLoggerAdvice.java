@@ -4,10 +4,10 @@ import com.alibaba.fastjson.JSON;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.LoggerFactory;
-import org.webbuilder.utils.base.ClassUtil;
-import org.webbuilder.utils.base.DateTimeUtils;
-import org.webbuilder.utils.base.MD5;
-import org.webbuilder.utils.base.StringUtil;
+import org.webbuilder.utils.common.ClassUtils;
+import org.webbuilder.utils.common.DateTimeUtils;
+import org.webbuilder.utils.common.MD5;
+import org.webbuilder.utils.common.StringUtils;
 import org.webbuilder.utils.script.engine.DynamicScriptEngine;
 import org.webbuilder.utils.script.engine.DynamicScriptEngineFactory;
 import org.webbuilder.utils.script.engine.ExecuteResult;
@@ -89,9 +89,9 @@ public class AuthorizeAndLoggerAdvice {
             config.getLevel().addAll(Arrays.asList(authorize.level()));
             config.getModules().addAll(Arrays.asList(authorize.module()));
             //如果指定了表达式
-            if (!StringUtil.isNullOrEmpty(authorize.expression())) {
+            if (!StringUtils.isNullOrEmpty(authorize.expression())) {
                 //编译表达式
-                String scriptId = StringUtil.concat("author_script_", authorize.expression().hashCode());
+                String scriptId = StringUtils.concat("author_script_", authorize.expression().hashCode());
                 DynamicScriptEngine engine = DynamicScriptEngineFactory.getEngine(authorize.expressionLanguage());
                 try {
                     if (!engine.compiled(scriptId)) {
@@ -132,8 +132,8 @@ public class AuthorizeAndLoggerAdvice {
         if (config == null) {
             Method method = methodSignature.getMethod();
             Class<?> controller = pjp.getTarget().getClass();
-            Authorize authorize_c = ClassUtil.getAnnotation(controller, Authorize.class);
-            Authorize authorize_m = ClassUtil.getAnnotation(method, Authorize.class);
+            Authorize authorize_c = ClassUtils.getAnnotation(controller, Authorize.class);
+            Authorize authorize_m = ClassUtils.getAnnotation(method, Authorize.class);
             config = new AuthorizeConfig();
             //无注解则代表无需进行授权即可访问
             if (authorize_c == null && authorize_m == null) {
@@ -163,7 +163,7 @@ public class AuthorizeAndLoggerAdvice {
      * @return 计数器key，如: success_2015-10-10
      */
     public String buildCounterKey(String baseKey) {
-        return StringUtil.concat(baseKey, "_", DateTimeUtils.format(new Date(), DateTimeUtils.YEAR_MONTH_DAY));
+        return StringUtils.concat(baseKey, "_", DateTimeUtils.format(new Date(), DateTimeUtils.YEAR_MONTH_DAY));
     }
 
     /**
@@ -250,8 +250,8 @@ public class AuthorizeAndLoggerAdvice {
             String cacheName = pjp.getTarget().getClass().getName().concat(".").concat(getMethodName(pjp));
             String desc = loggerDescCache.get(cacheName);
             if (desc == null) {
-                AccessLogger accessLogger = ClassUtil.getAnnotation(target, AccessLogger.class);
-                AccessLogger m_logger = ClassUtil.getAnnotation(method, AccessLogger.class);
+                AccessLogger accessLogger = ClassUtils.getAnnotation(target, AccessLogger.class);
+                AccessLogger m_logger = ClassUtils.getAnnotation(method, AccessLogger.class);
                 if (accessLogger != null) {
                     sb.append(accessLogger.value());
                     if (m_logger != null) {
@@ -268,7 +268,7 @@ public class AuthorizeAndLoggerAdvice {
             Class<?> clazz = pjp.getTarget().getClass();
             logInfo.setU_id(MD5.encode(String.valueOf(System.nanoTime())));
             logInfo.setModule_desc(desc);//方法描述
-            logInfo.setClass_name(clazz.getName());//映射类名
+            logInfo.setClass_name(clazz.getName());//当前访问映射到的类名
             logInfo.setClient_ip(WebUtil.getIpAddr(request));//ip地址
             logInfo.setRequest_method(request.getMethod().concat(".").concat(methodName));//方法：GET.select()
             logInfo.setRequest_header(JSON.toJSONString(WebUtil.getHeaders(request)));//http请求头
@@ -276,13 +276,13 @@ public class AuthorizeAndLoggerAdvice {
             logInfo.setRequest_uri(WebUtil.getUri(request, false));//请求相对路径
             logInfo.setRequest_url(WebUtil.getBasePath(request).concat(logInfo.getRequest_uri()));//请求绝对路径
             logInfo.setUser_agent(request.getHeader("User-agent"));//客户端标识
-            logInfo.setRequest_param(JSON.toJSONString(WebUtil.getParams(request)));
+            logInfo.setRequest_param(JSON.toJSONString(WebUtil.getParams(request)));//请求参数
             User user = WebUtil.getLoginUser();
             if (user != null)
                 logInfo.setUser_id(user.getU_id());//当前登录的用户
         } catch (Exception e) {
             logger.error("create logInfo error", e);
-            logInfo.setResponse_content(StringUtil.throwable2String(e));
+            logInfo.setResponse_content(StringUtils.throwable2String(e));
         }
         try {
             logInfo.setRequest_time(info.getInTime());
@@ -293,7 +293,7 @@ public class AuthorizeAndLoggerAdvice {
                     ResponseMessage res = (ResponseMessage) obj;
                     if (res.getSourceData() instanceof Throwable) {
                         if (!(res.getSourceData() instanceof BusinessException)) {
-                            logInfo.setException_info(StringUtil.throwable2String((Throwable) res.getSourceData()));
+                            logInfo.setException_info(StringUtils.throwable2String((Throwable) res.getSourceData()));
                         }
                     }
                     logInfo.setResponse_code(res.getCode());
@@ -307,7 +307,7 @@ public class AuthorizeAndLoggerAdvice {
             logInfo.setResponse_time(info.getOutTime());
         } catch (Throwable e) {
             logger.error("logger aop proceed error", e);
-            logInfo.setException_info(StringUtil.throwable2String(e));
+            logInfo.setException_info(StringUtils.throwable2String(e));
             logInfo.setResponse_code("500");
         }
         //输入日志

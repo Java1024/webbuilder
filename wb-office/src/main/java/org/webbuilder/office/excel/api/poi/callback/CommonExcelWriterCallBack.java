@@ -6,9 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.webbuilder.office.excel.config.*;
 import org.webbuilder.office.excel.config.Header;
-import org.webbuilder.utils.base.ClassUtil;
-import org.webbuilder.utils.base.StringUtil;
 import org.webbuilder.utils.common.BeanUtils;
+import org.webbuilder.utils.common.StringUtils;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -132,10 +131,10 @@ public class CommonExcelWriterCallBack implements ExcelWriterCallBack {
                 cell.setCellValue((Date) style.getValue());
                 break;
             case "int":
-                cell.setCellValue(StringUtil.toInt(style.getValue()));
+                cell.setCellValue(StringUtils.toInt(style.getValue()));
                 break;
             case "double":
-                cell.setCellValue(StringUtil.toDouble(style.getValue()));
+                cell.setCellValue(StringUtils.toDouble(style.getValue()));
                 break;
             default:
                 cell.setCellValue(String.valueOf(style.getValue()));
@@ -189,13 +188,13 @@ public class CommonExcelWriterCallBack implements ExcelWriterCallBack {
                 if (val == null)
                     val = "";
                 //如果上一列的本行未进行合并,那么这一列也不进行合并
-                if (index != 0 && !temp.contains(StringUtil.concat("c_", index - 1, "_d", dataIndex))) {
+                if (index != 0 && !temp.contains(StringUtils.concat("c_", index - 1, "_d", dataIndex))) {
                     lastData = "__$$";
                 }
                 // 如果当前行和上一行相同 ，合并列数+1
                 if ((val.equals(lastData) || lastData == null)) {
                     countNumber++;
-                    temp.add(StringUtil.concat("c_", index, "_d", dataIndex));
+                    temp.add(StringUtils.concat("c_", index, "_d", dataIndex));
                 } else {
                     // 与上一行不一致，代表本次合并结束
                     config.addMerge(lastMergeNumber + 1, index, index, countNumber);
@@ -206,7 +205,7 @@ public class CommonExcelWriterCallBack implements ExcelWriterCallBack {
                 // 列末尾需要合并
                 if (datas.indexOf(data) == datas.size() - 1) {
                     config.addMerge(lastMergeNumber + 1, index, index, datas.size());
-                    temp.add(StringUtil.concat("c_", index, "_d", dataIndex));
+                    temp.add(StringUtils.concat("c_", index, "_d", dataIndex));
                 }
                 // 上一行数据
                 lastData = val;

@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.webbuilder.utils.base.StringUtil;
+import org.webbuilder.utils.common.StringUtils;
 import org.webbuilder.web.core.bean.JsonParam;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -56,7 +56,7 @@ public class JsonParamMethodArgumentResolver implements HandlerMethodArgumentRes
                     try {
                         Field field = methodParameter.getParameterType().getDeclaredField(entry.getKey());
                         if (field.getType().isAssignableFrom(Number.class) || Arrays.asList("int", "double", "long").contains(field.getType().getSimpleName())) {
-                            if (!StringUtil.isNumber(obj)) {
+                            if (!StringUtils.isNumber(obj)) {
                                 continue;
                             }
                         }

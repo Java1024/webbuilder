@@ -1,6 +1,6 @@
 package org.webbuilder.web.core.cache;
 
-import org.webbuilder.utils.base.MD5;
+import org.webbuilder.utils.common.MD5;
 import org.springframework.cache.interceptor.KeyGenerator;
 
 import java.lang.reflect.Method;

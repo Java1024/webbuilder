@@ -1,9 +1,8 @@
 package org.webbuilder.web.core.dao.interceptor;
 
-import org.webbuilder.utils.base.StringUtil;
+import org.webbuilder.utils.common.StringUtils;
 
 import java.util.Map;
-import java.util.regex.Pattern;
 
 /**
  * Created by 浩 on 2015-09-30 0030.
@@ -71,8 +70,8 @@ public interface SqlWrapper {
 
         public static WrapperConf fromMap(Map<String, Object> param) {
             WrapperConf wrapperConf = new WrapperConf();
-            int pageSize = StringUtil.toInt(param.get("pageSize"));
-            int pageIndex = StringUtil.toInt(param.get("pageIndex"));
+            int pageSize = StringUtils.toInt(param.get("pageSize"));
+            int pageIndex = StringUtils.toInt(param.get("pageIndex"));
             if (pageSize == 0 && pageIndex == 0)
                 wrapperConf.setDoPaging(false);
             try {

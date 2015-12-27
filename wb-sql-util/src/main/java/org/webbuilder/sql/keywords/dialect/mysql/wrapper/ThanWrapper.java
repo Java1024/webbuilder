@@ -1,7 +1,7 @@
 package org.webbuilder.sql.keywords.dialect.mysql.wrapper;
 
 import org.webbuilder.sql.param.ExecuteCondition;
-import org.webbuilder.utils.base.DateTimeUtils;
+import org.webbuilder.utils.common.DateTimeUtils;
 
 import java.util.Date;
 import java.util.HashMap;

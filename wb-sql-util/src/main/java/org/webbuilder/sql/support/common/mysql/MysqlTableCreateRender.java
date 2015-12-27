@@ -9,7 +9,7 @@ import org.webbuilder.sql.param.SqlAppender;
 import org.webbuilder.sql.param.SqlRenderConfig;
 import org.webbuilder.sql.render.template.SqlTemplate;
 import org.webbuilder.sql.support.common.CommonSql;
-import org.webbuilder.utils.base.StringUtil;
+import org.webbuilder.utils.common.StringUtils;
 
 import java.util.*;
 
@@ -75,7 +75,7 @@ public class MysqlTableCreateRender implements SqlTemplate {
             }
             isFirst = false;
             //注释
-            if (!StringUtil.isNullOrEmpty(fieldMetaData.getComment())) {
+            if (!StringUtils.isNullOrEmpty(fieldMetaData.getComment())) {
                 appender.addSpc(String.format(" COMMENT '%s'", fieldMetaData.getComment()));
             }
             //主键

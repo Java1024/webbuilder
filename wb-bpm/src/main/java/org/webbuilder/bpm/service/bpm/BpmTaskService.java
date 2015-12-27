@@ -1,25 +1,20 @@
 package org.webbuilder.bpm.service.bpm;
 
 import com.alibaba.fastjson.JSON;
-import org.webbuilder.bpm.pojo.bpm.TaskInfo;
-import org.webbuilder.utils.base.StringUtil;
-import org.webbuilder.web.core.exception.BusinessException;
-import org.webbuilder.web.po.form.Form;
-import org.webbuilder.web.service.form.CustomFormService;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
-import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti.engine.impl.persistence.entity.TaskEntity;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.repository.Model;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.webbuilder.bpm.pojo.bpm.TaskInfo;
+import org.webbuilder.utils.common.StringUtils;
+import org.webbuilder.web.core.exception.BusinessException;
+import org.webbuilder.web.po.form.Form;
+import org.webbuilder.web.service.form.CustomFormService;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -109,7 +104,7 @@ public class BpmTaskService {
         //保存表单数据
         List<Map<String, Object>> formDataInfo = new LinkedList<>();
         String formKey = task.getFormKey();
-        if (!StringUtil.isNullOrEmpty(formKey)) {
+        if (!StringUtils.isNullOrEmpty(formKey)) {
             String[] shouldSaveForm = formKey.split("[,]");
             //列出需要保持数据的自定义表单
             for (String formId : shouldSaveForm) {
@@ -176,7 +171,7 @@ public class BpmTaskService {
         Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
         if (task == null)
             throw new BusinessException("获取任务失败");
-        if (!StringUtil.isNullOrEmpty(task.getAssignee())) {
+        if (!StringUtils.isNullOrEmpty(task.getAssignee())) {
             throw new BusinessException("该任务已被签收!");
         }
         //判断是否能签收

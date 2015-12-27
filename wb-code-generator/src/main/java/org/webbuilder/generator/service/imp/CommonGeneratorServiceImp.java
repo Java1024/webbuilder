@@ -4,15 +4,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.webbuilder.generator.bean.GeneratorConfig;
 import org.webbuilder.generator.service.GeneratorService;
-import org.webbuilder.utils.base.Resources;
-import org.webbuilder.utils.base.StringTemplateUtils;
-import org.webbuilder.utils.base.file.FileUtil;
-import org.webbuilder.utils.office.excel.io.ExcelIO;
-import org.webbuilder.utils.office.excel.io.WriteExcelConfig;
+import org.webbuilder.utils.file.FileUtils;
+import org.webbuilder.utils.file.Resources;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.nio.charset.Charset;
 import java.util.*;
 
@@ -53,7 +49,7 @@ public class CommonGeneratorServiceImp implements GeneratorService {
                 while (reader.ready()) {
                     content.append(reader.readLine()).append("\n");
                 }
-                StringTemplateUtils.compileTemplate(key, content.toString());
+//                StringTemplateUtils.compileTemplate(key, content.toString());
             }
         }
     }
@@ -72,36 +68,36 @@ public class CommonGeneratorServiceImp implements GeneratorService {
         String outPath_service = (outPath + "/src/" + config.getPackageName() + "/service/" + config.getModule()).replace(".", "/");
         String outPath_controller = (outPath + "/src/" + config.getPackageName() + "/controller/" + config.getModule()).replace(".", "/");
         logger.info("生成代码中...");
-        String bean = StringTemplateUtils.generate("Bean.ftl", param);
-        String dao = StringTemplateUtils.generate("Mapper.ftl", param);
-        String mapper = StringTemplateUtils.generate("Mapper_" + config.getDatabaseType() + ".ftl", param);
-        String service = StringTemplateUtils.generate("Service.ftl", param);
-        String controller = StringTemplateUtils.generate("Controller.ftl", param);
-
-        new File(outPath_bean).mkdirs();
-        new File(outPath_dao).mkdirs();
-        new File(outPath_mapper).mkdirs();
-        new File(outPath_service).mkdirs();
-        new File(outPath_bean).mkdirs();
-        new File(outPath_controller).mkdirs();
-        outPath_bean = outPath_bean + "/" + config.getClassName() + ".java";
-        outPath_dao = outPath_dao + "/" + config.getClassName() + "Mapper.java";
-        outPath_mapper = outPath_mapper + "/" + config.getClassName() + "Mapper.xml";
-        outPath_service = outPath_service + "/" + config.getClassName() + "Service.java";
-        outPath_controller = outPath_controller + "/" + config.getClassName() + "Controller.java";
-
-        logger.info("写出bean:" + outPath_bean);
-        FileUtil.writeString2File(bean, outPath_bean, CHARSET);
-        logger.info("写出dao:" + outPath_dao);
-        FileUtil.writeString2File(dao, outPath_dao, CHARSET);
-        logger.info("写出mapper:" + outPath_mapper);
-        FileUtil.writeString2File(mapper, outPath_mapper, CHARSET);
-        logger.info("写出service:" + outPath_service);
-        FileUtil.writeString2File(service, outPath_service, CHARSET);
-        logger.info("写出controller:" + outPath_controller);
-        FileUtil.writeString2File(controller, outPath_controller, CHARSET);
-
-        createExcel(config);
+//        String bean = StringTemplateUtils.generate("Bean.ftl", param);
+//        String dao = StringTemplateUtils.generate("Mapper.ftl", param);
+//        String mapper = StringTemplateUtils.generate("Mapper_" + config.getDatabaseType() + ".ftl", param);
+//        String service = StringTemplateUtils.generate("Service.ftl", param);
+//        String controller = StringTemplateUtils.generate("Controller.ftl", param);
+//
+//        new File(outPath_bean).mkdirs();
+//        new File(outPath_dao).mkdirs();
+//        new File(outPath_mapper).mkdirs();
+//        new File(outPath_service).mkdirs();
+//        new File(outPath_bean).mkdirs();
+//        new File(outPath_controller).mkdirs();
+//        outPath_bean = outPath_bean + "/" + config.getClassName() + ".java";
+//        outPath_dao = outPath_dao + "/" + config.getClassName() + "Mapper.java";
+//        outPath_mapper = outPath_mapper + "/" + config.getClassName() + "Mapper.xml";
+//        outPath_service = outPath_service + "/" + config.getClassName() + "Service.java";
+//        outPath_controller = outPath_controller + "/" + config.getClassName() + "Controller.java";
+//
+//        logger.info("写出bean:" + outPath_bean);
+//        FileUtils.writeString2File(bean, outPath_bean, CHARSET);
+//        logger.info("写出dao:" + outPath_dao);
+//        FileUtils.writeString2File(dao, outPath_dao, CHARSET);
+//        logger.info("写出mapper:" + outPath_mapper);
+//        FileUtils.writeString2File(mapper, outPath_mapper, CHARSET);
+//        logger.info("写出service:" + outPath_service);
+//        FileUtils.writeString2File(service, outPath_service, CHARSET);
+//        logger.info("写出controller:" + outPath_controller);
+//        FileUtils.writeString2File(controller, outPath_controller, CHARSET);
+//
+//        createExcel(config);
         if (config.isAutoCreate()) {
             logger.info("开始自动建立数据库表...");
             createTable(config);
@@ -117,7 +113,7 @@ public class CommonGeneratorServiceImp implements GeneratorService {
         List datas = new LinkedList();
         datas.addAll(config.getFields());
         logger.info("写出excel:" + outPath_bean);
-        ExcelIO.write(new FileOutputStream(outPath_bean), datas, new WriteExcelConfig());
+//        ExcelIO.write(new FileOutputStream(outPath_bean), datas, new WriteExcelConfig());
     }
 
     public void createTable(GeneratorConfig config) {

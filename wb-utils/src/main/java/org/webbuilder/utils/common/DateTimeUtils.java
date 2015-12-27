@@ -485,7 +485,7 @@ public final class DateTimeUtils {
      * @param splitChar  指定分隔符
      * @return 格式正确返回分割后的时间对象数组 格式错误返回null <br>
      * 指定了格式符为. 分隔符为- 返回值为 时间长度为2的Date类型数组<br>
-     * 时间转换的方式详见 {@link org.webbuilder.utils.base.DateTimeUtils#formatUnknownString2Date(String dateString)}
+     * 时间转换的方式详见 {@link org.webbuilder.utils.common.DateTimeUtils#formatUnknownString2Date(String dateString)}
      */
     public static Date[] formatDatesByString(String dateString, String spaceChar, String splitChar) {
         if (spaceChar.equals(splitChar)) {
@@ -510,17 +510,18 @@ public final class DateTimeUtils {
             String dateStr;
             if (identityCard.length() == 18) {
                 dateStr = identityCard.substring(6, 14);// 截取18位身份证身份证中生日部分
-                return org.webbuilder.utils.base.DateTimeUtils.formatDateString(dateStr, "yyyyMMdd");
+                return formatDateString(dateStr, "yyyyMMdd");
             }
             if (identityCard.length() == 15) {
                 dateStr = identityCard.substring(6, 12);// 截取15位身份证中生日部分
-                return org.webbuilder.utils.base.DateTimeUtils.formatDateString(dateStr, "yyMMdd");
+                return formatDateString(dateStr, "yyMMdd");
             }
             return null;
         } catch (Exception e) {
             return null;
         }
     }
+
     public static boolean validDate(String str) {
         try {
             Date date = formatUnknownString2Date(str);

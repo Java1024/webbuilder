@@ -1,11 +1,20 @@
 package org.webbuilder.bpm.controller.bpm;
 
 import com.alibaba.fastjson.JSON;
+import org.activiti.engine.TaskService;
+import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.task.Task;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.webbuilder.bpm.po.bpm.WorkFlowFormEntity;
 import org.webbuilder.bpm.pojo.bpm.TaskInfo;
 import org.webbuilder.bpm.service.bpm.BpmProcessService;
 import org.webbuilder.bpm.service.bpm.BpmTaskService;
-import org.webbuilder.utils.base.StringUtil;
+import org.webbuilder.utils.common.StringUtils;
 import org.webbuilder.web.core.aop.logger.AccessLogger;
 import org.webbuilder.web.core.authorize.annotation.Authorize;
 import org.webbuilder.web.core.bean.ResponseData;
@@ -13,17 +22,8 @@ import org.webbuilder.web.core.bean.ResponseMessage;
 import org.webbuilder.web.core.utils.WebUtil;
 import org.webbuilder.web.po.user.User;
 import org.webbuilder.web.service.form.CustomFormService;
-import org.activiti.engine.TaskService;
-import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.task.Task;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -57,7 +57,7 @@ public class BpmProcessController {
     public Object taskFormIdList(@PathVariable("id") String taskId) {
         try {
             Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
-            String ids[] = StringUtil.isNullOrEmpty(task.getFormKey()) ? new String[0] : task.getFormKey().split("[,]");
+            String ids[] = StringUtils.isNullOrEmpty(task.getFormKey()) ? new String[0] : task.getFormKey().split("[,]");
             return new ResponseMessage(true, ids);
         } catch (Exception e) {
             return new ResponseMessage(false, e);
@@ -108,7 +108,7 @@ public class BpmProcessController {
 
     private void initFormData(List<TaskInfo> taskInfos, List<String> includes, List<String> excludes) {
         for (TaskInfo taskInfo : taskInfos) {
-            if (StringUtil.isNullOrEmpty(taskInfo.getFormId()) || StringUtil.isNullOrEmpty(taskInfo.getDataId())) {
+            if (StringUtils.isNullOrEmpty(taskInfo.getFormId()) || StringUtils.isNullOrEmpty(taskInfo.getDataId())) {
                 logger.error("task {} not init form info.", taskInfo.getName());
             }
             try {

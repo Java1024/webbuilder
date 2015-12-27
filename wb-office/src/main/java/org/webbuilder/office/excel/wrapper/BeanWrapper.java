@@ -1,15 +1,11 @@
 package org.webbuilder.office.excel.wrapper;
 
-import org.webbuilder.utils.base.ClassUtil;
-import org.webbuilder.utils.base.StringUtil;
-import org.webbuilder.utils.common.BeanUtils;
 import org.webbuilder.utils.common.ClassUtils;
+import org.webbuilder.utils.common.StringUtils;
+import org.webbuilder.utils.common.BeanUtils;
 import org.webbuilder.utils.common.bean.JDKAttributeUtil;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by 浩 on 2015-12-07 0007.
@@ -21,7 +17,7 @@ public class BeanWrapper<T> extends AbstractWrapper<T> {
     @Override
     public T newInstance() throws Exception {
         if (type == null) {
-            type = (Class<T>) ClassUtil.getGenericType(this.getClass());
+            type = (Class<T>) ClassUtils.getGenericType(this.getClass());
         }
         return type.newInstance();
     }
@@ -44,13 +40,13 @@ public class BeanWrapper<T> extends AbstractWrapper<T> {
     protected Object changeType(Object value, Class<?> paramType) {
         if (value.getClass() == paramType) return value;
         if (paramType == int.class || paramType == Integer.class) {
-            value = StringUtil.toInt(value);
+            value = StringUtils.toInt(value);
         }
         if (paramType == double.class || paramType == Double.class) {
-            value = StringUtil.toDouble(value);
+            value = StringUtils.toDouble(value);
         }
         if (paramType == float.class || paramType == Float.class) {
-            value = (float) StringUtil.toDouble(value);
+            value = (float) StringUtils.toDouble(value);
         }
         return value;
     }

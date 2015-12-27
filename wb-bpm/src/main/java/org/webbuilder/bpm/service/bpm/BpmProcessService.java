@@ -1,9 +1,7 @@
 package org.webbuilder.bpm.service.bpm;
 
-import com.alibaba.fastjson.JSON;
 import org.webbuilder.bpm.cache.definition.ProcessDefinitionCache;
 import org.webbuilder.bpm.po.bpm.WorkFlowFormEntity;
-import org.webbuilder.utils.base.MD5;
 import org.webbuilder.web.core.bean.GenericPo;
 import org.webbuilder.web.core.exception.BusinessException;
 import org.webbuilder.web.po.form.Form;
@@ -27,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 

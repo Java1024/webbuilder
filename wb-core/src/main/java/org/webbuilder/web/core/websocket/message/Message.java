@@ -1,7 +1,7 @@
 package org.webbuilder.web.core.websocket.message;
 
 import com.alibaba.fastjson.JSON;
-import org.webbuilder.utils.base.MD5;
+import org.webbuilder.utils.common.MD5;
 
 import java.io.Serializable;
 import java.util.Date;

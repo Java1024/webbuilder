@@ -5,17 +5,15 @@ import com.alibaba.fastjson.parser.Feature;
 import com.alibaba.fastjson.serializer.SerializeFilter;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.serializer.SimplePropertyPreFilter;
-import org.webbuilder.utils.base.StringUtil;
-import org.webbuilder.web.core.bean.ResponseData;
-import org.webbuilder.web.core.bean.ResponseMessage;
-import org.webbuilder.web.po.form.Form;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.AbstractHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
-import org.springframework.stereotype.Service;
+import org.webbuilder.utils.common.StringUtils;
+import org.webbuilder.web.core.bean.ResponseData;
+import org.webbuilder.web.core.bean.ResponseMessage;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -80,14 +78,14 @@ public class FastJsonHttpMessageConverter extends AbstractHttpMessageConverter<O
             ResponseData data = (ResponseData) obj;
             text = JSON.toJSONString(data.getData(), data.getFilters().toArray(new SerializeFilter[]{}), this.features);
             //指定了Callback跨域调用
-            if (!StringUtil.isNullOrEmpty(data.getCallBack())) {
+            if (!StringUtils.isNullOrEmpty(data.getCallBack())) {
                 text = data.getCallBack().concat("(").concat(text).concat(")");
             }
         } else if (obj instanceof ResponseMessage) {
             ResponseMessage data = (ResponseMessage) obj;
             text = JSON.toJSONString(data, this.features);
             //指定了Callback跨域调用
-            if (!StringUtil.isNullOrEmpty(data.getCallback())) {
+            if (!StringUtils.isNullOrEmpty(data.getCallback())) {
                 text = data.getCallback().concat("(").concat(text).concat(")");
             }
         } else {

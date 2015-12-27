@@ -12,9 +12,9 @@ import org.webbuilder.sql.TableMetaData;
 import org.webbuilder.sql.exception.TriggerException;
 import org.webbuilder.sql.param.ExecuteCondition;
 import org.webbuilder.sql.trigger.ScriptTriggerSupport;
-import org.webbuilder.utils.base.Resources;
-import org.webbuilder.utils.base.StringUtil;
-import org.webbuilder.utils.base.file.FileUtil;
+import org.webbuilder.utils.file.Resources;
+import org.webbuilder.utils.common.StringUtils;
+import org.webbuilder.utils.file.FileUtils;
 
 import java.io.File;
 import java.util.Date;
@@ -52,7 +52,7 @@ public class CommonTableMetaDataParser implements TableMetaDataParser {
     }
 
     protected TableMetaData parseHTMLFile(File file) throws Exception {
-        String content = FileUtil.readFile2String(file.getAbsolutePath());
+        String content = FileUtils.readFile2String(file.getAbsolutePath());
         TableMetaData data = parseHTML(content, file.getParentFile().getAbsolutePath());
         return data;
     }
@@ -79,7 +79,7 @@ public class CommonTableMetaDataParser implements TableMetaDataParser {
         for (Element element : elements) {
             FieldMetaData fieldMetaData = new FieldMetaData();
             String javaType = element.attr("java-type");
-            if (StringUtil.isNullOrEmpty(javaType))
+            if (StringUtils.isNullOrEmpty(javaType))
                 javaType = "string";
             Class type = typeMapper.get(javaType);
             if (type == null) continue;
@@ -95,12 +95,12 @@ public class CommonTableMetaDataParser implements TableMetaDataParser {
             String validator = element.attr("validator");
             fieldMetaData.setName(name);
             fieldMetaData.setAlias(alias);
-            fieldMetaData.setLength(StringUtil.toInt(length, 256));
+            fieldMetaData.setLength(StringUtils.toInt(length, 256));
             fieldMetaData.setPrimaryKey("true".equals(isPk));
             fieldMetaData.setCanUpdate(!("false".equals(canUpdate)));
             fieldMetaData.setNotNull("true".equals(isNotNull));
             fieldMetaData.setDefaultValue(defaultValue);
-            if (!StringUtil.isNullOrEmpty(validator))
+            if (!StringUtils.isNullOrEmpty(validator))
                 fieldMetaData.addValidator(validator);
             fieldMetaData.setDataType(dataType);
             fieldMetaData.setComment(remark);
@@ -114,7 +114,7 @@ public class CommonTableMetaDataParser implements TableMetaDataParser {
             Elements validators = element.getElementsByTag("validator");
             for (Element attr : validators) {
                 String value = attr.attr("value");
-                if (!StringUtil.isNullOrEmpty(value))
+                if (!StringUtils.isNullOrEmpty(value))
                     fieldMetaData.addValidator(value);
             }
             tableMetaData.addField(fieldMetaData);
@@ -127,7 +127,7 @@ public class CommonTableMetaDataParser implements TableMetaDataParser {
             String target = correlation.attr("target");
             String alias = correlation.attr("alias");
             cor.setTargetTable(target);
-            if (!StringUtil.isNullOrEmpty(alias)) {
+            if (!StringUtils.isNullOrEmpty(alias)) {
                 cor.setAlias(alias);
             }
             Elements conditions = correlation.getElementsByTag("condition");
@@ -158,20 +158,20 @@ public class CommonTableMetaDataParser implements TableMetaDataParser {
             String language = trigger.attr("language");
             String src = trigger.attr("src");
             String text = trigger.html();
-            if (!StringUtil.isNullOrEmpty(src)) {
+            if (!StringUtils.isNullOrEmpty(src)) {
                 if (triggerLocation != null) {
                     String absPath = triggerLocation.concat("/").concat(src);
                     try {
                         //先尝试相对路径
                         if (new File(absPath).canRead()) {
-                            text = FileUtil.readFile2String(absPath);
+                            text = FileUtils.readFile2String(absPath);
                         }
                     } catch (Exception e) {
                         try {
                             //尝试绝对路径
                             File file = Resources.getResourceAsFile(src);
                             if (file.canRead()) {
-                                text = FileUtil.readFile2String(file.getAbsolutePath());
+                                text = FileUtils.readFile2String(file.getAbsolutePath());
                             }
                         } catch (Exception e1) {
                             throw new TriggerException(String.format("init trigger error,file:%s and %s not found!", absPath, src), e1);

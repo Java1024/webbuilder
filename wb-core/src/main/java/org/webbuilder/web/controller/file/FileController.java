@@ -1,10 +1,10 @@
 package org.webbuilder.web.controller.file;
 
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
-import org.webbuilder.utils.base.StringUtil;
-import org.webbuilder.utils.base.file.FileUtil;
+import org.webbuilder.utils.common.StringUtils;
 import org.webbuilder.web.core.aop.logger.AccessLogger;
 import org.webbuilder.web.core.authorize.annotation.Authorize;
 import org.webbuilder.web.core.bean.ResponseData;
@@ -17,14 +17,12 @@ import org.webbuilder.web.service.resource.ResourcesService;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.net.URLEncoder;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /**
@@ -61,6 +59,22 @@ public class FileController {
     //文件名中不允许出现的字符 \ / : | ? < > "
     private static final Pattern fileNameKeyWordPattern = Pattern.compile("(\\\\)|(/)|(:)(|)|(\\?)|(>)|(<)|(\")");
 
+    private static final Map<String, String> mediaTypeMapper = new HashMap<>();
+
+    static {
+        mediaTypeMapper.put(".png", MediaType.IMAGE_PNG_VALUE);
+        mediaTypeMapper.put(".jpg", MediaType.IMAGE_JPEG_VALUE);
+        mediaTypeMapper.put(".jpeg", MediaType.IMAGE_JPEG_VALUE);
+        mediaTypeMapper.put(".gif", MediaType.IMAGE_GIF_VALUE);
+        mediaTypeMapper.put(".bmp", MediaType.IMAGE_JPEG_VALUE);
+        mediaTypeMapper.put(".json",MediaType.APPLICATION_JSON_VALUE);
+        mediaTypeMapper.put(".txt",MediaType.TEXT_PLAIN_VALUE);
+        mediaTypeMapper.put(".css",MediaType.TEXT_PLAIN_VALUE);
+        mediaTypeMapper.put(".js","application/javascript");
+        mediaTypeMapper.put(".html",MediaType.TEXT_HTML_VALUE);
+        mediaTypeMapper.put(".xml",MediaType.TEXT_XML_VALUE);
+    }
+
     /**
      * 下载文件,支持断点下载
      *
@@ -86,10 +100,10 @@ public class FileController {
                     return new ResponseMessage(false, "资源不存在！", "404");
                 }
                 //获取contentType，默认application/octet-stream
-                String contentType = FileUtil.CONTENT_TYPES.get(resources.getSuffix());
+                String contentType = mediaTypeMapper.get(resources.getSuffix().toLowerCase());
                 if (contentType == null)
                     contentType = "application/octet-stream";
-                if (StringUtil.isNullOrEmpty(name))//未自定义文件名，则使用上传时的文件名
+                if (StringUtils.isNullOrEmpty(name))//未自定义文件名，则使用上传时的文件名
                     name = resources.getName();
                 if (!name.contains("."))//如果未指定文件拓展名，则追加默认的文件拓展名
                     name = name.concat(".").concat(resources.getSuffix());
@@ -101,7 +115,7 @@ public class FileController {
                 try {
                     //获取要继续下载的位置
                     String Range = request.getHeader("Range").replaceAll("bytes=", "").replaceAll("-", "");
-                    skip = StringUtil.toInt(Range);
+                    skip = StringUtils.toInt(Range);
                 } catch (Exception e) {
                 }
 

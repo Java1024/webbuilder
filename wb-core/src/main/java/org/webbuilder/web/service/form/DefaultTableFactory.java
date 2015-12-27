@@ -13,8 +13,8 @@ import org.webbuilder.sql.param.insert.InsertParam;
 import org.webbuilder.sql.parser.CommonTableMetaDataParser;
 import org.webbuilder.sql.parser.TableMetaDataParser;
 import org.webbuilder.sql.trigger.TriggerResult;
-import org.webbuilder.utils.base.file.CallBack;
-import org.webbuilder.utils.base.file.FileUtil;
+import org.webbuilder.utils.file.FileUtils;
+import org.webbuilder.utils.file.callback.AbstractScanCallBack;
 import org.webbuilder.web.core.aop.transactional.TransactionDisabled;
 import org.webbuilder.web.po.form.Form;
 
@@ -114,7 +114,7 @@ public class DefaultTableFactory {
         }
         //备份
         if (autoAlter) {
-            String content = FileUtil.readFile2String(file.getAbsolutePath());
+            String content = FileUtils.readFile2String(file.getAbsolutePath());
             bakTable(oldName, content);
         }
         logger.debug("init table success {}", file);
@@ -127,7 +127,7 @@ public class DefaultTableFactory {
         }
         File lastFile = new File(bak, tableName.concat(String.format("ver.%s.bak", String.valueOf(System.currentTimeMillis()))));
         try {
-            FileUtil.writeString2File(content, lastFile.getAbsolutePath(), "utf-8");
+            FileUtils.writeString2File(content, lastFile.getAbsolutePath(), "utf-8");
         } catch (Exception e) {
             logger.error("备份失败", e);
         }
@@ -141,9 +141,9 @@ public class DefaultTableFactory {
         }
         final File[] last = new File[1];
         //获取最后版本的文件
-        FileUtil.readFile(bak.getAbsolutePath(), true, new CallBack() {
+        FileUtils.scanFile(bak.getAbsolutePath(), true, new AbstractScanCallBack() {
             @Override
-            public void isFile(File file) {
+            public void isFile(int deep, File file) {
                 if (file.getName().endsWith(".bak")) {
                     File lst = last[0];
                     if (lst == null) {
@@ -157,20 +157,11 @@ public class DefaultTableFactory {
                 }
             }
 
-            @Override
-            public void isDir(File dir) {
-
-            }
-
-            @Override
-            public void readError(File file, Throwable e) {
-
-            }
         });
         File lastFile = last[0];
         if (lastFile != null) {
             try {
-                String content = FileUtil.readFile2String(lastFile.getAbsolutePath());
+                String content = FileUtils.readFile2String(lastFile.getAbsolutePath());
                 TableMetaData old = parser.parse(content, "html");
                 old.setLocation(lastFile.getAbsolutePath());
                 return old;

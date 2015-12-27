@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.webbuilder.office.excel.config.ExcelReaderCallBack;
 import org.webbuilder.office.excel.support.CommonExcelReader;
 import org.webbuilder.office.excel.wrapper.HashMapWrapper;
-import org.webbuilder.utils.base.Resources;
+import org.webbuilder.utils.file.Resources;
 
 import java.io.InputStream;
 import java.util.HashMap;

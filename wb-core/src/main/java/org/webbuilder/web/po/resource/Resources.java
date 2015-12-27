@@ -1,6 +1,6 @@
 package org.webbuilder.web.po.resource;
 
-import org.webbuilder.utils.base.file.FileUtil;
+import org.webbuilder.utils.file.FileUtils;
 import org.webbuilder.web.core.bean.GenericPo;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -176,7 +176,7 @@ public class Resources extends GenericPo<String> {
     }
 
     public String getSuffix() {
-            return FileUtil.getSuffix(getName());
+            return FileUtils.getSuffix(getName());
     }
 
     public static void main(String[] args) {

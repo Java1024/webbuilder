@@ -3,7 +3,6 @@ package org.webbuilder.generator.jframe.panel;
 
 import org.webbuilder.generator.jframe.Main;
 import org.webbuilder.generator.service.database.ConnectionBuilder;
-import org.webbuilder.utils.base.StringTemplateUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -186,10 +185,10 @@ public class DBManagerPanel extends GenerPanel {
         config.put("password", password);
         Map<String, String> dbTypeConfig = dbProperty.get(type);
         try {
-            String driver = StringTemplateUtils.compileAndGenerate(dbTypeConfig.get("driver"), (Map) config);
-            String url = StringTemplateUtils.compileAndGenerate(dbTypeConfig.get("url"), (Map) config);
-            config.put("driver", driver);
-            config.put("url", url);
+//            String driver = StringTemplateUtils.compileAndGenerate(dbTypeConfig.get("driver"), (Map) config);
+//            String url = StringTemplateUtils.compileAndGenerate(dbTypeConfig.get("url"), (Map) config);
+//            config.put("driver", driver);
+//            config.put("url", url);
             config.put("test", dbTypeConfig.get("test"));
         } catch (Exception e1) {
             logger.error("获取链接配置错误!");

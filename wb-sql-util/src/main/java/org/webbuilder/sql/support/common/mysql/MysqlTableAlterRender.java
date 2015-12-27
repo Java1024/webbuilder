@@ -1,6 +1,5 @@
 package org.webbuilder.sql.support.common.mysql;
 
-import org.webbuilder.sql.BindSQL;
 import org.webbuilder.sql.FieldMetaData;
 import org.webbuilder.sql.SQL;
 import org.webbuilder.sql.TableMetaData;
@@ -10,8 +9,8 @@ import org.webbuilder.sql.param.SqlRenderConfig;
 import org.webbuilder.sql.param.alter.AlterParam;
 import org.webbuilder.sql.render.template.SqlTemplate;
 import org.webbuilder.sql.support.common.CommonSql;
-import org.webbuilder.utils.base.DateTimeUtils;
-import org.webbuilder.utils.base.StringUtil;
+import org.webbuilder.utils.common.DateTimeUtils;
+import org.webbuilder.utils.common.StringUtils;
 
 import java.util.Date;
 import java.util.LinkedList;
@@ -62,7 +61,7 @@ public class MysqlTableAlterRender implements SqlTemplate {
                 newFieldSql.addSpc(String.format("add column `%s`", newField.getName()));
                 newFieldSql.addSpc(newField.getDataType());
                 boolean nul = true;
-                if (!StringUtil.isNullOrEmpty(newField.getDefaultValue())) {
+                if (!StringUtils.isNullOrEmpty(newField.getDefaultValue())) {
                     newFieldSql.addSpc("default", String.format("'%s'", newField.getDefaultValue()));
                     nul = false;
                 }
@@ -86,7 +85,7 @@ public class MysqlTableAlterRender implements SqlTemplate {
                     changed.addSpc(String.format("change `%s`  `%s`", newField.getName(), newField.getName()));
                     changed.addSpc(newField.getDataType());
                     boolean nul = true;
-                    if (!StringUtil.isNullOrEmpty(newField.getDefaultValue())) {
+                    if (!StringUtils.isNullOrEmpty(newField.getDefaultValue())) {
                         changed.addSpc("default", String.format("'%s'", newField.getDefaultValue()));
                         nul = false;
                     }
