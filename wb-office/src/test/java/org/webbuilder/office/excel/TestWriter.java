@@ -122,7 +122,7 @@ public class TestWriter {
      */
     @Test
     public void testWriteSimple() throws Exception {
-        try (OutputStream outputStream = new FileOutputStream("C:\\Users\\浩\\Desktop\\test_1.xlsx")) {
+        try (OutputStream outputStream = new FileOutputStream("d:\\test_1.xlsx")) {
             ExcelIO.write(outputStream, headers, datas);
             outputStream.flush();
         }
@@ -173,7 +173,7 @@ public class TestWriter {
      */
     @Test
     public void testWriteCustom() throws Exception {
-        try (OutputStream outputStream = new FileOutputStream("d:/test.xlsx")) {
+        try (OutputStream outputStream = new FileOutputStream("d:\\test.xlsx")) {
             ExcelWriterConfig config = new ExcelWriterConfig();
             config.setDatas(datas);
             config.setHeaders(headers);
@@ -190,7 +190,7 @@ public class TestWriter {
      */
     @Test
     public void testWriteCustomStyle() throws Exception {
-        try (OutputStream outputStream = new FileOutputStream("C:\\Users\\浩\\Desktop\\test_2.xlsx")) {
+        try (OutputStream outputStream = new FileOutputStream("d:\\test_2.xlsx")) {
             ExcelWriterConfig config = new ExcelWriterConfig() {
                 @Override
                 public Object startBefore(int row, int column) {
