@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * 基于Groovy动态Bean对象验证
+ * 原理，通过调用groovy脚本获取一个已编译的动态bean实例，然后进行赋值后验证
  * Created by 浩 on 2015-12-24 0024.
  */
 public class GroovyDycBeanValidator implements Validator {

@@ -34,6 +34,12 @@ public class GroovyDycBeanValidatorFactory implements ValidatorFactory {
         return base.get(metaData.getName());
     }
 
+    /**
+     * 根据表结构动态生成一个基于hibernate-validator的bean
+     *
+     * @param metaData 表结构
+     * @return 验证器对象
+     */
     @Override
     public Validator initValidator(TableMetaData metaData) {
         StringBuilder script = new StringBuilder();
@@ -47,7 +53,7 @@ public class GroovyDycBeanValidatorFactory implements ValidatorFactory {
         for (FieldMetaData fieldMetaData : metaData.getFields()) {
             for (String ann : fieldMetaData.getValidator()) {
                 hasValidator = true;
-                script.append("@").append(ann).append("\n");
+                script.append("\t@").append(ann).append("\n");
             }
             script.append("\tprivate ")
                     .append(fieldMetaData.getJavaType().getName()).append(" ")
