@@ -9,7 +9,6 @@ import javax.annotation.Resource;
 /**
 * 后台管理用户角色绑定服务类
 * Created by generator 
-* @Copyright 2015 www.cqtaihong.com Inc. All rights reserved.
 */
 @Service
 public class UserRoleService extends GenericService<UserRole,String> {
