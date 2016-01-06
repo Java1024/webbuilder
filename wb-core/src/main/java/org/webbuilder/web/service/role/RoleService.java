@@ -16,8 +16,6 @@ import java.util.List;
 /**
  * 后台管理角色服务类
  * Created by generator
- *
- * @Copyright 2015 www.cqtaihong.com Inc. All rights reserved.
  */
 @Service
 public class RoleService extends GenericService<Role, String> {
