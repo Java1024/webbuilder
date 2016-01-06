@@ -18,4 +18,9 @@ public class HttpSessionManagerContainer {
     public static void setSessionManager(HttpSessionManager sessionManager) {
         HttpSessionManagerContainer.sessionManager = sessionManager;
     }
+
+    public void setManager(HttpSessionManager sessionManager) {
+        HttpSessionManagerContainer.sessionManager = sessionManager;
+    }
+
 }

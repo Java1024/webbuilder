@@ -114,6 +114,12 @@ public class StorageHttpSessionManager implements HttpSessionManager {
         //扫描缓存中的key
         userStorage().keySet(new KeyFilter<String>() {
             @Override
+            public String pattern() {
+                //尝试使用匹配
+                return userIdPrefix.concat("*");
+            }
+
+            @Override
             public boolean each(String key) {
                 //所有以userIdPrefix前缀的则认为是代表userId
                 if (key.startsWith(userIdPrefix)) {
