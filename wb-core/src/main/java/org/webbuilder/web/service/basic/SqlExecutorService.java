@@ -1,16 +1,12 @@
 package org.webbuilder.web.service.basic;
 
-import org.mybatis.spring.SqlSessionUtils;
-import org.webbuilder.sql.support.executor.AbstractJdbcSqlExecutor;
-import org.webbuilder.web.service.basic.sql.SqlExecutor;
-import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Service;
+import org.webbuilder.sql.support.executor.AbstractJdbcSqlExecutor;
 
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.Map;
 
 /**
  * Created by 浩 on 2015-10-09 0009.
@@ -19,20 +15,20 @@ import java.util.Map;
 public class SqlExecutorService extends AbstractJdbcSqlExecutor {
 
     @Resource
-    private SqlSessionTemplate sqlSessionTemplate;
-
-    public SqlExecutor createExecutor(final String sql, final Map<String, Object> condition) {
-        return new SqlExecutor(sqlSessionTemplate, sql).setCondition(condition);
-    }
+    private DataSource dataSource;
 
     @Override
     public Connection getConnection() {
-        return SqlSessionUtils.getSqlSession(
-                sqlSessionTemplate.getSqlSessionFactory(), sqlSessionTemplate.getExecutorType(),
-                sqlSessionTemplate.getPersistenceExceptionTranslator()).getConnection();
+        try {
+            return DataSourceUtils.getConnection(dataSource);
+        } catch (Exception e) {
+            logger.error("获取数据库连接失败", e);
+        }
+        return null;
     }
 
     @Override
     public void resetConnection(Connection connection) {
+         DataSourceUtils.releaseConnection(connection, dataSource);
     }
 }
