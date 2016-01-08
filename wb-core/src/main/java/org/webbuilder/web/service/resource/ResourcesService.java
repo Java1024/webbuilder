@@ -17,7 +17,6 @@ import java.util.Map;
  * 资源服务类
  * Created by generator
  *
- * @Copyright 2015 www.cqtaihong.com Inc. All rights reserved.
  */
 @Service
 public class ResourcesService extends GenericService<Resources, String> {
@@ -65,7 +64,6 @@ public class ResourcesService extends GenericService<Resources, String> {
         data.setU_id(this.newUid(6));//6位随机id
         return super.insert(data);
     }
-
 
 
     public String newUid(int len) throws Exception {
