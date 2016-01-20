@@ -3,6 +3,7 @@ package org.webbuilder.sql.param.update;
 import org.webbuilder.sql.param.ExecuteCondition;
 import org.webbuilder.sql.param.SqlRenderConfig;
 import org.webbuilder.sql.parser.ExecuteConditionParser;
+import org.webbuilder.utils.common.BeanUtils;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -46,6 +47,12 @@ public class UpdateParam extends SqlRenderConfig {
         }
         return this;
     }
+
+    public UpdateParam setBean(Object o) {
+        set(BeanUtils.copy(o, new LinkedHashMap<String, Object>()));
+        return this;
+    }
+
 
     public UpdateParam where(String key, Object value) {
         Map<String, Object> hashMap = new HashMap<>();

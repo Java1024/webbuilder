@@ -4,6 +4,9 @@ import org.webbuilder.sql.FieldMetaData;
 import org.webbuilder.sql.SQL;
 import org.webbuilder.sql.TableMetaData;
 import org.webbuilder.sql.exception.SqlRenderException;
+import org.webbuilder.sql.keywords.FieldTemplateWrapper;
+import org.webbuilder.sql.keywords.dialect.AbstractKeywordsMapper;
+import org.webbuilder.sql.param.ExecuteCondition;
 import org.webbuilder.sql.param.SqlAppender;
 import org.webbuilder.sql.param.SqlRenderConfig;
 import org.webbuilder.sql.param.WrapperCondition;
@@ -24,6 +27,7 @@ public class UpdateTemplateRender extends SelectTemplateRender {
         super(tableMetaData);
     }
 
+
     @Override
     public TYPE getType() {
         return TYPE.UPDATE;
@@ -31,17 +35,22 @@ public class UpdateTemplateRender extends SelectTemplateRender {
 
     protected Map<String, Object> renderFields(Set<SetField> fields, SqlAppender appender) {
         Map<String, Object> param = new LinkedHashMap<>();
+        FieldTemplateWrapper wrapper = keywordsMapper.getFieldTemplateWrapper(ExecuteCondition.QueryType.EQ);
         for (SetField field : fields) {
             field.setMainTable(tableMetaData.getName());
             if (field.isSkipCheck()) {
                 appender.addEdSpc(field.getField(), String.format("=${%s}", field.getField()));
-                param.put(field.getField(), field.getValue());
+                ExecuteCondition executeCondition = new ExecuteCondition(field.getFullField(), field.getValue());
+                executeCondition.setTableMetaData(tableMetaData);
+                param.put(field.getField(), wrapper.parseValue(executeCondition));
                 appender.add(",");
             } else if (tableMetaData.hasField(field.getField())) {
                 FieldMetaData fieldMetaData = tableMetaData.getField(field.getField());
                 if (fieldMetaData != null && fieldMetaData.isCanUpdate()) {
                     appender.addEdSpc(field.getField(), String.format("=#{%s}", field.getField()));
-                    param.put(field.getField(), field.getValue());
+                    ExecuteCondition executeCondition = new ExecuteCondition(field.getFullField(), field.getValue());
+                    executeCondition.setTableMetaData(tableMetaData);
+                    param.put(field.getField(), wrapper.parseValue(executeCondition));
                     appender.add(",");
                 }
             }

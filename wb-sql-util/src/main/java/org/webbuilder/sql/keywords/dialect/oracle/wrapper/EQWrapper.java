@@ -61,4 +61,14 @@ public class EQWrapper implements FieldTemplateWrapper {
     protected String getFiledName(ExecuteCondition condition) {
         return String.format("%s$%s$%s", condition.getAppendType(), condition.getFullField(), condition.getQueryType().toString());
     }
+
+    @Override
+    public Object parseValue(ExecuteCondition condition) {
+        if (condition.getFieldMetaData().getJavaType() == Date.class) {
+            if (!(condition.getValue() instanceof Date)) {
+                return DateTimeUtils.formatUnknownString2Date(String.valueOf(condition.getValue()));
+            }
+        }
+        return condition.getValue();
+    }
 }

@@ -13,4 +13,6 @@ public interface FieldTemplateWrapper {
     String template(ExecuteCondition condition);
 
     Map<String, Object> value(ExecuteCondition condition);
+
+    Object parseValue(ExecuteCondition condition);
 }

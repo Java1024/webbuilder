@@ -71,7 +71,7 @@ public class CommonDataBase implements DataBase {
         Table table = this.getTable(tableMetaData.getName());
         Query query = table.createQuery();
         try {
-            query.total(new QueryParam());
+            query.total(new QueryParam().skipTrigger());
             throw new CreateException("该表已存在");
         } catch (CreateException e) {
             throw e;
@@ -108,6 +108,13 @@ public class CommonDataBase implements DataBase {
         SqlTemplate template = getMetaData().getRender().render(param);
         SQL sql = template.render(alterParam);
         sqlExecutor.exec(sql);
+        getMetaData().addTable(tableMetaData);
+        tableMap.remove(tableMetaData.getName());
+        return getTable(tableMetaData.getName());
+    }
+
+    @Override
+    public Table updateTable(TableMetaData tableMetaData) throws Exception {
         getMetaData().addTable(tableMetaData);
         tableMap.remove(tableMetaData.getName());
         return getTable(tableMetaData.getName());

@@ -5,7 +5,9 @@ import org.slf4j.LoggerFactory;
 import org.webbuilder.sql.SQL;
 import org.webbuilder.sql.TableMetaData;
 import org.webbuilder.sql.exception.SqlRenderException;
+import org.webbuilder.sql.keywords.FieldTemplateWrapper;
 import org.webbuilder.sql.keywords.KeywordsMapper;
+import org.webbuilder.sql.param.ExecuteCondition;
 import org.webbuilder.sql.param.IncludeField;
 import org.webbuilder.sql.param.SqlAppender;
 import org.webbuilder.sql.param.SqlRenderConfig;
@@ -60,7 +62,7 @@ public class InsertTemplateRender implements SqlTemplate {
         SqlAppender fields = new SqlAppender();
         SqlAppender params = new SqlAppender();
         Map<String, Object> param_map = new LinkedHashMap<>();
-
+        FieldTemplateWrapper wrapper = keywordsMapper.getFieldTemplateWrapper(ExecuteCondition.QueryType.EQ);
         for (IncludeField field : param.getIncludes()) {
             InsertField field1 = ((InsertField) field);
             if (tableMetaData.hasField(field.getField())) {
@@ -68,7 +70,9 @@ public class InsertTemplateRender implements SqlTemplate {
                 params.add(",");
                 fields.add(field.getField());
                 params.add(String.format("#{%s}", field.getField()));
-                param_map.put(field.getField(), field1.getValue());
+                ExecuteCondition executeCondition = new ExecuteCondition(field1.getFullField(), field1.getValue());
+                executeCondition.setTableMetaData(tableMetaData);
+                param_map.put(field.getField(), wrapper.parseValue(executeCondition));
             }
         }
         if (fields.size() == 0) {

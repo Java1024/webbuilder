@@ -37,8 +37,17 @@ public interface DataBase extends Serializable {
      *
      * @param tableMetaData 表元数据
      * @return 修改后的数据库表访问接口
-     * @throws Exception 创建异常信息
+     * @throws Exception 修改异常信息
      */
     Table alterTable(TableMetaData tableMetaData) throws Exception;
+
+    /**
+     * 只更新表结构，不对数据库进行修改
+     *
+     * @param tableMetaData 表元数据
+     * @return 修改后的数据库表访问接口
+     * @throws Exception 修改异常信息
+     */
+    Table updateTable(TableMetaData tableMetaData) throws Exception;
 
 }

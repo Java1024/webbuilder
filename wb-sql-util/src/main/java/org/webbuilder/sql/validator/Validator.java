@@ -9,10 +9,18 @@ import java.util.List;
  */
 public interface Validator {
     /**
-     * 验证一个数据是否符合要求
+     * 在insert时验证一个数据是否符合要求
      *
      * @param data 要验证的数据
      * @return 验证结果
      */
-    List valid(Object data);
+    List insertValid(Object data);
+
+    /**
+     * 在update时验证一个数据是否符合请求
+     *
+     * @param data 要验证的数据
+     * @return 验证结果
+     */
+    List updateValid(Object data);
 }

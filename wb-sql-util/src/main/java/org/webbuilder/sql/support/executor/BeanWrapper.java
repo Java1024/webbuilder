@@ -8,7 +8,7 @@ import org.webbuilder.utils.common.ClassUtils;
 /**
  * Created by 浩 on 2015-12-21 0021.
  */
-public class BeanWrapper<T> implements ObjectWrapper<T> {
+public abstract class BeanWrapper<T> implements ObjectWrapper<T> {
 
     private Class<T> type;
 

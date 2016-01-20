@@ -79,12 +79,21 @@ public class CommonQuery extends TriggerExecutor implements Query {
         field.setSkipCheck(true);
         tmp.include(field);
         tmp.setPaging(false);
+        Map<String, Object> root = new LinkedHashMap<>();
+        root.put("param", tmp);
+        root.put("method", "total");
+        root.put("query", this);
+        if (!isSkipTrigger(tmp))
+            tryExecuteTrigger(Constant.TRIGGER_SELECT_BEFORE, root);
         SQL sql = sqlTemplate.render(tmp);
         Map<String, Object> res = sqlExecutor.single(sql, DEFAULT_WRAPPER);
         int total = 0;
         if (res != null) {
             total = StringUtils.toInt(res.get("total"));
         }
+        root.put("data", total);
+        if (!isSkipTrigger(param))
+            tryExecuteTrigger(Constant.TRIGGER_SELECT_DONE, root, true);
         return total;
     }
 

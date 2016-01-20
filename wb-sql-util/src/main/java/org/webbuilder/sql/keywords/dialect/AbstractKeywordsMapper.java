@@ -27,14 +27,6 @@ public abstract class AbstractKeywordsMapper implements KeywordsMapper {
         methods.put("avg", "avg(%s)");
     }
 
-    /**
-     * 根据查询类型获取查询字段模板包装器,
-     *
-     * @param type 查询类型
-     * @return
-     */
-    protected abstract FieldTemplateWrapper getQueryTypeMapper(ExecuteCondition.QueryType type);
-
     @Override
     public WrapperCondition wrapperCondition(ExecuteCondition executeCondition) {
         WrapperCondition condition = new WrapperCondition();
@@ -44,7 +36,7 @@ public abstract class AbstractKeywordsMapper implements KeywordsMapper {
                 && !executeCondition.getTableMetaData().hasCorrelation(executeCondition.getTable()))
             return null;
         //模板
-        FieldTemplateWrapper wrapper = getQueryTypeMapper(executeCondition.getQueryType());
+        FieldTemplateWrapper wrapper = getFieldTemplateWrapper(executeCondition.getQueryType());
         String template = wrapper.template(executeCondition);
         Map<String, Object> params = new LinkedHashMap<>();
         Map<String, Object> value = wrapper.value(executeCondition);

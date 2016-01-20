@@ -23,10 +23,16 @@ public abstract class TriggerExecutor {
 
     private Table table;
 
-    public List tryValidData(Object data) {
+    public List tryInsertValidData(Object data) {
         Validator validator = getTableMetaData().getValidator();
         if (validator == null) return new LinkedList();
-        return validator.valid(data);
+        return validator.insertValid(data);
+    }
+
+    public List tryUpdateValidData(Object data) {
+        Validator validator = getTableMetaData().getValidator();
+        if (validator == null) return new LinkedList();
+        return validator.updateValid(data);
     }
 
     public boolean isSkipTrigger(SqlRenderConfig config) {

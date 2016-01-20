@@ -190,7 +190,7 @@ public class SelectTemplateRender implements SqlTemplate {
         SqlAppender sqlAppender = new SqlAppender();
         sqlAppender.addSpc("select");
         sqlAppender.addAll(select);
-        sqlAppender.addSpc("from");
+        sqlAppender.addSpc(" from");
         sqlAppender.addSpc(tableMetaData.getName());
         if (join.size() > 0) {
             sqlAppender.addAll(join);

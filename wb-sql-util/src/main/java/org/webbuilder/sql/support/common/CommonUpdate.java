@@ -37,7 +37,7 @@ public class CommonUpdate extends TriggerExecutor implements Update {
             tryExecuteTrigger(Constant.TRIGGER_UPDATE_BEFORE, root);
         if (!StringUtils.isTrue(param.getProperty("skipValid")))
             //尝试验证数据
-            tryValidData(param.getData());
+            tryUpdateValidData(param.getData());
         SQL sql = sqlTemplate.render(param);
         int i = sqlExecutor.update(sql);
         root.put("length", i);

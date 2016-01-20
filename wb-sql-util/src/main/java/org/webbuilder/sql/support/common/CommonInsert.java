@@ -33,7 +33,7 @@ public class CommonInsert extends TriggerExecutor implements Insert {
             tryExecuteTrigger(Constant.TRIGGER_INSERT_BEFORE, root);
         if (!StringUtils.isTrue(param.getProperty("skipValid")))
             //尝试验证数据
-            tryValidData(param.getData());
+            tryInsertValidData(param.getData());
         SQL sql = sqlTemplate.render(param);
         sqlExecutor.insert(sql);
         if (!isSkipTrigger(param))

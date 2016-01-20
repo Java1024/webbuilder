@@ -95,6 +95,7 @@ public class CommonTableMetaDataParser implements TableMetaDataParser {
             String validator = element.attr("validator");
             fieldMetaData.setName(name);
             fieldMetaData.setAlias(alias);
+            fieldMetaData.setJavaType(type);
             fieldMetaData.setLength(StringUtils.toInt(length, 256));
             fieldMetaData.setPrimaryKey("true".equals(isPk));
             fieldMetaData.setCanUpdate(!("false".equals(canUpdate)));

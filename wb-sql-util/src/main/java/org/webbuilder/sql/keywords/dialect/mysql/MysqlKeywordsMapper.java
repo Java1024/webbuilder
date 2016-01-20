@@ -58,7 +58,7 @@ public class MysqlKeywordsMapper extends AbstractKeywordsMapper {
     }
 
     @Override
-    protected FieldTemplateWrapper getQueryTypeMapper(ExecuteCondition.QueryType type) {
+    public FieldTemplateWrapper getFieldTemplateWrapper(ExecuteCondition.QueryType type) {
         return wrappers.get(type);
     }
 

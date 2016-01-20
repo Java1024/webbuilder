@@ -2,6 +2,7 @@ package org.webbuilder.sql.param.insert;
 
 import org.webbuilder.sql.param.IncludeField;
 import org.webbuilder.sql.param.SqlRenderConfig;
+import org.webbuilder.utils.common.BeanUtils;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -30,6 +31,11 @@ public class InsertParam extends SqlRenderConfig {
 
     public InsertParam values(Map<String, Object> data) {
         this.data.putAll(data);
+        return this;
+    }
+
+    public InsertParam values(Object o) {
+        values(BeanUtils.copy(o,new LinkedHashMap<String, Object>()));
         return this;
     }
 

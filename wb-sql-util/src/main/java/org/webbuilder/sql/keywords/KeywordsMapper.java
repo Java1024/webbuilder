@@ -20,6 +20,8 @@ public interface KeywordsMapper {
      */
     String getSpecifierSuffix();
 
+    FieldTemplateWrapper getFieldTemplateWrapper(ExecuteCondition.QueryType type);
+
     /**
      * 进行分页
      *
