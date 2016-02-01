@@ -6,11 +6,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.webbuilder.office.excel.config.ExcelReaderCallBack;
 import org.webbuilder.office.excel.support.CommonExcelReader;
+import org.webbuilder.office.excel.wrapper.AbstractWrapper;
 import org.webbuilder.office.excel.wrapper.HashMapWrapper;
+import org.webbuilder.utils.common.StringUtils;
+import org.webbuilder.utils.file.FileUtils;
 import org.webbuilder.utils.file.Resources;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,10 +31,47 @@ public class TestReader {
      */
     @Test
     public void testRead2Map() throws Exception {
-        try (InputStream in = Resources.getResourceAsStream("User.xlsx")) {
+        try (InputStream in = FileUtils.getResourceAsStream("merge.xlsx")) {
             List<Map<String, Object>> dataList = ExcelIO.read2Map(in);
-            Assert.assertEquals(dataList.size(), 2);
-            logger.info(dataList.toString());
+             Assert.assertEquals(dataList.size(), 2);
+            for (Map<String, Object> map : dataList) {
+                System.out.println(map);
+            }
+        }
+    }
+
+    /**
+     * 有合并行的excel读取示例
+     */
+    @Test
+    public void testReadMerge2Map() throws Exception {
+        try (InputStream in = FileUtils.getResourceAsStream("merge.xlsx")) {
+            List<Map<String, Object>> dataList = ExcelIO.read(in, new HashMapWrapper() {
+                String lastProject = null;
+
+                {
+                    //添加表头映射，将中文表头映射为英文
+                    headerNameMapper.put("项目", "product");
+                    //..
+                    //..
+                }
+
+                @Override
+                public void wrapper(Map<String, Object> instance, String header, Object value) {
+                    //解决：列[项目]，合并的单元格只有一行有值，其他为空白。
+                    if ("项目".equals(header)) {
+                        if (!StringUtils.isNullOrEmpty(value)) {
+                            lastProject = String.valueOf(value);
+                        }
+                        value = lastProject;
+                    }
+                    super.wrapper(instance, header, value);
+                }
+            });
+            Assert.assertEquals(dataList.size(), 12);
+            for (Map<String, Object> map : dataList) {
+                System.out.println(map);
+            }
         }
     }
 
@@ -53,6 +96,7 @@ public class TestReader {
 
     /**
      * 自定义方式读取一个excel
+     *
      * @throws Exception
      */
     @Test
