@@ -31,7 +31,7 @@ public abstract class CommonScriptEngine implements DynamicScriptEngine {
     public abstract String getScriptName();
 
     @Override
-    public boolean compiled(String id) throws Exception {
+    public boolean compiled(String id) {
         return scriptBase.containsKey(id);
     }
 
@@ -67,6 +67,11 @@ public abstract class CommonScriptEngine implements DynamicScriptEngine {
         CompiledScript compiledScript = compilable.compile(code);
         scriptBase.put(id, compiledScript);
         return true;
+    }
+
+    @Override
+    public ExecuteResult execute(String id) {
+        return execute(id, new HashMap<String, Object>());
     }
 
     @Override

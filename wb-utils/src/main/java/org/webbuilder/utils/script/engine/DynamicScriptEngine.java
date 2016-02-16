@@ -37,6 +37,8 @@ public interface DynamicScriptEngine {
      */
     ExecuteResult execute(String id, Map<String, Object> param);
 
+    ExecuteResult execute(String id);
+
     /**
      * 添加一个监听器
      *
@@ -54,5 +56,5 @@ public interface DynamicScriptEngine {
      */
     void removeListener(String name) throws Exception;
 
-    boolean compiled(String id) throws Exception;
+    boolean compiled(String id) ;
 }

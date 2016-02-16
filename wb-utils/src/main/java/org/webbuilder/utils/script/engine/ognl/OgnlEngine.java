@@ -24,12 +24,17 @@ public class OgnlEngine implements DynamicScriptEngine {
     protected static Map<String, CommonScriptExecuteListener> listenerMap = new HashMap<>();
 
     @Override
-    public boolean compiled(String id) throws Exception {
+    public boolean compiled(String id) {
         return base.containsKey(id);
     }
 
     @Override
     public void init(String... contents) throws Exception {
+    }
+
+    @Override
+    public ExecuteResult execute(String id) {
+        return execute(id, new HashMap<String, Object>());
     }
 
     @Override

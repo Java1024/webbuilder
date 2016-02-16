@@ -30,7 +30,7 @@ public class SpElEngine implements DynamicScriptEngine {
     protected static Map<String, CommonScriptExecuteListener> listenerMap = new HashMap<>();
 
     @Override
-    public boolean compiled(String id) throws Exception {
+    public boolean compiled(String id) {
         return base.containsKey(id);
     }
 
@@ -45,6 +45,11 @@ public class SpElEngine implements DynamicScriptEngine {
         }
         base.put(id, parser.parseExpression(code));
         return false;
+    }
+
+    @Override
+    public ExecuteResult execute(String id) {
+        return execute(id, new HashMap<String, Object>());
     }
 
     @Override

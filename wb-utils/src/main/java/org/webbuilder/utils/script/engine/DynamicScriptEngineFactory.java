@@ -2,6 +2,7 @@ package org.webbuilder.utils.script.engine;
 
 import org.webbuilder.utils.script.engine.SpEL.SpElEngine;
 import org.webbuilder.utils.script.engine.groovy.GroovyEngine;
+import org.webbuilder.utils.script.engine.java.JavaEngine;
 import org.webbuilder.utils.script.engine.js.JavaScriptEngine;
 import org.webbuilder.utils.script.engine.ognl.OgnlEngine;
 import org.webbuilder.utils.script.engine.python.PythonScriptEngine;
@@ -21,6 +22,7 @@ public final class DynamicScriptEngineFactory {
         map.put("groovy", new GroovyEngine());
         map.put("ruby", new RubyScriptEngine());
         map.put("python", new PythonScriptEngine());
+        map.put("java", new JavaEngine());
         try {
             Class.forName("org.springframework.expression.ExpressionParser");
             map.put("spel", new SpElEngine());
