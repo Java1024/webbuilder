@@ -71,10 +71,6 @@ public class SpringCacheImpl implements Cache {
                 if (logger.isDebugEnabled()) {
                     logger.debug(getCacheName().concat("-->").concat(String.valueOf(key)).concat(" hit!"));
                 }
-                try {
-                    WebUtil.getHttpServletRequest().setAttribute("data_from_cache", getCacheName().concat(".").concat(String.valueOf(key)));
-                } catch (Exception e) {
-                }
             }
             return (value != null ? new SimpleValueWrapper(value) : null);
         } catch (Exception e) {
