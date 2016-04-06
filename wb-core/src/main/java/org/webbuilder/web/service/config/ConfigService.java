@@ -15,6 +15,7 @@ import org.webbuilder.web.core.service.GenericService;
 import org.webbuilder.web.core.service.SocketService;
 import org.webbuilder.web.dao.config.ConfigMapper;
 import org.webbuilder.web.po.config.Config;
+import org.webbuilder.web.service.basic.sql.SqlExecutor;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -55,7 +56,7 @@ public class ConfigService extends GenericService<Config, String> implements Soc
      * @return 配置内容
      * @throws Exception 异常信息
      */
-    @Cacheable(value = CACHE_KEY, key = "'info_content_'+#name")
+    @Cacheable(value = CACHE_KEY, key = "'info.content.'+#name")
     public String getContent(String name) throws Exception {
         Config config = getMapper().selectByPk(name);
         if (config == null) return null;
@@ -69,7 +70,7 @@ public class ConfigService extends GenericService<Config, String> implements Soc
      * @return 配置内容
      * @throws Exception 异常信息
      */
-    @Cacheable(value = CACHE_KEY, key = "'info_'+#name")
+    @Cacheable(value = CACHE_KEY, key = "'info.'+#name")
     public Properties get(String name) throws Exception {
         Config config = getMapper().selectByPk(name);
         if (config == null) return new Properties();
@@ -84,7 +85,7 @@ public class ConfigService extends GenericService<Config, String> implements Soc
      * @return 指定的key对应的value
      * @throws Exception
      */
-    @Cacheable(value = CACHE_KEY, key = "'info_'+#name+'_key_'+#key")
+    @Cacheable(value = CACHE_KEY, key = "'info.'+#name+'.key.'+#key")
     public String get(String name, String key) throws Exception {
         return get(name).getProperty(key);
     }
@@ -97,17 +98,17 @@ public class ConfigService extends GenericService<Config, String> implements Soc
      * @param defaultValue 默认值
      * @return 对应key的值，若为null，则返回默认值
      */
-    @Cacheable(value = CACHE_KEY, key = "'info_'+#name+'_key_'+#key")
+    @Cacheable(value = CACHE_KEY, key = "'info.'+#name+'.key.'+#key")
     public String get(String name, String key, String defaultValue) {
         String val;
         try {
             val = this.get(name).getProperty(key);
             if (val == null) {
-                logger.error(String.format("获取配置:%s.%s失败,defaultValue:%s", name, key, defaultValue));
+                logger.error("获取配置:{}.{}失败,defaultValue:{}", name, key, defaultValue);
                 return defaultValue;
             }
         } catch (Exception e) {
-            logger.error(String.format("获取配置:%s.%s失败,defaultValue:%s", name, key, defaultValue));
+            logger.error("获取配置:{}.{}失败,defaultValue:{}", name, key, defaultValue, e);
             return defaultValue;
         }
         return val;
@@ -117,7 +118,7 @@ public class ConfigService extends GenericService<Config, String> implements Soc
     /**
      * 参照 {@link ConfigService#get(String, String)}，将值转为int类型
      */
-    @Cacheable(value = CACHE_KEY, key = "'info_'+#name+'_key_'+#key+'_int'")
+    @Cacheable(value = CACHE_KEY, key = "'info.'+#name+'.key.'+#key+'.int'")
     public int getInt(String name, String key) throws Exception {
         return StringUtils.toInt(get(name, key));
     }
@@ -125,7 +126,7 @@ public class ConfigService extends GenericService<Config, String> implements Soc
     /**
      * 参照 {@link ConfigService#get(String, String)}，将值转为double类型
      */
-    @Cacheable(value = CACHE_KEY, key = "'info_'+#name+'_key_'+#key+'_double'")
+    @Cacheable(value = CACHE_KEY, key = "'info.'+#name+'.key.'+#key+'.double'")
     public double getDouble(String name, String key) throws Exception {
         return StringUtils.toDouble(get(name, key));
     }
@@ -133,7 +134,7 @@ public class ConfigService extends GenericService<Config, String> implements Soc
     /**
      * 参照 {@link ConfigService#get(String, String)}，将值转为long类型
      */
-    @Cacheable(value = CACHE_KEY, key = "'info_'+#name+'_key_'+#key+'_long'")
+    @Cacheable(value = CACHE_KEY, key = "'info.'+#name+'.key.'+#key+'.long'")
     public long getLong(String name, String key) throws Exception {
         return StringUtils.toLong(get(name, key));
     }
@@ -141,7 +142,7 @@ public class ConfigService extends GenericService<Config, String> implements Soc
     /**
      * 参照 {@link ConfigService#get(String, String, String)}，将值转为int类型
      */
-    @Cacheable(value = CACHE_KEY, key = "'info_'+#name+'_key_'+#key+'_int'")
+    @Cacheable(value = CACHE_KEY, key = "'info.'+#name+'.key.'+#key+'.int'")
     public int getInt(String name, String key, int defaultValue) {
         return StringUtils.toInt(get(name, key, String.valueOf(defaultValue)));
     }
@@ -149,15 +150,16 @@ public class ConfigService extends GenericService<Config, String> implements Soc
     /**
      * 参照 {@link ConfigService#get(String, String, String)}，将值转为double类型
      */
-    @Cacheable(value = CACHE_KEY, key = "'info_'+#name+'_key_'+#key+'_double'")
+    @Cacheable(value = CACHE_KEY, key = "'info.'+#name+'.key.'+#key+'.double'")
     public double getDouble(String name, String key, double defaultValue) {
+
         return StringUtils.toDouble(get(name, key, String.valueOf(defaultValue)));
     }
 
     /**
      * 参照 {@link ConfigService#get(String, String, String)}，将值转为long类型
      */
-    @Cacheable(value = CACHE_KEY, key = "'info_'+#name+'_key_'+#key+'_long'")
+    @Cacheable(value = CACHE_KEY, key = "'info.'+#name+'.key.'+#key+'.long'")
     public long getLong(String name, String key, long defaultValue) {
         return StringUtils.toLong(get(name, key, String.valueOf(defaultValue)));
     }
