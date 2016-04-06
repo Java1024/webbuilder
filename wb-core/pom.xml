@@ -9,9 +9,8 @@
         <groupId>org.webbuilder</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    <artifactId>core</artifactId>
-    <version>1.0-SNAPSHOT</version>
-
+    <artifactId>wb-core</artifactId>
+    <version>${parent.version}</version>
 
     <repositories>
         <repository>
@@ -48,13 +47,11 @@
                 <filtering>true</filtering>
             </resource>
         </resources>
-
     </build>
 
     <properties>
         <!-- lib versions -->
         <org.webbuilder.utils.version>1.0-SNAPSHOT</org.webbuilder.utils.version>
-        <junit.version>4.11</junit.version>
         <dom4j.version>1.6.1</dom4j.version>
         <groovy.version>2.1.3</groovy.version>
         <spring-data-jpa.version>1.6.2.RELEASE</spring-data-jpa.version>
@@ -79,22 +76,16 @@
         <!-- utils -->
         <dependency>
             <groupId>org.webbuilder</groupId>
-            <artifactId>utils</artifactId>
+            <artifactId>wb-utils</artifactId>
             <version>${org.webbuilder.utils.version}</version>
         </dependency>
         <!-- sql-utils -->
         <dependency>
             <groupId>org.webbuilder</groupId>
-            <artifactId>sql-util</artifactId>
+            <artifactId>wb-sql-util</artifactId>
             <version>${org.webbuilder.utils.version}</version>
         </dependency>
-        <!-- test-junit -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
+
         <!-- test-spring -->
         <dependency>
             <groupId>org.springframework</groupId>
@@ -288,11 +279,6 @@
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjrt</artifactId>
-            <version>${aspectj.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjweaver</artifactId>
             <version>${aspectj.version}</version>
         </dependency>
         <!-- hibernate-validator -->
