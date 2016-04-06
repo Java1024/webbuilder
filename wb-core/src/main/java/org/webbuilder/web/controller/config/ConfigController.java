@@ -136,7 +136,7 @@ public class ConfigController extends GenericController<Config, String> {
         }
     }
 
-    @RequestMapping(value = {"/initLogBack"}, method = RequestMethod.GET )
+    @RequestMapping(value = {"/initLogBack"}, method = RequestMethod.GET)
     @AccessLogger("初始化logback日志配置文件")
     @Authorize(role = Role.SYS_ROLE_ADMIN)
     public Object initLogBack() {
@@ -166,4 +166,5 @@ public class ConfigController extends GenericController<Config, String> {
     public Object update(@PathVariable("id") String id, @RequestBody Config object) {
         return super.update(id, object);
     }
+
 }
