@@ -5,6 +5,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.webbuilder.utils.common.StringUtils;
+import org.webbuilder.utils.http.HttpUtils;
 import org.webbuilder.web.core.aop.logger.AccessLogger;
 import org.webbuilder.web.core.authorize.annotation.Authorize;
 import org.webbuilder.web.core.bean.ResponseData;
@@ -67,12 +68,23 @@ public class FileController {
         mediaTypeMapper.put(".jpeg", MediaType.IMAGE_JPEG_VALUE);
         mediaTypeMapper.put(".gif", MediaType.IMAGE_GIF_VALUE);
         mediaTypeMapper.put(".bmp", MediaType.IMAGE_JPEG_VALUE);
-        mediaTypeMapper.put(".json",MediaType.APPLICATION_JSON_VALUE);
-        mediaTypeMapper.put(".txt",MediaType.TEXT_PLAIN_VALUE);
-        mediaTypeMapper.put(".css",MediaType.TEXT_PLAIN_VALUE);
-        mediaTypeMapper.put(".js","application/javascript");
-        mediaTypeMapper.put(".html",MediaType.TEXT_HTML_VALUE);
-        mediaTypeMapper.put(".xml",MediaType.TEXT_XML_VALUE);
+        mediaTypeMapper.put(".json", MediaType.APPLICATION_JSON_VALUE);
+        mediaTypeMapper.put(".txt", MediaType.TEXT_PLAIN_VALUE);
+        mediaTypeMapper.put(".css", MediaType.TEXT_PLAIN_VALUE);
+        mediaTypeMapper.put(".js", "application/javascript");
+        mediaTypeMapper.put(".html", MediaType.TEXT_HTML_VALUE);
+        mediaTypeMapper.put(".xml", MediaType.TEXT_XML_VALUE);
+    }
+
+    /**
+     * restful风格的文件下载
+     */
+    @RequestMapping(value = "/download/{id}/{name:.+}", method = RequestMethod.GET)
+    @AccessLogger("下载文件")
+    public ResponseMessage restDownLoad(@PathVariable("id") String id,
+                                        @PathVariable("name") String name,
+                                        HttpServletResponse response, HttpServletRequest request) {
+        return downLoad(id, name, response, request);
     }
 
     /**
@@ -84,7 +96,9 @@ public class FileController {
      */
     @RequestMapping(value = "/download/{id}", method = RequestMethod.GET)
     @AccessLogger("下载文件")
-    public ResponseMessage downLoad(@PathVariable("id") String id, String name, HttpServletResponse response, HttpServletRequest request) {
+    public ResponseMessage downLoad(@PathVariable("id") String id,
+                                    @RequestParam(value = "name", required = false) String name,
+                                    HttpServletResponse response, HttpServletRequest request) {
         try {
             Resources resources = resourcesService.selectByPk(id);
             if (resources == null || resources.getStatus() != 1) {
@@ -146,7 +160,6 @@ public class FileController {
         } catch (Exception e) {
             return new ResponseMessage(false, e);
         }
-
     }
 
     /**
