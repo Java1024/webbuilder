@@ -1,10 +1,13 @@
 package org.webbuilder.web.core;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.ibatis.io.VFS;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.util.StringUtils;
 
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -12,6 +15,9 @@ import java.util.*;
  * Created by 浩 on 2015-07-21 0021.
  */
 public class SqlSessionFactoryBeanV2 extends SqlSessionFactoryBean {
+
+    private Resource[] excludeMapperLocations;
+
     @Override
     public void setTypeAliasesPackage(String typeAliasesPackage) {
         if (typeAliasesPackage != null) {
@@ -43,4 +49,34 @@ public class SqlSessionFactoryBeanV2 extends SqlSessionFactoryBean {
         return classess;
     }
 
+    @Override
+    public void setMapperLocations(Resource[] mapperLocations) {
+        if (excludeMapperLocations != null) {
+            Map<String, Resource> temp = new HashMap<>();
+            for (Resource resource : mapperLocations) {
+                try {
+                    temp.put(DigestUtils.md2Hex(resource.getInputStream()), resource);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            for (Resource resource : excludeMapperLocations) {
+                try {
+                    temp.remove(DigestUtils.md2Hex(resource.getInputStream()));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            super.setMapperLocations(temp.values().toArray(new Resource[temp.size()]));
+        } else
+            super.setMapperLocations(mapperLocations);
+    }
+
+    public Resource[] getExcludeMapperLocations() {
+        return excludeMapperLocations;
+    }
+
+    public void setExcludeMapperLocations(Resource[] excludeMapperLocations) {
+        this.excludeMapperLocations = excludeMapperLocations;
+    }
 }
