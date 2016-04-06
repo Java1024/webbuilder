@@ -1,6 +1,7 @@
 package org.webbuilder.utils.http;
 
 import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
@@ -32,6 +33,22 @@ public class HttpUtils {
         httpClient.getParams().setParameter(HttpMethodParams.HTTP_CONTENT_CHARSET, "UTF-8");
         httpClient.executeMethod(post);
         return post.getResponseBodyAsString();
+    }
+
+    public static String doDelete(String url, Map<String, String> param, Map<String, String> headers) throws Exception {
+        DeleteMethod delete = new DeleteMethod(url);
+        for (Map.Entry<String, String> entry : headers.entrySet()) {
+            delete.addRequestHeader(entry.getKey(), entry.getValue());
+        }
+        HttpMethodParams params = new HttpMethodParams();
+        for (Map.Entry<String, String> entry : param.entrySet()) {
+            params.setParameter(entry.getKey(), entry.getValue());
+        }
+        delete.setParams(params);
+        HttpClient httpClient = new HttpClient();
+        httpClient.getParams().setParameter(HttpMethodParams.HTTP_CONTENT_CHARSET, "UTF-8");
+        httpClient.executeMethod(delete);
+        return delete.getResponseBodyAsString();
     }
 
     public static PostMethod doPostv2(String url, Map<String, String> param, Map<String, String> headers) throws Exception {
