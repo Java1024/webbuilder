@@ -1,5 +1,7 @@
 package org.webbuilder.web.po.user;
 
+import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.context.annotation.Scope;
 import org.webbuilder.utils.common.MapUtils;
 import org.webbuilder.web.core.bean.GenericPo;
 import org.webbuilder.web.po.module.Module;
@@ -7,6 +9,7 @@ import org.webbuilder.web.po.role.Role;
 import org.webbuilder.web.po.role.RoleModule;
 import org.webbuilder.web.po.role.UserRole;
 
+import javax.validation.constraints.NotNull;
 import java.util.*;
 
 /**
@@ -15,13 +18,14 @@ import java.util.*;
  */
 public class User extends GenericPo<String> {
 
-    //主键
-    private String u_id;
-
     //用户名
+    @NotNull
+    @NotEmpty(message = "用户名不能为空")
     private String username;
 
     //密码
+    @NotNull
+    @NotEmpty(message = "密码不能为空")
     private String password;
 
     //姓名
@@ -138,24 +142,6 @@ public class User extends GenericPo<String> {
         roleInfo = MapUtils.sortMapByKey(roleInfo_tmp);
     }
 
-
-    /**
-     * 获取 主键
-     *
-     * @return String 主键
-     */
-    public String getU_id() {
-        if (this.u_id == null)
-            return "";
-        return this.u_id;
-    }
-
-    /**
-     * 设置 主键
-     */
-    public void setU_id(String u_id) {
-        this.u_id = u_id;
-    }
 
     /**
      * 获取 用户名

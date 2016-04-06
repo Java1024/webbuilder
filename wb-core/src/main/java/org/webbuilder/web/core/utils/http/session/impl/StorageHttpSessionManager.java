@@ -3,10 +3,13 @@ package org.webbuilder.web.core.utils.http.session.impl;
 import org.webbuilder.utils.storage.Storage;
 import org.webbuilder.utils.storage.driver.StorageDriver;
 import org.webbuilder.utils.storage.event.KeyFilter;
+import org.webbuilder.utils.storage.event.StorageListener;
 import org.webbuilder.web.core.utils.http.session.HttpSessionManager;
 import org.webbuilder.web.core.utils.http.session.HttpSessionManagerContainer;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.webbuilder.web.po.role.UserRole;
+import org.webbuilder.web.po.user.User;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
@@ -50,6 +53,12 @@ public class StorageHttpSessionManager implements HttpSessionManager {
     public <V> Storage<String, V> userStorage() throws Exception {
         if (userListDriver == null)
             userListDriver = driver;
+
+        userListDriver.getStorage(User.class).addListener(new StorageListener<Object, User>(){
+            @Override
+            public void onRemove(Object key, User user, StorageDriver driver) {
+            }
+        });
         return userListDriver.getStorage("user.list");
     }
 

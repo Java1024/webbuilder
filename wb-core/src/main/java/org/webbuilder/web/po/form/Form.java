@@ -1,4 +1,5 @@
 package org.webbuilder.web.po.form;
+
 import org.webbuilder.web.core.bean.GenericPo;
 
 /**

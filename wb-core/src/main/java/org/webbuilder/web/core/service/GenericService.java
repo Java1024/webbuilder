@@ -39,51 +39,6 @@ public abstract class GenericService<Po extends GenericPo<Pk>, Pk> implements Se
     protected abstract <T extends GenericMapper<Po, Pk>> T getMapper();
 
     /**
-     * 获取指定类型的数据映射接口
-     *
-     * @param <T>  数据映射接口类型必须是GenericDao的子类
-     * @param type 接口类型
-     * @return 数据映射接口
-     */
-    protected <T extends GenericMapper<Po, Pk>> T getMapper(Class<T> type) {
-        return getSqlSession().getMapper(type);
-    }
-
-    /**
-     * 默认的sqlSession实例
-     */
-    @Resource
-    private SqlSessionTemplate sqlSession;
-
-    /**
-     * 获取默认的sqlSession实例
-     */
-    protected SqlSessionTemplate getSqlSession() {
-        return sqlSession;
-    }
-
-    /**
-     * 获取 sqlSession的Connection实例（事务控制范围）
-     *
-     * @param sqlSession sqlSession 实例
-     * @return Connection实例
-     */
-    protected Connection getConnection(SqlSessionTemplate sqlSession) {
-        return SqlSessionUtils.getSqlSession(
-                sqlSession.getSqlSessionFactory(), sqlSession.getExecutorType(),
-                sqlSession.getPersistenceExceptionTranslator()).getConnection();
-    }
-
-    /**
-     * 获取默认sqlSession的Connection实例（事务控制范围）
-     *
-     * @return sqlSession sqlSession 实例
-     */
-    protected Connection getConnection() {
-        return getConnection(getSqlSession());
-    }
-
-    /**
      * 添加一条数据
      *
      * @param data 要添加的数据
@@ -93,7 +48,6 @@ public abstract class GenericService<Po extends GenericPo<Pk>, Pk> implements Se
     @Transactional
     public int insert(Po data) throws Exception {
         tryValidPo(data);
-
         return getMapper().insert(data);
     }
 

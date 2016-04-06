@@ -4,6 +4,8 @@ import org.webbuilder.utils.file.FileUtils;
 import org.webbuilder.web.core.bean.GenericPo;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * 资源
  * Created by generator
@@ -11,6 +13,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 public class Resources extends GenericPo<String> {
 
     //主键
+    @NotNull
     @NotEmpty(message = "id不能为空")
     private String u_id;
 
@@ -176,12 +179,7 @@ public class Resources extends GenericPo<String> {
     }
 
     public String getSuffix() {
-            return FileUtils.getSuffix(getName());
+        return FileUtils.getSuffix(getName());
     }
 
-    public static void main(String[] args) {
-        Resources a = new Resources();
-        a.setName("aa.jpg");
-        System.out.println(a.getSuffix());
-    }
 }

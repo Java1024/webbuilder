@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="dataBaseMetaData" class="org.webbuilder.sql.support.OracleDataBaseMetaData"></bean>
+
+    <bean id="sqlExecutorService" class="org.webbuilder.web.service.basic.SqlExecutorService"></bean>
+
+    <bean id="dataBase" class="org.webbuilder.sql.support.common.CommonDataBase">
+        <constructor-arg index="0" ref="dataBaseMetaData"></constructor-arg>
+        <constructor-arg index="1" ref="sqlExecutorService"></constructor-arg>
+    </bean>
+
+    <bean id="defaultTableFactory" class="org.webbuilder.web.service.form.DefaultTableFactory">
+        <property name="dataBase" ref="dataBase"></property>
+        <property name="localFiles">
+            <value>classpath:tables/**/*.html</value>
+        </property>
+    </bean>
+</beans>

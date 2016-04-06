@@ -4,6 +4,7 @@ import org.webbuilder.web.core.bean.GenericPo;
 import org.webbuilder.web.po.module.Module;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -15,10 +16,12 @@ public class Role extends GenericPo<String> {
     public static final String SYS_ROLE_ADMIN = "admin";
 
     //主键
+    @NotNull
     @NotEmpty(message = "主键不能为空")
     private String u_id;
 
     //角色名称
+    @NotNull
     @NotEmpty(message = "名称不能为空")
     private String name;
 

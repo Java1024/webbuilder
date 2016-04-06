@@ -1,9 +1,11 @@
 package org.webbuilder.web.po.script;
 
+import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.webbuilder.utils.common.StringUtils;
 import org.webbuilder.web.core.bean.GenericPo;
 
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -14,13 +16,14 @@ import javax.validation.constraints.Size;
 public class DynamicScript extends GenericPo<String> {
 
     //主键
+    @NotNull
     @NotEmpty(message = "id不能为空")
     private String u_id;
 
     //名称
+    @Length(min = 4, message = "名称长度不能少于4")
+    @NotNull
     @Pattern(regexp = "[a-zA-Z]+", message = "名称只能为大小写字母组成")
-    @Size(min = 4, message = "名称长度不能少于4")
-    @NotEmpty(message = "名称不能为空")
     private String name;
 
     //类型

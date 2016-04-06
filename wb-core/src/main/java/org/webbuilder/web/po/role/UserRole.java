@@ -1,6 +1,9 @@
 package org.webbuilder.web.po.role;
 
+import org.hibernate.validator.constraints.NotEmpty;
 import org.webbuilder.web.core.bean.GenericPo;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * 后台管理用户角色绑定
@@ -9,12 +12,18 @@ import org.webbuilder.web.core.bean.GenericPo;
 public class UserRole extends GenericPo<String> {
 
     //主键
+    @NotNull
+    @NotEmpty
     private String u_id;
 
     //用户主键
+    @NotNull
+    @NotEmpty
     private String user_id;
 
     //角色主键
+    @NotNull
+    @NotEmpty
     private String role_id;
 
     //角色实例

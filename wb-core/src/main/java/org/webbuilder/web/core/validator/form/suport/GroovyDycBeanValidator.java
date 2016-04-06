@@ -28,22 +28,24 @@ public class GroovyDycBeanValidator implements Validator {
         this.className = className;
     }
 
-    @Override
-    public List valid(Object data) {
+    public List valid(Object data,boolean insert) {
         ValidResults res = new ValidResults();
         if (!(data instanceof Map)) {
             res.addResult("error", "数据类型错误");
             return res;
         } else {
             try {
-                GenericPo po = (GenericPo) engine.execute(className + ".getInstance", new HashMap<String, Object>()).getResult();
+                Class<GenericPo> poClass = (Class<GenericPo>) engine.execute(className , new HashMap<String, Object>()).getResult();
+                GenericPo po = poClass.newInstance();
                 Map<String, Object> mapData = ((Map) data);
                 for (Map.Entry<String, Object> entry : mapData.entrySet()) {
                     BeanUtils.attr(po, entry.getKey(), entry.getValue());
                 }
                 ValidResults tmp = po.valid();
                 for (ValidResults.ValidResult re : tmp) {
-                    if (mapData.containsKey(re.getField())) {
+                    if (insert) {
+                        res.add(re);
+                    } else if (mapData.containsKey(re.getField())) {
                         res.add(re);
                     }
                 }
@@ -59,4 +61,13 @@ public class GroovyDycBeanValidator implements Validator {
         return res;
     }
 
+    @Override
+    public List insertValid(Object data) {
+        return valid(data,true);
+    }
+
+    @Override
+    public List updateValid(Object data) {
+        return valid(data,false);
+    }
 }

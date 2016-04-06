@@ -8,6 +8,7 @@ import org.webbuilder.utils.storage.event.Finder;
 import org.webbuilder.web.core.bean.GenericPo;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import javax.validation.constraints.NotNull;
 import java.util.*;
 
 
@@ -18,10 +19,12 @@ import java.util.*;
 public class Module extends GenericPo<String> implements Comparable<Module> {
 
     //主键
+    @NotNull
     @NotEmpty(message = "id不能为空")
     private String u_id;
 
     //模块名称
+    @NotNull
     @NotEmpty(message = "名称不能为空")
     private String name;
 

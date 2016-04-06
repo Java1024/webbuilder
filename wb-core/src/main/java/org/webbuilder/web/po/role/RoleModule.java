@@ -1,10 +1,12 @@
 package org.webbuilder.web.po.role;
 
 import com.alibaba.fastjson.JSON;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.webbuilder.utils.common.StringUtils;
 import org.webbuilder.web.core.bean.GenericPo;
 import org.webbuilder.web.po.module.Module;
 
+import javax.validation.constraints.NotNull;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -16,12 +18,18 @@ import java.util.Map;
 public class RoleModule extends GenericPo<String> {
 
     //主键
+    @NotNull
+    @NotEmpty
     private String u_id;
 
     //模块主键
+    @NotNull
+    @NotEmpty
     private String module_id;
 
     //角色主键
+    @NotNull
+    @NotEmpty
     private String role_id;
 
     //权限级别
@@ -30,15 +38,6 @@ public class RoleModule extends GenericPo<String> {
     private transient Module module;
 
     private List<String> levels;
-
-    //事件脚本配置 like : {"U":"script_id",....}
-    private String script_conf;
-
-    private Map<String, String> script_confMap;
-
-    public boolean on(String event, Map<String, Object> param) {
-        return true;
-    }
 
     /**
      * 获取 主键
