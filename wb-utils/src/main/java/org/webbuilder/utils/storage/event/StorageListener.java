@@ -2,6 +2,7 @@ package org.webbuilder.utils.storage.event;
 
 
 import org.webbuilder.utils.storage.Storage;
+import org.webbuilder.utils.storage.driver.StorageDriver;
 
 import java.io.Serializable;
 
@@ -29,5 +30,8 @@ public class StorageListener<K, V> implements Serializable {
      */
     public V onNotFoundVal(K key) {
         return null;
+    }
+
+    public void onRemove(K key,V v,StorageDriver driver) {
     }
 }
