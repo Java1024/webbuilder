@@ -19,16 +19,12 @@ public class SqlExecutorService extends AbstractJdbcSqlExecutor {
 
     @Override
     public Connection getConnection() {
-        try {
-            return DataSourceUtils.getConnection(dataSource);
-        } catch (Exception e) {
-            logger.error("获取数据库连接失败", e);
-        }
-        return null;
+        return DataSourceUtils.getConnection(dataSource);
     }
 
     @Override
-    public void resetConnection(Connection connection) {
-         DataSourceUtils.releaseConnection(connection, dataSource);
+    public void releaseConnection(Connection connection) {
+        DataSourceUtils.releaseConnection(connection, dataSource);
     }
+
 }
