@@ -7,6 +7,7 @@ import org.webbuilder.sql.param.alter.AlterParam;
 import org.webbuilder.sql.param.query.QueryParam;
 import org.webbuilder.sql.render.template.SqlRenderParam;
 import org.webbuilder.sql.render.template.SqlTemplate;
+import org.webbuilder.sql.support.executor.ObjectWrapperFactory;
 import org.webbuilder.sql.support.executor.SqlExecutor;
 
 import java.util.Map;
@@ -27,6 +28,8 @@ public class CommonDataBase implements DataBase {
      * sql执行器
      */
     private SqlExecutor sqlExecutor;
+
+    private ObjectWrapperFactory wrapperFactory;
 
     private Map<String, Table> tableMap = new ConcurrentHashMap<>();
 
@@ -59,7 +62,7 @@ public class CommonDataBase implements DataBase {
         if (table == null) {
             TableMetaData metaData = getMetaData().getTableMetaData(name);
             if (metaData == null) return null;
-            table = new CommonTable(metaData, sqlExecutor, this);
+            table = new CommonTable(metaData, sqlExecutor, this,wrapperFactory);
             tableMap.put(name, table);
         }
         return table;
@@ -84,7 +87,6 @@ public class CommonDataBase implements DataBase {
         SqlTemplate template = getMetaData().getRender().render(param);
         SQL sql = template.render(new SqlRenderConfig());
         sqlExecutor.exec(sql);
-
         return getTable(tableMetaData.getName());
     }
 
@@ -118,5 +120,13 @@ public class CommonDataBase implements DataBase {
         getMetaData().addTable(tableMetaData);
         tableMap.remove(tableMetaData.getName());
         return getTable(tableMetaData.getName());
+    }
+
+    public ObjectWrapperFactory getWrapperFactory() {
+        return wrapperFactory;
+    }
+
+    public void setWrapperFactory(ObjectWrapperFactory wrapperFactory) {
+        this.wrapperFactory = wrapperFactory;
     }
 }

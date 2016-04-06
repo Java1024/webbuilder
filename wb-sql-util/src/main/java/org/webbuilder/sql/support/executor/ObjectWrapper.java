@@ -1,5 +1,8 @@
 package org.webbuilder.sql.support.executor;
 
+import org.webbuilder.sql.DataBase;
+import org.webbuilder.sql.Table;
+
 /**
  * 对象包装器，在执行查询时，通过包装器对查询结果进行初始化
  * Created by 浩 on 2015-11-09 0009.
@@ -28,5 +31,13 @@ public interface ObjectWrapper<T> {
      * @param instance 实例对象
      */
     void done(T instance);
+
+    /**
+     * 初始化
+     *
+     * @param dataBase
+     * @param table
+     */
+    void init(DataBase dataBase, Table table);
 
 }

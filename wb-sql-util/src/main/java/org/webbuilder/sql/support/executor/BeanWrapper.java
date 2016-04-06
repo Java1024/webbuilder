@@ -2,6 +2,8 @@ package org.webbuilder.sql.support.executor;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.webbuilder.sql.DataBase;
+import org.webbuilder.sql.Table;
 import org.webbuilder.utils.common.BeanUtils;
 import org.webbuilder.utils.common.ClassUtils;
 
@@ -45,5 +47,10 @@ public abstract class BeanWrapper<T> implements ObjectWrapper<T> {
 
     public void setType(Class<T> type) {
         this.type = type;
+    }
+
+    @Override
+    public void init(DataBase dataBase, Table table) {
+
     }
 }

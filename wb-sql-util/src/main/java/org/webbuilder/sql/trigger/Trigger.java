@@ -25,9 +25,9 @@ public interface Trigger extends Serializable {
 
     /**
      * 执行触发器
-     * @param root 执行参数
+     * @param var 执行参数
      * @return 执行结果
      * @throws TriggerException 执行异常
      */
-    TriggerResult execute(Map<String, Object> root) throws TriggerException;
+    TriggerResult execute(Map<String, Object> var) throws TriggerException;
 }

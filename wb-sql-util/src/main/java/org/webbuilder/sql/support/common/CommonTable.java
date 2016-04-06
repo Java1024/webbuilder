@@ -7,10 +7,7 @@ import org.webbuilder.sql.exception.QueryException;
 import org.webbuilder.sql.exception.UpdateException;
 import org.webbuilder.sql.render.template.SqlTemplate;
 import org.webbuilder.sql.render.template.SqlTemplateRender;
-import org.webbuilder.sql.support.executor.HashMapWrapper;
-import org.webbuilder.sql.support.executor.ObjectWrapper;
-import org.webbuilder.sql.support.executor.ScriptObjectWrapper;
-import org.webbuilder.sql.support.executor.SqlExecutor;
+import org.webbuilder.sql.support.executor.*;
 
 import java.util.Map;
 
@@ -22,7 +19,7 @@ public class CommonTable implements Table {
     /**
      * 默认对象包装器
      */
-    public static ObjectWrapper DEFAULT_WRAPPER = new HashMapWrapper();
+    private final ObjectWrapper DEFAULT_WRAPPER;
 
     /**
      * 表元数据
@@ -42,10 +39,18 @@ public class CommonTable implements Table {
     private Delete delete;
     private Insert insert;
 
-    public CommonTable(TableMetaData metaData, SqlExecutor sqlExecutor, DataBase dataBase) {
+    private ObjectWrapperFactory wrapperFactory;
+
+    public CommonTable(TableMetaData metaData, SqlExecutor sqlExecutor, DataBase dataBase, ObjectWrapperFactory wrapperFactory) {
         this.metaData = metaData;
         this.sqlExecutor = sqlExecutor;
         this.dataBase = dataBase;
+        this.wrapperFactory = wrapperFactory;
+        if (wrapperFactory != null) {
+            DEFAULT_WRAPPER = wrapperFactory.getWrapper(dataBase, this);
+        } else {
+            DEFAULT_WRAPPER = new HashMapWrapper();
+        }
     }
 
     @Override

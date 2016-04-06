@@ -1,5 +1,7 @@
 package org.webbuilder.sql.support.executor;
 
+import org.webbuilder.sql.DataBase;
+import org.webbuilder.sql.Table;
 import org.webbuilder.utils.common.StringUtils;
 
 import java.math.BigDecimal;
@@ -16,6 +18,10 @@ import java.util.concurrent.ConcurrentHashMap;
 public class HashMapWrapper implements ObjectWrapper<Map<String, Object>> {
 
     private static final Map<Class, DataFormat> formatBase = new ConcurrentHashMap<>();
+
+    protected DataBase dataBase;
+
+    private Table table;
 
     static {
         //提供将BigDecimal类型转为Long类型
@@ -100,4 +106,9 @@ public class HashMapWrapper implements ObjectWrapper<Map<String, Object>> {
 
     }
 
+    @Override
+    public void init(DataBase dataBase, Table table) {
+        this.dataBase = dataBase;
+        this.table = table;
+    }
 }

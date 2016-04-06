@@ -76,7 +76,10 @@ public abstract class AbstractJdbcSqlExecutor implements SqlExecutor {
         return sqlInfo;
     }
 
-    public abstract void resetConnection(Connection connection);
+    /**
+     * 释放连接
+     */
+    public abstract void releaseConnection(Connection connection);
 
     @Override
     public <T> List<T> list(SQL sql, ObjectWrapper<T> wrapper) throws Exception {
@@ -112,7 +115,7 @@ public abstract class AbstractJdbcSqlExecutor implements SqlExecutor {
         closeResultSet(resultSet);
         closeStatement(statement);
         //重置JDBC链接
-        resetConnection(connection);
+        releaseConnection(connection);
         return datas;
     }
 
@@ -160,7 +163,7 @@ public abstract class AbstractJdbcSqlExecutor implements SqlExecutor {
         }
         closeResultSet(resultSet);
         closeStatement(statement);
-        resetConnection(connection);
+        releaseConnection(connection);
         return data;
     }
 
@@ -179,7 +182,7 @@ public abstract class AbstractJdbcSqlExecutor implements SqlExecutor {
             }
         }
         closeStatement(statement);
-        resetConnection(connection);
+        releaseConnection(connection);
     }
 
     @Override
@@ -193,7 +196,7 @@ public abstract class AbstractJdbcSqlExecutor implements SqlExecutor {
         if (logger.isDebugEnabled())
             logger.debug("{} rows is updated!", i);
         closeStatement(statement);
-        resetConnection(connection);
+        releaseConnection(connection);
         return i;
     }
 
@@ -213,7 +216,7 @@ public abstract class AbstractJdbcSqlExecutor implements SqlExecutor {
         }
         logger.debug("{} rows is delete!", i);
         closeStatement(statement);
-        resetConnection(connection);
+        releaseConnection(connection);
         return i;
     }
 

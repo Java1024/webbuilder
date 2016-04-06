@@ -39,7 +39,7 @@ public class ScriptObjectWrapper implements ObjectWrapper<Object> {
                 Map<String, Object> root = new LinkedHashMap<>();
                 root.put("table", table);
                 root.put("dataBase", dataBase);
-                root.put("defaultWrapper",defaultWrapper);
+                root.put("defaultWrapper", defaultWrapper);
                 return tableMetaData.on(Constant.TRIGGER_SELECT_WRAPPER_INSTANCE, root).getData();
             } catch (Exception e) {
                 logger.warn("{} 触发器 {} 执行异常! 已使用默认Wrapper!", tableMetaData.toString(), Constant.TRIGGER_SELECT_WRAPPER_INSTANCE, e);
@@ -59,7 +59,7 @@ public class ScriptObjectWrapper implements ObjectWrapper<Object> {
                 root.put("table", table);
                 root.put("dataBase", dataBase);
                 root.put("instance", instance);
-                root.put("defaultWrapper",defaultWrapper);
+                root.put("defaultWrapper", defaultWrapper);
                 tableMetaData.on(Constant.TRIGGER_SELECT_WRAPPER_DONE, root);
             } catch (TriggerException e) {
                 logger.warn("{} 触发器 {} 执行异常!", tableMetaData.toString(), Constant.TRIGGER_SELECT_WRAPPER_DONE, e);
@@ -78,7 +78,7 @@ public class ScriptObjectWrapper implements ObjectWrapper<Object> {
                 root.put("value", value);
                 root.put("table", table);
                 root.put("dataBase", dataBase);
-                root.put("defaultWrapper",defaultWrapper);
+                root.put("defaultWrapper", defaultWrapper);
                 TriggerResult result = tableMetaData.on(Constant.TRIGGER_SELECT_WRAPPER, root);
                 if (result.isSuccess())
                     return;
@@ -103,5 +103,11 @@ public class ScriptObjectWrapper implements ObjectWrapper<Object> {
 
     public void setDataBase(DataBase dataBase) {
         this.dataBase = dataBase;
+    }
+
+    @Override
+    public void init(DataBase dataBase, Table table) {
+        this.dataBase = dataBase;
+        this.table = table;
     }
 }

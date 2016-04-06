@@ -5,14 +5,20 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.webbuilder.sql.*;
+import org.webbuilder.sql.exception.TriggerException;
 import org.webbuilder.sql.param.delete.DeleteParam;
 import org.webbuilder.sql.param.insert.InsertParam;
 import org.webbuilder.sql.param.query.QueryParam;
 import org.webbuilder.sql.param.update.UpdateParam;
 import org.webbuilder.sql.parser.CommonTableMetaDataParser;
 import org.webbuilder.sql.support.MysqlDataBaseMetaData;
+import org.webbuilder.sql.support.OracleDataBaseMetaData;
 import org.webbuilder.sql.support.common.CommonDataBase;
 import org.webbuilder.sql.support.executor.AbstractJdbcSqlExecutor;
+import org.webbuilder.sql.support.executor.ObjectWrapper;
+import org.webbuilder.sql.support.executor.SqlExecutor;
+import org.webbuilder.sql.trigger.Trigger;
+import org.webbuilder.sql.trigger.TriggerResult;
 import org.webbuilder.utils.file.FileUtils;
 import org.webbuilder.utils.file.Resources;
 
@@ -20,6 +26,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -64,7 +71,8 @@ public class SQLTest {
             }
 
             @Override
-            public void resetConnection(Connection connection) {
+            public void releaseConnection(Connection connection) {
+
             }
         });
 
@@ -121,14 +129,12 @@ public class SQLTest {
         String where = "{\"area_id$NOTNULL\":\"1\"," +
                 "\"username$LIKE\":{\"value\":\"admin\",\"nest\":{\"username$LIKE\":{\"type\":\"or\",\"value\":3}} }}";
 
-        param.select("id", "username", "areaTest.*","areaTest2.name","areaTest2.id").where(where).orderBy("id").noPaging();
-//        param.addProperty("user",new HashMap<String,Object>(){
-//            {
-//                put("area_id",111);
-//            }
-//        });
-
+        param.select("id", "username", "areaTest.*", "areaTest2.name", "areaTest2.id")
+                .where(where)
+                .orderBy("id")
+                .noPaging();
         System.out.println(query.list(param));
+
         //进行分页
         param.doPaging(0, 5);
         System.out.println(query.list(param));
@@ -165,4 +171,5 @@ public class SQLTest {
         s_user.addField(metaData);
         dataBase.alterTable(s_user);
     }
+
 }
