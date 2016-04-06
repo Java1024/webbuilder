@@ -188,8 +188,10 @@ public class RedisCommonStorage<K, V> extends RedisStorage<K, V> {
      */
     protected void scanKey(String cursor, Jedis jedis, ScanCallBack callBack) {
         ScanParams params = new ScanParams();
+        params.count(100);
         if (callBack.pattern() != null) {
             params.match(callBack.pattern());
+
         }
         //扫描结果
         ScanResult<byte[]> res = jedis.scan(cursor.getBytes(), params);
