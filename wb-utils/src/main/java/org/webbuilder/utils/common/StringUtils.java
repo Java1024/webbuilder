@@ -50,8 +50,11 @@ public class StringUtils {
     public static String toLowerCaseFirstOne(String str) {
         if (Character.isLowerCase(str.charAt(0)))
             return str;
-        else
-            return (new StringBuilder()).append(Character.toLowerCase(str.charAt(0))).append(str.substring(1)).toString();
+        else {
+            char[] chars = str.toCharArray();
+            chars[0] = Character.toLowerCase(chars[0]);
+            return new String(chars); //(new StringBuilder()).append(Character.toLowerCase(str.charAt(0))).append(str.substring(1)).toString();
+        }
     }
 
     /**
@@ -63,8 +66,77 @@ public class StringUtils {
     public static String toUpperCaseFirstOne(String str) {
         if (Character.isUpperCase(str.charAt(0)))
             return str;
-        else
-            return (new StringBuilder()).append(Character.toUpperCase(str.charAt(0))).append(str.substring(1)).toString();
+        else {
+            char[] chars = str.toCharArray();
+            chars[0] = Character.toUpperCase(chars[0]);
+            return new String(chars);//(new StringBuilder()).append(Character.toUpperCase(str.charAt(0))).append(str.substring(1)).toString();
+        }
+    }
+
+    /**
+     * 下划线命名转为驼峰命名
+     *
+     * @param str 下划线命名格式
+     * @return 驼峰命名格式
+     */
+    public static final String underScoreCase2CamelCase(String str) {
+        if (!str.contains("_")) return str;
+        StringBuilder sb = new StringBuilder();
+        char[] chars = str.toCharArray();
+        boolean hitUnderScore = false;
+        sb.append(chars[0]);
+        for (int i = 1; i < chars.length; i++) {
+            char c = chars[i];
+            if (c == '_') {
+                hitUnderScore = true;
+            } else {
+                if (hitUnderScore) {
+                    sb.append(Character.toUpperCase(c));
+                    hitUnderScore = false;
+                } else {
+                    sb.append(c);
+                }
+            }
+        }
+        return sb.toString();
+    }
+
+    /**
+     * 驼峰命名法转为下划线命名
+     *
+     * @param str 驼峰命名格式
+     * @return 下划线命名格式
+     */
+    public static final String camelCase2UnderScoreCase(String str) {
+        StringBuilder sb = new StringBuilder();
+        char[] chars = str.toCharArray();
+        for (int i = 0; i < chars.length; i++) {
+            char c = chars[i];
+            if (Character.isUpperCase(c)) {
+                sb.append("_").append(Character.toLowerCase(c));
+            } else {
+                sb.append(c);
+            }
+        }
+        return sb.toString();
+    }
+
+    public static void main(String[] args) {
+        long t = System.currentTimeMillis();
+
+        for (int i = 0; i < 1000000; i++) {
+            camelCase2UnderScoreCase("planNameCn");
+        }
+        String str = "plan_name_cn";
+        System.out.println(toUpperCaseFirstOne(str));
+        System.out.println(toLowerCaseFirstOne("DDaa"));
+        //完善代码
+
+        //输出结果为：planNameCn
+
+        System.out.println(System.currentTimeMillis() - t);
+        System.out.println(camelCase2UnderScoreCase("planNameCn"));
+        System.out.println(underScoreCase2CamelCase("plan_name_cn"));
     }
 
     /**
