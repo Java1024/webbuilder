@@ -15,6 +15,17 @@ import java.util.*;
  */
 public class GenericPo<PK> implements Serializable {
 
+    private Map<String, Object> customAttr = new LinkedHashMap<>();
+
+    public <T> T attr(String attr, T value) {
+        customAttr.put(attr, value);
+        return value;
+    }
+
+    public <T> T attr(String attr) {
+        return ((T) customAttr.get(attr));
+    }
+
     /**
      * 主键
      */
@@ -77,4 +88,11 @@ public class GenericPo<PK> implements Serializable {
         return valid(this);
     }
 
+    public Map<String, Object> getCustomAttr() {
+        return customAttr;
+    }
+
+    public void setCustomAttr(Map<String, Object> customAttr) {
+        this.customAttr = customAttr;
+    }
 }
