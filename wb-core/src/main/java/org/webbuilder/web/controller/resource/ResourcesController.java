@@ -1,26 +1,19 @@
 package org.webbuilder.web.controller.resource;
 
-import org.webbuilder.web.core.aop.logger.AccessLogger;
-import org.webbuilder.web.core.authorize.annotation.Authorize;
-import org.webbuilder.web.core.bean.ResponseData;
-import org.webbuilder.web.core.bean.ResponseMessage;
-import org.webbuilder.web.po.config.Config;
-import org.webbuilder.web.po.resource.Resources;
-import org.webbuilder.web.po.role.Role;
-import org.webbuilder.web.service.config.ConfigService;
-import org.webbuilder.web.service.resource.ResourcesService;
-import org.webbuilder.web.core.controller.GenericController;
-
-import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.webbuilder.web.core.aop.logger.AccessLogger;
+import org.webbuilder.web.core.authorize.annotation.Authorize;
+import org.webbuilder.web.core.bean.ResponseMessage;
+import org.webbuilder.web.core.controller.GenericController;
+import org.webbuilder.web.po.resource.Resources;
+import org.webbuilder.web.po.role.Role;
+import org.webbuilder.web.service.resource.ResourcesService;
 
 import javax.annotation.Resource;
-import java.io.File;
-import java.io.FileInputStream;
 
 /**
  * 资源控制器，继承自GenericController,使用rest+json
@@ -33,6 +26,7 @@ import java.io.FileInputStream;
 @Controller
 @RequestMapping(value = "/resources")
 @AccessLogger("资源")
+@Authorize
 public class ResourcesController extends GenericController<Resources, String> {
 
     //默认服务类
