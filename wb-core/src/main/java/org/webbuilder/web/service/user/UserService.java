@@ -30,7 +30,6 @@ public class UserService extends GenericService<User, String> {
     @Resource
     protected UserRoleMapper userRoleMapper;
 
-
     @Resource
     protected ModuleService moduleService;
 
@@ -57,6 +56,7 @@ public class UserService extends GenericService<User, String> {
         data.setUpdate_date(new Date());
         data.setPassword(MD5.encode(data.getPassword()));
         int i = userMapper.insert(data);
+        //添加角色关联
         if (data.getUserRoles().size() != 0) {
             for (UserRole userRole : data.getUserRoles()) {
                 userRole.setU_id(RandomUtil.randomChar());
