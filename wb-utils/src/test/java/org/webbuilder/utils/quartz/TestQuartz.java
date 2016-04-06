@@ -15,13 +15,10 @@ public class TestQuartz {
 
     @Test
     public void testQuartz() throws Exception {
-       final DynamicScriptEngine engine = DynamicScriptEngineFactory.getEngine("js");
-        engine.compile("test","var i = '我是js脚本';return i");
 
         QuartzBuilder.addJob(new QuartzJob("hehe", "g1", "*/1 * * * * ?", new QuartzJob.JobExecute() {
             public <T> T execute(JobExecutionContext arg0) throws JobExecutionException {
-                //这里执行业务逻辑
-                System.out.println(engine.execute("test",new HashMap<String, Object>()));
+                System.out.println("我被定时调度了！！");
                 return (T) "aa";
             }
         }));

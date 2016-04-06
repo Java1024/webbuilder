@@ -36,8 +36,6 @@ public class POIExcelApi implements ExcelApi {
 
     @Override
     public void read(InputStream inputStream, ExcelReaderCallBack callBack) throws Exception {
-        // POIFSFileSystem fs = new POIFSFileSystem(input);
-        // 兼容读取 支持2007 +
         Workbook wbs = WorkbookFactory.create(inputStream);
         //获取sheets
         for (int x = 0; x < wbs.getNumberOfSheets(); x++) {

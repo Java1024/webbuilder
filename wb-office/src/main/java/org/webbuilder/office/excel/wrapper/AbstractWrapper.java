@@ -10,7 +10,7 @@ import java.util.Map;
  */
 public abstract class AbstractWrapper<T> implements ExcelReaderWrapper<T> {
     protected boolean shutdown;
-    private Map<String, String> headerNameMapper = new HashMap<>();
+    protected Map<String, String> headerNameMapper = new HashMap<>();
 
     @Override
     public boolean isShutdown() {

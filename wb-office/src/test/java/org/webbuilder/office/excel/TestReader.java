@@ -14,6 +14,7 @@ import org.webbuilder.utils.file.Resources;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -26,6 +27,21 @@ import java.util.Map;
 public class TestReader {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
+
+    public static void main(String[] args) throws Exception {
+        try (InputStream in = new FileInputStream("/home/zhouhao/桌面/test.xlsx")) {
+            List<Map<String,Object>> data = ExcelIO.read(in,new HashMapWrapper(){
+                @Override
+                public void wrapperDone(Map<String, Object> instance) {
+                    super.wrapperDone(instance);
+                }
+            });
+            for (Map<String, Object> stringObjectMap : data) {
+                System.out.println(stringObjectMap);
+            }
+        }
+    }
+
     /**
      * 测试将excel表格转为map
      */
@@ -33,7 +49,7 @@ public class TestReader {
     public void testRead2Map() throws Exception {
         try (InputStream in = FileUtils.getResourceAsStream("merge.xlsx")) {
             List<Map<String, Object>> dataList = ExcelIO.read2Map(in);
-             Assert.assertEquals(dataList.size(), 2);
+            Assert.assertEquals(dataList.size(), 2);
             for (Map<String, Object> map : dataList) {
                 System.out.println(map);
             }

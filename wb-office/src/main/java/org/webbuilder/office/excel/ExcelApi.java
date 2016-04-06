@@ -2,7 +2,6 @@ package org.webbuilder.office.excel;
 
 import org.webbuilder.office.excel.config.ExcelReaderCallBack;
 import org.webbuilder.office.excel.config.ExcelWriterCallBack;
-import org.webbuilder.office.excel.config.ExcelWriterConfig;
 
 import java.io.InputStream;
 import java.io.OutputStream;

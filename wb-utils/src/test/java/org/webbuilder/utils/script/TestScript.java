@@ -59,14 +59,14 @@ public class TestScript {
                 "public static Test instance = new Test();\n" +
                 "public static Test getInstance(){return instance;};\n" +
                 "    public Object execute(Map<String, Object> var) throws Exception {\n" +
-                "        return  var+\".aaa\";\n" +
+                "        return var+\".aaa\";\n" +
                 "    }\n" +
                 "}";
         //编译动态代码
         engine.compile(id, code);
         //执行动态代码
         ExecuteResult result =  engine.execute(id,new HashMap<String, Object>(){{
-            put("param","嘿嘿黑");
+            put("param","55555");
         }});
         System.out.println(result.getResult());
     }

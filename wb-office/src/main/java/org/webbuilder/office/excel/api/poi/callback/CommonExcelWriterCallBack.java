@@ -75,6 +75,7 @@ public class CommonExcelWriterCallBack implements ExcelWriterCallBack {
             for (Header header : headers) {
                 Cell cell = processor.nextCell();
                 Object value = BeanUtils.attr(header.getField(), data);
+                if (value == null) value = "";
                 initCell(x, index, cell, header.getField(), value);
                 if (index++ == 0) {
                     initRow(row, row.getRowNum(), header.getField());

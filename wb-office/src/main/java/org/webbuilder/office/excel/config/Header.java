@@ -8,6 +8,9 @@ public class Header {
 
     private String field;
 
+    public Header() {
+    }
+
     public Header(String title, String field) {
         this.title = title;
         this.field = field;

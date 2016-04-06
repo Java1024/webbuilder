@@ -102,7 +102,7 @@ public class TestWriter {
         }
 
 
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 100; i++) {
             final int t = i;
             datas.add(new HashMap<String, Object>() {
                 {
@@ -122,10 +122,12 @@ public class TestWriter {
      */
     @Test
     public void testWriteSimple() throws Exception {
+      long t = System.currentTimeMillis();
         try (OutputStream outputStream = new FileOutputStream("d:\\test_1.xlsx")) {
             ExcelIO.write(outputStream, headers, datas);
             outputStream.flush();
         }
+        System.out.println(System.currentTimeMillis()-t);
     }
 
     /**
@@ -134,7 +136,7 @@ public class TestWriter {
     @Test
     public void testWriteTemplate() throws Exception {
         try (InputStream inputStream = Resources.getResourceAsStream("template.xlsx")
-             ; OutputStream outputStream = new FileOutputStream("d:\\test_template.xlsx")) {
+             ; OutputStream outputStream = new FileOutputStream("target/test_template.xlsx")) {
             //定义变量
             Map<String, Object> var = new HashMap<>();
             var.put("标题", "测试");
