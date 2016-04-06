@@ -78,7 +78,6 @@ public class FileUtils extends Resources {
         } catch (Throwable e) {
             callBack.error(deep, file, e);
         }
-
     }
 
     /**
@@ -204,8 +203,12 @@ public class FileUtils extends Resources {
     }
 
     public static final void writeString2File(String str, String fileName, String encode) throws Exception {
-        try (OutputStream out = new FileOutputStream(fileName)) {
-            out.write(str.getBytes());
+        File file = new File(fileName);
+        if (!file.getParentFile().exists()) {
+            file.getParentFile().mkdirs();
+        }
+        try (Writer out = new OutputStreamWriter(new FileOutputStream(fileName), encode)) {
+            out.write(str);
             out.flush();
         }
     }
