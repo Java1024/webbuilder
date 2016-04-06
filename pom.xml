@@ -8,7 +8,7 @@
     <artifactId>framework</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <url>https://github.com/wb-goup/webbuilder</url>
+    <url>https://github.com/hs-web/webbuilder</url>
     <modules>
         <module>wb-bpm</module>
         <module>wb-core</module>
@@ -104,19 +104,6 @@
             <artifactId>fastjson</artifactId>
             <version>${fastjson.version}</version>
         </dependency>
-
     </dependencies>
-    <distributionManagement>
-        <repository>
-            <id>releases</id>
-            <name>Nexus Release Repository</name>
-            <url>http://121.199.3.43:8889/nexus/content/repositories/releases/</url>
-        </repository>
-        <snapshotRepository>
-            <id>snapshots</id>
-            <name>Nexus Snapshot Repository</name>
-            <url>http://121.199.3.43:8889/nexus/content/repositories/snapshots/</url>
-        </snapshotRepository>
-    </distributionManagement>
 
 </project>
