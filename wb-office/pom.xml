@@ -15,7 +15,7 @@
     <dependencies>
         <dependency>
             <groupId>org.webbuilder</groupId>
-            <artifactId>wb-office</artifactId>
+            <artifactId>wb-utils</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
