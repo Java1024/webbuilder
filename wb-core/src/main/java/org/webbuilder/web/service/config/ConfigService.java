@@ -5,8 +5,10 @@ import org.apache.ibatis.io.Resources;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.WebSocketSession;
 import org.webbuilder.utils.common.StringUtils;
@@ -20,6 +22,7 @@ import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -34,6 +37,12 @@ import java.util.*;
 @Service
 public class ConfigService extends GenericService<Config, String> implements SocketService {
     public static final String CACHE_KEY = "config";
+
+    private Map<String, DefaultProperties> defaultProperties = new HashMap<>();
+
+    @Resource
+    private ApplicationContext applicationContext;
+
     //默认数据映射接口
     @Resource
     protected ConfigMapper configMapper;
@@ -73,8 +82,15 @@ public class ConfigService extends GenericService<Config, String> implements Soc
     @Cacheable(value = CACHE_KEY, key = "'info.'+#name")
     public Properties get(String name) throws Exception {
         Config config = getMapper().selectByPk(name);
-        if (config == null) return new Properties();
-        return config.toMap();
+        Properties properties;
+        if (config != null) {
+            properties = config.toMap();
+        } else {
+            properties = defaultProperties.get(name);
+        }
+        if (properties == null)
+            properties = new Properties();
+        return properties;
     }
 
     /**
@@ -220,6 +236,21 @@ public class ConfigService extends GenericService<Config, String> implements Soc
     public Object doService(WebSocketSession session, String name, Map<String, Object> param) throws Exception {
 
         return null;
+    }
+
+    @PostConstruct
+    public void init() {
+        defaultProperties = applicationContext.getBeansOfType(DefaultProperties.class);
+    }
+
+    public static class DefaultProperties extends Properties {
+        public void setResources(List<org.springframework.core.io.Resource> resources) throws IOException {
+            for (org.springframework.core.io.Resource resource : resources) {
+                Properties temp = new Properties();
+                temp.load(resource.getInputStream());
+                this.putAll(temp);
+            }
+        }
     }
 
 }
