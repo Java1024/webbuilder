@@ -5,6 +5,30 @@
 excel读写,excel按模板导出
 word按模板导出
 
+# 开始
+```xml
+    <!--引入私服-->
+    <repositories>
+        <repository>
+            <id>nexus</id>
+            <name>hsweb</name>
+            <layout>default</layout>
+            <url>http://121.199.3.43:8889/nexus/content/groups/public/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+    
+    <!--加入依赖-->
+   <dependencies>
+        <dependency>
+            <groupId>org.webbuilder</groupId>
+            <artifactId>wb-office</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+```
 ##读excel
 ```java
 try (InputStream in = Resources.getResourceAsStream("User.xlsx")) {
