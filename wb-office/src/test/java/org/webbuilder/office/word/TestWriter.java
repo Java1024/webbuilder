@@ -1,15 +1,19 @@
 package org.webbuilder.office.word;
 
 import org.junit.Test;
+import org.webbuilder.office.word.api.poi.POIWordApi4Docx;
+import org.webbuilder.office.word.support.template.DOCXTemplateReader;
+import org.webbuilder.utils.common.BeanUtils;
+import org.webbuilder.utils.common.StringUtils;
 import org.webbuilder.utils.file.Resources;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by 浩 on 2015-12-18 0018.
@@ -47,4 +51,16 @@ public class TestWriter {
             out.flush();
         }
     }
+
+    public static void main(String[] args) throws Exception {
+        try (FileInputStream template = new FileInputStream("/home/zhouhao/桌面/template.docx");
+             FileInputStream source = new FileInputStream("/home/zhouhao/桌面/test.docx")) {
+            List<Map<String,Object>> datas = new DOCXTemplateReader(template, source).read();
+            for (Map<String, Object> data : datas) {
+                System.out.println(data);
+            }
+        }
+    }
+
+
 }
