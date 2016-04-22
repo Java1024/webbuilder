@@ -91,9 +91,20 @@ public class FieldMetaData implements Serializable {
      * @param attr 属性值
      * @return 设置的值
      */
+
     public Object attr(String key, Object attr) {
         this.attr.put(key, attr);
         return attr;
+    }
+
+    public ValueWrapper attrWrapper(String key) {
+        return new SimpleValueWrapper(attr(key));
+    }
+
+    public ValueWrapper attrWrapper(String key, Object defaultValue) {
+        Object value = attr(key);
+        if (value == null) value = defaultValue;
+        return new SimpleValueWrapper(value);
     }
 
     /**

@@ -43,6 +43,16 @@ public class TableMetaData implements Serializable {
         return attr.get(key);
     }
 
+    public ValueWrapper attrWrapper(String key) {
+        return new SimpleValueWrapper(attr(key));
+    }
+
+    public ValueWrapper attrWrapper(String key, Object defaultValue) {
+        Object value = attr(key);
+        if (value == null) value = defaultValue;
+        return new SimpleValueWrapper(value);
+    }
+
     public Map<String, Object> attr() {
         return attr;
     }
@@ -50,6 +60,10 @@ public class TableMetaData implements Serializable {
     public Map<String, Object> attr(Map<String, Object> attr) {
         this.attr.putAll(attr);
         return this.attr;
+    }
+
+    public void setAttr(Map<String, Object> attr) {
+        this.attr = attr;
     }
 
     public Object removeAttr(String attr) {
