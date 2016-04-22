@@ -50,4 +50,5 @@ public interface DataBase extends Serializable {
      */
     Table updateTable(TableMetaData tableMetaData) throws Exception;
 
+    void removeTable(String name) throws Exception;
 }
