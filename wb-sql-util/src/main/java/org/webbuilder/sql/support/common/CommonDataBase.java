@@ -62,7 +62,7 @@ public class CommonDataBase implements DataBase {
         if (table == null) {
             TableMetaData metaData = getMetaData().getTableMetaData(name);
             if (metaData == null) return null;
-            table = new CommonTable(metaData, sqlExecutor, this,wrapperFactory);
+            table = new CommonTable(metaData, sqlExecutor, this, wrapperFactory);
             tableMap.put(name, table);
         }
         return table;
@@ -128,5 +128,10 @@ public class CommonDataBase implements DataBase {
 
     public void setWrapperFactory(ObjectWrapperFactory wrapperFactory) {
         this.wrapperFactory = wrapperFactory;
+    }
+
+    @Override
+    public void removeTable(String name) throws Exception {
+        tableMap.remove(name);
     }
 }
