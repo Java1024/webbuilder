@@ -20,7 +20,6 @@
     <properties>
 
         <!-- base setting -->
-
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.locales>zh_CN</project.build.locales>
         <project.build.jdk>1.7</project.build.jdk>
@@ -104,6 +103,19 @@
             <artifactId>fastjson</artifactId>
             <version>${fastjson.version}</version>
         </dependency>
+
     </dependencies>
 
+    <distributionManagement>
+        <repository>
+            <id>releases</id>
+            <name>Nexus Release Repository</name>
+            <url>http://nexus.hsweb.me/content/repositories/releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>Nexus Snapshot Repository</name>
+            <url>http://nexus.hsweb.me/content/repositories/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
 </project>
