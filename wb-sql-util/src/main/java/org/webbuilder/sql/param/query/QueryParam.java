@@ -131,7 +131,9 @@ public class QueryParam extends SqlRenderConfig {
 
     @Override
     public Set<ExecuteCondition> getConditions() {
-        return ExecuteConditionParser.parseByMap(param);
+        if ((conditions == null || conditions.isEmpty()) && param != null && !param.isEmpty())
+            return ExecuteConditionParser.parseByMap(param);
+        return conditions;
     }
 
     public QueryParam where(String conditionJson) {
