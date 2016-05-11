@@ -13,7 +13,7 @@ word按模板导出
             <id>nexus</id>
             <name>hsweb</name>
             <layout>default</layout>
-            <url>http://121.199.3.43:8889/nexus/content/groups/public/</url>
+            <url>http://nexus.hsweb.me/content/groups/public/</url>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
