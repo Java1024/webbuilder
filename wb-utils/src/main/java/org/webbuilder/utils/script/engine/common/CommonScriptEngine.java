@@ -39,7 +39,7 @@ public abstract class CommonScriptEngine implements DynamicScriptEngine {
         try {
             init();
         } catch (Exception e) {
-            logger.error(String.format("init %s error", getScriptName()));
+            logger.warn("init {} error", getScriptName());
         }
     }
 
