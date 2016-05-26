@@ -24,10 +24,10 @@ public class LIKEWrapper extends EQWrapper {
     public String template(ExecuteCondition condition) {
         StringBuilder builder = new StringBuilder();
         if (condition.isSql()) {
-            builder.append(String.format("INSTR(%s,%s)%s0", getFiledName(condition), String.valueOf(condition.getValue()), not ? "<=" : ">"));
+            builder.append(not ? " not " : "").append(String.format("%s like %s", condition.getFullField(), String.valueOf(condition.getValue())));
             return builder.toString();
         }
-        builder.append(String.format("INSTR(%s,#{%s})%s0", condition.getFullField(), getFiledName(condition), not ? "<=" : ">"));
+        builder.append(not ? " not " : "").append(String.format("%s like #{%s}", condition.getFullField(), getFiledName(condition)));
         return builder.toString();
     }
 

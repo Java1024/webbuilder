@@ -32,7 +32,7 @@ public class JavaEngine implements DynamicScriptEngine {
     protected Map<String, CommonScriptExecuteListener> listenerMap = new HashMap<>();
 
     public JavaEngine() {
-        savePath = System.getProperty("java.io.tmpdir").concat("org/webbuilder/java/engine/");
+        savePath = System.getProperty("java.io.tmpdir").concat("/org/webbuilder/java/engine/");
         new File(savePath + "src").mkdirs();
         new File(savePath + "bin").mkdirs();
         classpath = System.getProperty("java.class.path");
