@@ -3,10 +3,12 @@ package org.webbuilder.office.excel.config;
 /**
  * Created by 浩 on 2015-12-07 0007.
  */
-public class Header {
+public class Header implements Comparable<Header> {
     private String title;
 
     private String field;
+
+    private int sort;
 
     public Header() {
     }
@@ -30,5 +32,18 @@ public class Header {
 
     public void setField(String field) {
         this.field = field;
+    }
+
+    public int getSort() {
+        return sort;
+    }
+
+    public void setSort(int sort) {
+        this.sort = sort;
+    }
+
+    @Override
+    public int compareTo(Header o) {
+        return ((Integer) sort).compareTo(o.getSort());
     }
 }
